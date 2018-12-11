@@ -1,0 +1,81 @@
+﻿@model IEnumerable<Agilisium.TalentManager.Web.Models.AllocationViewModel>
+
+@{
+    ViewBag.Title = "Project Allocations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Project Allocations</h3>
+    </div>
+    <div class="panel-body">
+        <table class="table table-striped table-condensed table-bordered">
+            <tr>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.EmployeeID)
+                </th>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.EmployeeName)
+                </th>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.AllocationStartDate)
+                </th>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.AllocationEndDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.AllocationTypeName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PercentageOfAllocation)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Remarks)
+                </th>
+                <th class="text-center">Actions</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.ActionLink(item.ProjectName, "Edit", new { id = item.AllocationEntryID })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmployeeID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmployeeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllocationStartDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllocationEndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AllocationTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PercentageOfAllocation)
+                </td>
+                <td>
+                    @Html.TextArea("Remarks", null, new { @class = "form-control", rows = 5 })
+                </td>
+                <td class="text-center">
+                    @using (Html.BeginForm("Delete", "Allocation"))
+                    {
+                        @Html.Hidden("id", item.AllocationEntryID)
+                        <input type="submit" class="btn btn-default btn-xs" value="Delete" />
+                    }
+                </td>
+            </tr>
+            }
+
+        </table>
+    </div>
+    <div class="panel-footer">
+        @Html.ActionLink("Add a New Project", "Create", null, new { @class = "btn btn-default" })
+    </div>
+</div>

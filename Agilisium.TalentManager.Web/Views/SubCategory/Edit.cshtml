@@ -1,0 +1,51 @@
+﻿@model Agilisium.TalentManager.Web.Models.SubCategoryViewModel
+
+@{
+    ViewBag.Title = "Update Sub Category";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Update Sub-Category</h3>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="panel-body">
+            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+            @foreach (var property in ViewData.ModelMetadata.Properties)
+            {
+                if (property.PropertyName != "SubCategoryID" && property.PropertyName != "CategoryName")
+                {
+                    <div class="form-group">
+                        <label>@(property.DisplayName ?? property.PropertyName) </label>
+                        @if (property.PropertyName == "CategoryID")
+                        {
+                            @Html.DropDownList("CategoryID", (IEnumerable<SelectListItem>)ViewData["CategoriesList"], null, new { @class = "form-control" });
+                        }
+                        else if (property.PropertyName != "Description")
+                        {
+                            @Html.TextBox(property.PropertyName, null, new { @class = "form-control" })
+                        }
+                        else
+                        {
+                            @Html.TextArea(property.PropertyName, null, new { @class = "form-control", rows = 2 })
+                        }
+                    </div>
+                }
+                else
+                {
+                    @Html.Hidden(property.PropertyName);
+                }
+            }
+            <div class="panel-footer">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                @Html.ActionLink("Cancel and Go Back", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    }
+</div>

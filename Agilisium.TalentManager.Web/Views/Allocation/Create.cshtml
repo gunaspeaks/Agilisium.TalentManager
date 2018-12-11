@@ -1,0 +1,56 @@
+﻿@model Agilisium.TalentManager.Web.Models.AllocationViewModel
+
+@{
+    ViewBag.Title = "Create a New Project Allcation";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3>Create a New Project Allcation</h3>
+    </div>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="panel-body">
+            @Html.ValidationSummary(false, "")
+            @foreach (var property in ViewData.ModelMetadata.Properties)
+            {
+                if (property.PropertyName != "AllocationEntryID" &&
+                    property.PropertyName != "EmployeeName" &&
+                    property.PropertyName != "AllocationTypeName" &&
+                    property.PropertyName != "ProjectName")
+                {
+                    <div class="form-group">
+                        <label>@(property.DisplayName ?? property.PropertyName)</label>
+                        @if (property.PropertyName == "Remarks")
+                        {
+                            @Html.TextArea(property.PropertyName, null, new { @class = "form-control", rows = 5 })
+                        }
+                        else if (property.PropertyName == "EmployeeID")
+                        {
+                            @Html.DropDownList(property.PropertyName, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" });
+                        }
+                        else if (property.PropertyName == "AllocationTypeID")
+                        {
+                            @Html.DropDownList(property.PropertyName, (IEnumerable<SelectListItem>)ViewData["UtilizationTypeDDList"], null, new { @class = "form-control" });
+                        }
+                        else if (property.PropertyName == "ProjectID")
+                        {
+                            @Html.DropDownList(property.PropertyName, (IEnumerable<SelectListItem>)ViewData["UtilizationTypeDDList"], null, new { @class = "form-control" });
+                        }
+                        else
+                        {
+                            @Html.TextBox(property.PropertyName, null, new { @class = "form-control" })
+                        }
+                    </div>
+                }
+            }
+            <div class="panel-footer">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                @Html.ActionLink("Cancel and Go Back", "Index", null, new { @class = "btn btn-default" })
+            </div>
+        </div>
+    }
+</div>

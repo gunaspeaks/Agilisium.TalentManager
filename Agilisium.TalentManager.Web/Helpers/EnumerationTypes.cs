@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace Agilisium.TalentManager.Web.Helpers
+{
+    public enum CategoryType
+    {
+        BusinessUnit = 1,
+        UtilizationCode,
+        ProjectType,
+        EmploymentType
+    }
+
+    public enum PracticeType
+    {
+        BusinessDelevopment = 1,
+        Operations,
+        Delivery
+    }
+}
