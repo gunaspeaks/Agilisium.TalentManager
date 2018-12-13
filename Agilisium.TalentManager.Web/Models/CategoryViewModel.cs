@@ -1,26 +1,20 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace Agilisium.TalentManager.Web.Models
 {
     public class CategoryViewModel : ViewModelBase
     {
-        public int CategoryID { get; set; }
+        public IEnumerable<CategoryModel> Categories { get; set; }
 
-        [DisplayName("Category Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Category Name is required")]
-        [MaxLength(100, ErrorMessage = "Category Name should not exceed 100 characters")]
-        public string CategoryName { get; set; }
+        public PagingInfo PagingInfo { get; set; }
 
-        [DisplayName("Short Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Short Name is required")]
-        [MaxLength(10, ErrorMessage = "Short Name should not should not exceed 10 characters")]
-        public string ShortName { get; set; }
-
-        [DataType(DataType.MultilineText)]
-        [MaxLength(100, ErrorMessage = "Description should not exceed 500 characters Name should not contain more than 100 characters")]
-        public string Description { get; set; }
-
-        public bool IsReserved { get; set; }
+        public CategoryViewModel()
+        {
+            Categories = new List<CategoryModel>();
+            PagingInfo = new PagingInfo();
+        }
     }
 }

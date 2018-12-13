@@ -5,7 +5,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 {
     public interface IEmployeeService
     {
-        List<EmployeeDto> GetAllEmployees();
+        List<EmployeeDto> GetAllEmployees(int pageSize = 0, int pageNo = -1);
 
         EmployeeDto GetEmployee(int id);
 
@@ -13,7 +13,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void Update(EmployeeDto employee);
 
-        void Delete(int id);
+        void Delete(EmployeeDto employee);
 
         bool IsDuplicateName(string firstName, string lastName);
 
@@ -22,5 +22,9 @@ namespace Agilisium.TalentManager.Service.Abstract
         bool IsDuplicateEmployeeID(string employeeID);
 
         bool IsDuplicateEmployeeID(int employeeEntryID, string employeeID);
+
+        string GenerateNewEmployeeID(int trackerID);
+
+        List<EmployeeDto> GetAllManagers();
     }
 }

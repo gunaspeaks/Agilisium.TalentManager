@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Controllers
 {
-    public class EmployeeController : Controller
+    public class EmployeeController : BaseController
     {
         private readonly IEmployeeService empService;
         private readonly IDropDownSubCategoryService subCategoryService;
@@ -31,15 +31,35 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Employee
         public ActionResult Index()
         {
-            List<EmployeeViewModel> employees = GetEmployees();
+            List<EmployeeViewModel> employees = new List<EmployeeViewModel>();
+            try
+            {
+                employees = GetEmployees();
+            }
+            catch (Exception exp)
+            {
+                SendSuccessMessage(exp.Message);
+            }
+
             return View(employees);
         }
 
         // GET: Employe/Create
         public ActionResult Create()
         {
-            InitializeAddUpdatePageData(-1);
-            return View(new EmployeeViewModel());
+            EmployeeViewModel emp = new EmployeeViewModel();
+
+            try
+            {
+                InitializeAddUpdatePageData(-1);
+                emp = new EmployeeViewModel();
+            }
+            catch (Exception exp)
+            {
+                SendErrorMessage(exp.Message);
+            }
+
+            return View(emp);
         }
 
         // POST: Employe/Create
@@ -52,24 +72,24 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (empService.IsDuplicateEmployeeID(employee.EmployeeID))
                     {
-                        ModelState.AddModelError("", "I guess, the Employee ID is duplicate");
+                        SendWarningMessage("I guess, the Employee ID is duplicate");
                         return View(employee);
                     }
 
                     if (empService.IsDuplicateName(employee.FirstName, employee.LastName))
                     {
-                        ModelState.AddModelError("", "There is already an Employee with the same First and Last Name");
+                        SendWarningMessage("There is already an Employee with the same First and Last Name");
                         return View(employee);
                     }
 
                     EmployeeDto employeeDto = Mapper.Map<EmployeeViewModel, EmployeeDto>(employee);
                     empService.Create(employeeDto);
-                    TempData["AlertMessage"] = "New Employee details have been stored successfully";
+                    SendSuccessMessage("New Employee details have been stored successfully");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                SendWarningMessage(exp.Message);
             }
             return RedirectToAction("Index");
         }
@@ -77,20 +97,20 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Employe/Edit/5
         public ActionResult Edit(int? id)
         {
+            if (!id.HasValue)
+            {
+                SendWarningMessage("Looks like, the employee ID is missing in your request");
+                return View(new EmployeeViewModel());
+            }
+
             EmployeeViewModel empModel = new EmployeeViewModel();
             try
             {
-                if (!id.HasValue)
-                {
-                    ModelState.AddModelError("", "Looks like, the employee ID is missing in your request");
-                    return View(new EmployeeViewModel());
-                }
-
-                var emp = empService.GetEmployee(id.Value);
+                EmployeeDto emp = empService.GetEmployee(id.Value);
 
                 if (emp == null)
                 {
-                    ModelState.AddModelError("", $"Sorry, We couldn't find the Employee with ID: {id.Value}");
+                    SendWarningMessage($"Sorry, We couldn't find the Employee with ID: {id.Value}");
                     return View(new EmployeeViewModel());
                 }
                 empModel = Mapper.Map<EmployeeDto, EmployeeViewModel>(emp);
@@ -98,7 +118,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                SendErrorMessage(exp.Message);
             }
             return View(empModel);
         }
@@ -146,11 +166,11 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             try
             {
-                empService.Delete(id.Value);
+                empService.Delete(new EmployeeDto { EmployeeEntryID = id.Value });
                 TempData["AlertMessage"] = "Employee details have been deleted successfully";
                 return RedirectToAction("Index");
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
                 ModelState.AddModelError("", exp.Message);
                 return View();
@@ -172,16 +192,16 @@ namespace Agilisium.TalentManager.Web.Controllers
             return employeeModels;
         }
 
-        private void InitializeAddUpdatePageData(int subPracticeID)
+        private void InitializeAddUpdatePageData(int subPracticeID, int employeeID = -1)
         {
-            ViewData["IsNewEntry"] = true;
-            PrepareSubCategoriesDDItems();
-            ViewData["PracticeDDList"] = GetPracticeList();
-            ViewData["EmployeesDDList"] = GetEmployeesDDList();
-            ViewData["SubPracticeDDList"] = GetSubPractices(subPracticeID);
+            ViewBag.IsNewEntry = true;
+            GetPracticeList();
+            GetProjectManagersList(employeeID);
+            GetSubPractices(subPracticeID);
+            GetOtherDropDownItems();
         }
 
-        private void PrepareSubCategoriesDDItems()
+        private void GetOtherDropDownItems()
         {
             List<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories();
 
@@ -194,13 +214,8 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                     Value = c.SubCategoryID.ToString()
                                                 }).ToList();
 
-            buListItems.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
-
-            ViewData["BuDDList"] = buListItems;
+            InsertDefaultListItem(buListItems);
+            ViewBag.BUsList = buListItems;
 
             List<SelectListItem> ucListItems = (from c in buList
                                                 orderby c.SubCategoryName
@@ -210,16 +225,24 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                     Text = c.SubCategoryName,
                                                     Value = c.SubCategoryID.ToString()
                                                 }).ToList();
-            ucListItems.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
 
-            ViewData["UtilizationTypeDDList"] = ucListItems;
+            InsertDefaultListItem(ucListItems);
+            ViewBag.UtilizationTypesList = ucListItems;
+
+            List<SelectListItem> empTypeList = (from c in buList
+                                                orderby c.SubCategoryName
+                                                where c.CategoryID == (int)CategoryType.EmploymentType
+                                                select new SelectListItem
+                                                {
+                                                    Text = c.SubCategoryName,
+                                                    Value = c.SubCategoryID.ToString()
+                                                }).ToList();
+
+            InsertDefaultListItem(empTypeList);
+            ViewBag.EmploymentTypesList = empTypeList;
         }
 
-        private List<SelectListItem> GetPracticeList()
+        private void GetPracticeList()
         {
             List<PracticeDto> practices = practiceService.GetPractices().ToList();
             List<SelectListItem> practiceItems = (from p in practices
@@ -229,13 +252,8 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                       Text = p.PracticeName,
                                                       Value = p.PracticeID.ToString()
                                                   }).ToList();
-            practiceItems.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
-
-            return practiceItems;
+            InsertDefaultListItem(practiceItems);
+            ViewBag.PracticeList = practiceItems;
         }
 
         private List<SelectListItem> GetSubPractices(int practiceID)
@@ -248,25 +266,22 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                Text = c.SubPracticeName,
                                                Value = c.SubPracticeID.ToString()
                                            }).ToList();
-            ddList.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
+
+            InsertDefaultListItem(ddList);
+            ViewBag.SubPracticesList = ddList;
             return ddList;
         }
 
-        private List<SelectListItem> GetEmployeesDDList()
+        private void GetProjectManagersList(int employeeID)
         {
-            List<EmployeeViewModel> employeeModels = (List<EmployeeViewModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
-            List<SelectListItem> empDDList = new List<SelectListItem>
-            {
-                new SelectListItem{Text = "Please Select", Value = string.Empty}
-            };
+            List<EmployeeDto> managers = empService.GetAllManagers();
 
-            if (employeeModels != null)
+            List<SelectListItem> empDDList = new List<SelectListItem>();
+            InsertDefaultListItem(empDDList);
+
+            if (managers != null)
             {
-                foreach (EmployeeViewModel item in employeeModels)
+                foreach (EmployeeDto item in managers)
                 {
                     empDDList.Add(new SelectListItem
                     {
@@ -276,7 +291,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                 }
             }
 
-            return empDDList;
+            ViewBag.ProjectManagersList = empDDList;
         }
     }
 }

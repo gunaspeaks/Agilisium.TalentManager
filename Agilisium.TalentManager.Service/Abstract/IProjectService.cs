@@ -9,7 +9,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void Update(ProjectDto project);
 
-        void Delete(int id);
+        void Delete(ProjectDto project);
 
         bool Exists(string projectName, int id);
 

@@ -23,9 +23,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Add(subPractice);
         }
 
-        public void DeleteSubPractice(int id)
+        public void DeleteSubPractice(SubPracticeDto subPractice)
         {
-            repository.Delete(id);
+            repository.Delete(subPractice);
         }
 
         public bool Exists(string subPracticeName)

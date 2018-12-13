@@ -15,7 +15,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(string practiceName, int id);
 
-        IEnumerable<PracticeDto> GetPractices();
+        IEnumerable<PracticeDto> GetPractices(int pageSize=0, int pageNo = -1);
 
         PracticeDto GetPractice(int id);
 
@@ -23,6 +23,6 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void UpdatePractice(PracticeDto practice);
 
-        void DeletePractice(int id);
+        void DeletePractice(PracticeDto practice);
     }
 }

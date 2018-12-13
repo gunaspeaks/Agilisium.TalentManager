@@ -33,10 +33,10 @@ namespace Agilisium.TalentManager.Model.Entities
 
         public string SecondarySkills { get; set; }
 
-        public int? ReportingManagerID { get; set; }
-
-        public int? ProjectManagerID { get; set; }
+        public int ReportingManagerID { get; set; }
 
         public int? UtilizationTypeID { get; set; }
+
+        public int EmploymentTypeID { get; set; }
     }
 }

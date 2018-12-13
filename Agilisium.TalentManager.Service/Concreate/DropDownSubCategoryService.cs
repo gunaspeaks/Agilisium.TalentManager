@@ -1,10 +1,8 @@
 ﻿using Agilisium.TalentManager.Data.Repositories;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -37,9 +35,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(subCategoryName, id);
         }
 
-        public List<DropDownSubCategoryDto> GetSubCategories()
+        public List<DropDownSubCategoryDto> GetSubCategories(int pageSize=0, int pageNo = -1)
         {
-            return repository.GetAll().ToList();
+            return repository.GetAll(pageSize, pageNo).ToList();
         }
 
         public List<DropDownSubCategoryDto> GetSubCategories(int categoryID)
@@ -57,9 +55,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Update(category);
         }
 
-        public void DeleteSubCategory(int id)
+        public void DeleteSubCategory(DropDownSubCategoryDto category)
         {
-            repository.Delete(id);
+            repository.Delete(category);
         }
     }
 }

@@ -7,6 +7,9 @@ namespace Agilisium.TalentManager.Web.Helpers
 {
     public class UIConstants
     {
+        public const string CONFIG_ENABLE_PAGINATION = "enablePagination";
+        public const string CONFIG_RECORDS_PER_PAGE = "recordsCountPerPage";
+
         public const string EMPLOYEE_MODELS_LIST = "EmployeeModelsList";
         public const string EMPLOYEE_DD_LIST = "EmployeesDDList";
         public const string PROJECT_MODELS_LILST = "ProjectModelsList";

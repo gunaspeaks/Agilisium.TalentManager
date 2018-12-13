@@ -1,15 +1,15 @@
 ﻿using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
+using Agilisium.TalentManager.Web.Helpers;
 using Agilisium.TalentManager.Web.Models;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Controllers
 {
-    public class CategoryController : Controller
+    public class CategoryController : BaseController
     {
         private readonly IDropDownCategoryService service;
 
@@ -19,10 +19,23 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Category
-        public ActionResult Index()
+        public ActionResult List(int page = 1)
         {
-            IEnumerable<CategoryViewModel> categories = GetCategories();
-            return View(categories);
+            CategoryViewModel viewModel = new CategoryViewModel();
+
+            try
+            {
+                viewModel.Categories = GetCategories(page);
+                viewModel.PagingInfo.TotalRecordsCount = service.TotalRecordsCount();
+                viewModel.PagingInfo.RecordsPerPage = RecordsPerPage;
+                viewModel.PagingInfo.CurentPageNo = page;
+            }
+            catch (Exception exp)
+            {
+                SendErrorMessage(exp.Message);
+            }
+
+            return View(viewModel);
         }
 
         // GET: Category/Create
@@ -33,7 +46,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         // POST: Category/Create
         [HttpPost]
-        public ActionResult Create(CategoryViewModel category)
+        public ActionResult Create(CategoryModel category)
         {
             try
             {
@@ -41,18 +54,18 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (service.Exists(category.CategoryName))
                     {
-                        ModelState.AddModelError("", "This Category Name is duplicate");
+                        SendWarningMessage($"The Category Name '{category.CategoryName}' is duplicate");
                         return View(category);
                     }
-                    DropDownCategoryDto categoryModel = Mapper.Map<CategoryViewModel, DropDownCategoryDto>(category);
+                    DropDownCategoryDto categoryModel = Mapper.Map<CategoryModel, DropDownCategoryDto>(category);
                     service.CreateCategory(categoryModel);
-                    TempData["AlertMessage"] = "New Category has been stored successfully";
-                    return RedirectToAction("Index");
+                    SendSuccessMessage($"New Category '{category.CategoryName}' has been stored successfully");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                SendErrorMessage(exp.Message);
             }
             return View(category);
         }
@@ -60,22 +73,36 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Category/Edit/5
         public ActionResult Edit(int? id)
         {
+            CategoryModel uiCategory = new CategoryModel();
             if (!id.HasValue)
             {
-                return View("Please select a Category to Edit");
+                SendWarningMessage("Looks like, the ID is missing in your request");
+                return View(uiCategory);
             }
+
             if (!service.Exists(id.Value))
             {
-                return View($"Sorry, We couldn't find the Category with ID: {id.Value}");
+                SendWarningMessage($"Sorry, We couldn't find the Category with ID: {id.Value}");
+                return View(uiCategory);
             }
-            DropDownCategoryDto category = service.GetCategory(id.Value);
-            CategoryViewModel uiCategory = Mapper.Map<DropDownCategoryDto, CategoryViewModel>(category);
+
+            try
+            {
+                DropDownCategoryDto category = service.GetCategory(id.Value);
+                uiCategory = Mapper.Map<DropDownCategoryDto, CategoryModel>(category);
+                return View(uiCategory);
+            }
+            catch (Exception exp)
+            {
+                SendErrorMessage(exp.Message);
+            }
+
             return View(uiCategory);
         }
 
         // POST: Category/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, CategoryViewModel category)
+        public ActionResult Edit(CategoryModel category)
         {
             try
             {
@@ -83,42 +110,57 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (service.Exists(category.CategoryName, category.CategoryID))
                     {
-                        ModelState.AddModelError("", "This Category Name is duplicate");
+                        SendWarningMessage($"Category Name '{category.CategoryName}' is duplicate");
                         return View(category);
                     }
-                    DropDownCategoryDto categoryModel = Mapper.Map<CategoryViewModel, DropDownCategoryDto>(category);
+                    DropDownCategoryDto categoryModel = Mapper.Map<CategoryModel, DropDownCategoryDto>(category);
                     service.UpdateCategory(categoryModel);
-                    TempData["AlertMessage"] = "Category has been updated successfully";
-                    return RedirectToAction("Index");
+                    SendSuccessMessage($"Category '{category.CategoryName}' details have been modified successfully");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                SendErrorMessage(exp.Message);
             }
             return View(category);
         }
 
         // POST: Category/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
+            if (!id.HasValue)
+            {
+                SendWarningMessage("Looks like, the ID is missing in your request");
+                return RedirectToAction("List");
+            }
             try
             {
-                service.DeleteCategory(id);
-                TempData["AlertMessage"] = "Category has been deleted successfully";
-                return RedirectToAction("Index");
+                if(service.CanBeDeleted(id.Value)==false)
+                {
+                    SendWarningMessage("You have some depending sub-categories under this category. So, you can't delete this category for now");
+                }
+
+                if (service.IsReservedEntry(id.Value) == false)
+                {
+                    SendWarningMessage("Hey, why do you want to delete a Reserved Category. Please check with the system administrator");
+                }
+
+                service.DeleteCategory(new DropDownCategoryDto { CategoryID = id.Value });
+                SendSuccessMessage($"Category has been deleted successfully");
             }
-            catch
+            catch (Exception exp)
             {
-                return View();
+                SendErrorMessage(exp.Message);
             }
+            return RedirectToAction("List");
         }
 
-        private IEnumerable<CategoryViewModel> GetCategories()
+        private IEnumerable<CategoryModel> GetCategories(int pageNo)
         {
-            IEnumerable<DropDownCategoryDto> categories = service.GetCategories()?.OrderBy(p => p.CategoryName);
-            return Mapper.Map<IEnumerable<DropDownCategoryDto>, IEnumerable<CategoryViewModel>>(categories);
+            IEnumerable<DropDownCategoryDto> categories = service.GetCategories(RecordsPerPage, pageNo);
+            return Mapper.Map<IEnumerable<DropDownCategoryDto>, IEnumerable<CategoryModel>>(categories);
         }
     }
 }

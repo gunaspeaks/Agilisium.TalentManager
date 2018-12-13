@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Agilisium.TalentManager.Data.Abstract
 {
@@ -18,6 +17,10 @@ namespace Agilisium.TalentManager.Data.Abstract
 
         T GetByID(int id);
 
-        IEnumerable<T> GetAll();
+        IEnumerable<T> GetAll(int pageSize = 0, int pageNo = -1);
+
+        int TotalRecordsCount();
+
+        bool CanBeDeleted(int id);
     }
 }

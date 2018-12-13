@@ -1,7 +1,5 @@
 ﻿using Agilisium.TalentManager.Dto;
-using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 
 namespace Agilisium.TalentManager.Service.Abstract
 {
@@ -13,7 +11,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(string categoryName, int id);
 
-        IEnumerable<DropDownCategoryDto> GetCategories();
+        IEnumerable<DropDownCategoryDto> GetCategories(int pageSize = 0, int pageNo = -1);
 
         DropDownCategoryDto GetCategory(int id);
 
@@ -21,6 +19,12 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void UpdateCategory(DropDownCategoryDto category);
 
-        void DeleteCategory(int id);
+        void DeleteCategory(DropDownCategoryDto category);
+
+        int TotalRecordsCount();
+
+        bool CanBeDeleted(int id);
+
+        bool IsReservedEntry(int categoryID);
     }
 }

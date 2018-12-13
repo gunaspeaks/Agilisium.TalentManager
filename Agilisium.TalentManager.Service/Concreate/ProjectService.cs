@@ -23,9 +23,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Add(project);
         }
 
-        public void Delete(int id)
+        public void Delete(ProjectDto project)
         {
-            repository.Delete(id);
+            repository.Delete(project);
         }
 
         public bool Exists(string projectName, int id)

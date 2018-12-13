@@ -148,7 +148,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             try
             {
-                projectService.Delete(id.Value);
+                projectService.Delete(new ProjectDto { ProjectID = id.Value });
                 TempData["AlertMessage"] = "Project details have been deleted successfully";
                 return RedirectToAction("Index");
             }

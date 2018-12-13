@@ -7,9 +7,9 @@ using System.Web.Routing;
 
 namespace Agilisium.TalentManager.Web.Helpers
 {
-    public static class ImageLinkExtension
+    public static class ImageLinkHtmlHelperExtension
     {
-        public static string ImageLink(this HtmlHelper helper, 
+        public static MvcHtmlString ImageLink(this HtmlHelper helper, 
             string action, string controller,
             object routeValues, string imageUrl,
             string alternateText, object linkHtmlAttributes,
@@ -26,7 +26,7 @@ namespace Agilisium.TalentManager.Web.Helpers
             linkTag.InnerHtml = imageTag.ToString(TagRenderMode.SelfClosing);
             linkTag.MergeAttributes(new RouteValueDictionary(linkHtmlAttributes));
 
-            return linkTag.ToString();
+            return MvcHtmlString.Create(linkTag.ToString());
         }
     }
 }

@@ -133,7 +133,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             try
             {
-                allocationService.Delete(id.Value);
+                allocationService.Delete(new ProjectAllocationDto { AllocationEntryID = id.Value });
                 TempData["AlertMessage"] = "Allocation details have been removed successfully";
                 return RedirectToAction("Index");
             }

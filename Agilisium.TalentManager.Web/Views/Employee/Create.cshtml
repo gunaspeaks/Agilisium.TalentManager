@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Create New Employee";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <script src="~/Scripts/jquery-3.3.1.js"></script>
@@ -53,10 +53,18 @@
                     <tr>
                         <td>
                             <div class="form-group">
+                                @Html.LabelFor(model => model.EmploymentTypeID)
+                                @Html.DropDownListFor(model => model.EmploymentTypeID, (IEnumerable<SelectListItem>)ViewData["BuDDList"], null, new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
                                 @Html.LabelFor(model => model.EmployeeID)
                                 @Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                    </tr>
+                    <tr>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.FirstName)
@@ -68,6 +76,9 @@
                                 @Html.LabelFor(model => model.LastName)
                                 @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
+                        </td>
+                        <td>
+                            &nbsp;
                         </td>
                     </tr>
                     <tr>

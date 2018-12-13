@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Agilisium.TalentManager.Data.Abstract
 {
-    public abstract class RepositoryBase<T> : IDisposable where T : class
+    public abstract class RepositoryBase<T> : IDisposable where T : EntityBase
     {
         private TalentManagerDataContext dataContext;
 
@@ -20,6 +20,16 @@ namespace Agilisium.TalentManager.Data.Abstract
             {
                 dataContext.Dispose();
             }
+        }
+
+        public int TotalRecordsCount()
+        {
+            return Entities.Count(e => e.IsDeleted == false);
+        }
+
+        public virtual bool CanBeDeleted(int id)
+        {
+            return true;
         }
     }
 }

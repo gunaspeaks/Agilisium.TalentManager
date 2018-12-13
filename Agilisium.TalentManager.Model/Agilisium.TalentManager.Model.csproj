@@ -51,6 +51,7 @@
     <Compile Include="Configuration\DropDownCategoryConfiguration.cs" />
     <Compile Include="Configuration\DropDownSubCategoryConfiguration.cs" />
     <Compile Include="Configuration\EmployeeEntityConfiguration.cs" />
+    <Compile Include="Configuration\EmployeeIDTrackerEntityConfiguration.cs" />
     <Compile Include="Configuration\PracticeEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectAllocationEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectEntityConfiguration.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Entities\DropDownCategory.cs" />
     <Compile Include="Entities\DropDownSubCategory.cs" />
     <Compile Include="Entities\Employee.cs" />
+    <Compile Include="Entities\EmployeeIDTracker.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="Entities\Practice.cs" />
     <Compile Include="Entities\ProjectAllocation.cs" />

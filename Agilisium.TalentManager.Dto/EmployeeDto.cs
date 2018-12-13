@@ -38,16 +38,20 @@ namespace Agilisium.TalentManager.Dto
 
         public string SecondarySkills { get; set; }
 
-        public int? ReportingManagerID { get; set; }
+        public int ReportingManagerID { get; set; }
 
         public string ReportingManagerName { get; set; }
 
         public string ProjectManagerName { get; set; }
 
-        public int? ProjectManagerID { get; set; }
+        public int ProjectManagerID { get; set; }
 
         public int? UtilizationTypeID { get; set; }
 
         public string UtilizationTypeName { get; set; }
+
+        public int EmploymentTypeID { get; set; }
+
+        public string EmploymentTypeName { get; set; }
     }
 }

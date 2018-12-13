@@ -1,12 +1,9 @@
 ﻿using Agilisium.TalentManager.Data.Abstract;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Data.Repositories
 {
@@ -14,39 +11,43 @@ namespace Agilisium.TalentManager.Data.Repositories
     {
         public void Add(PracticeDto entity)
         {
-            Practice practice = ConvertToEntity(entity, true);
+            Practice practice = CreateBusinessEntity(entity, true);
             Entities.Add(practice);
             DataContext.Entry(practice).State = EntityState.Added;
             DataContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(PracticeDto entity)
         {
-            Practice entity = Entities.FirstOrDefault(e => e.PracticeID == id);
-            Entities.Remove(entity);
-            DataContext.Entry(entity).State = EntityState.Deleted;
+            Practice buzEntity = Entities.FirstOrDefault(e => e.PracticeID == entity.PracticeID);
+            buzEntity.IsDeleted = true;
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(buzEntity);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
         public bool Exists(string itemName, int id)
         {
-            return Entities.Any(c => c.PracticeName.ToLower() == itemName.ToLower() && c.PracticeID != id);
+            return Entities.Any(c => c.PracticeName.ToLower() == itemName.ToLower() &&
+            c.PracticeID != id && c.IsDeleted == false);
         }
 
         public bool Exists(string itemName)
         {
-            return Entities.Any(c => c.PracticeName.ToLower() == itemName.ToLower());
+            return Entities.Any(c => c.PracticeName.ToLower() == itemName.ToLower() && c.IsDeleted == false);
         }
 
         public bool Exists(int id)
         {
-            return Entities.Any(c => c.PracticeID == id);
+            return Entities.Any(c => c.PracticeID == id && c.IsDeleted == false);
         }
 
-        public IEnumerable<PracticeDto> GetAll()
+        public IEnumerable<PracticeDto> GetAll(int pageSize, int pageNo = -1)
         {
             return (from c in Entities
                     orderby c.PracticeName
+                    where c.IsDeleted == false
                     select new PracticeDto
                     {
                         PracticeID = c.PracticeID,
@@ -59,7 +60,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         public PracticeDto GetByID(int id)
         {
             return (from c in Entities
-                    where c.PracticeID == id
+                    where c.PracticeID == id && c.IsDeleted == false
                     select new PracticeDto
                     {
                         PracticeID = c.PracticeID,
@@ -70,26 +71,34 @@ namespace Agilisium.TalentManager.Data.Repositories
 
         public void Update(PracticeDto entity)
         {
-            Practice practice = ConvertToEntity(entity);
-            Entities.Add(practice);
-            DataContext.Entry(practice).State = EntityState.Modified;
+            Practice buzEntity = Entities.FirstOrDefault(e => e.PracticeID == entity.PracticeID);
+            MigrateEntity(entity, buzEntity);
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(buzEntity);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
-        private Practice ConvertToEntity(PracticeDto categoryDto, bool isNewEntity = false)
+        private Practice CreateBusinessEntity(PracticeDto categoryDto, bool isNewEntity = false)
         {
             Practice practice = new Practice
             {
                 PracticeName = categoryDto.PracticeName,
-                ShortName = categoryDto.ShortName
+                ShortName = categoryDto.ShortName,
+                PracticeID = categoryDto.PracticeID
             };
 
-            if (isNewEntity == false)
-            {
-                practice.PracticeID = categoryDto.PracticeID;
-            }
+            practice.UpdateTimeStamp(categoryDto.LoggedInUserName, true);
 
             return practice;
+        }
+
+        private void MigrateEntity(PracticeDto sourceEntity, Practice targetEntity)
+        {
+            targetEntity.PracticeName = sourceEntity.PracticeName;
+            targetEntity.ShortName = sourceEntity.ShortName;
+            targetEntity.PracticeID = sourceEntity.PracticeID;
+            targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
     }
 

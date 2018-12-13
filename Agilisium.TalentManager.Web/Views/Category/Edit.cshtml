@@ -1,4 +1,4 @@
-﻿@model Agilisium.TalentManager.Web.Models.CategoryViewModel
+﻿@model Agilisium.TalentManager.Web.Models.CategoryModel
 
 @{
     ViewBag.Title = "Edit Category";
@@ -20,7 +20,7 @@
 
             @foreach (var property in ViewData.ModelMetadata.Properties)
             {
-                if (property.PropertyName != "CategoryID")
+                if (property.PropertyName != "CategoryID" && property.PropertyName != "IsReserved")
                 {
                     <div class="form-group">
                         <label>@(property.DisplayName ?? property.PropertyName)</label>
@@ -37,7 +37,7 @@
             }
             <div class="panel-footer">
                 <input type="submit" value="Save" class="btn btn-primary" />
-                @Html.ActionLink("Cancel and Go Back", "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
             </div>
         </div>
     }

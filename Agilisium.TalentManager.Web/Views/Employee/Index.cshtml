@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "All Employees";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="panel panel-default">
@@ -25,9 +25,6 @@
                     @Html.DisplayNameFor(model => model.PracticeName)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.SubPracticeName)
-                </th>
-                <th>
                     @Html.DisplayNameFor(model => model.DateOfJoin)
                 </th>
                 <th>
@@ -35,6 +32,9 @@
                 </th>
                 <th>
                     @Html.DisplayNameFor(model => model.UtilizationTypeName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EmploymentTypeName)
                 </th>
                 <th class="text-center">Actions</th>
             </tr>
@@ -55,9 +55,6 @@
                     @Html.DisplayFor(modelItem => item.PracticeName)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.SubPracticeName)
-                </td>
-                <td>
                     @Html.DisplayFor(modelItem => item.DateOfJoin)
                 </td>
                 <td>
@@ -65,6 +62,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(model => item.UtilizationTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EmploymentTypeName)
                 </td>
                 <td class="text-center">
                     @using (Html.BeginForm("Delete", "Employee"))

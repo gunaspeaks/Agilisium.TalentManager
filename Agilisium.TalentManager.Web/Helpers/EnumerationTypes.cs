@@ -19,4 +19,11 @@ namespace Agilisium.TalentManager.Web.Helpers
         Operations,
         Delivery
     }
+
+    public enum EmployementType
+    {
+        Permanent = 1,
+        Internship,
+        Contract
+    }
 }

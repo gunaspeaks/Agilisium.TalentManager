@@ -25,6 +25,6 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void UpdateSubPractice(SubPracticeDto subPractice);
 
-        void DeleteSubPractice(int id);
+        void DeleteSubPractice(SubPracticeDto subPractice);
     }
 }

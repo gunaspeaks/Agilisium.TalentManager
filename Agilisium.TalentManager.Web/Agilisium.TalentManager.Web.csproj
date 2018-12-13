@@ -226,6 +226,8 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AllocationController.cs" />
+    <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\ProjectController.cs" />
     <Compile Include="Controllers\PracticeController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
@@ -238,13 +240,18 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\EnumerationTypes.cs" />
-    <Compile Include="Helpers\ImageLinkExtension.cs" />
+    <Compile Include="Helpers\ImageLinkHtmlHelperExtension.cs" />
     <Compile Include="Helpers\CacheHelper.cs" />
+    <Compile Include="Helpers\PagingHtmlHelperExtension.cs" />
     <Compile Include="Helpers\UIConstants.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CategoryViewModel.cs" />
+    <Compile Include="Models\MenuItem.cs" />
+    <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\WidgetModels.cs" />
     <Compile Include="Models\AllocationViewModel.cs" />
-    <Compile Include="Models\CategoryViewModel.cs" />
+    <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\EmployeeViewModel.cs" />
     <Compile Include="Models\EmployeePageViewModel.cs" />
     <Compile Include="Models\EmployeeWidgetModel.cs" />
@@ -269,7 +276,13 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\dashboard.css" />
     <Content Include="Content\error-styles.css" />
-    <Content Include="Content\Images\Agilisium_Logopng.png" />
+    <Content Include="Content\Images\agilisium.jpg" />
+    <Content Include="Content\Images\Agilisium_Logo.jpg" />
+    <Content Include="Content\Images\contact-manager.jpg" />
+    <Content Include="Content\Images\Contractor-management-3.jpg" />
+    <Content Include="Content\Images\contractor.jpg" />
+    <Content Include="Content\Images\Talent-Management.jpg" />
+    <Content Include="Content\Images\vendor-management.jpg" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -327,7 +340,7 @@
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Category\Create.cshtml" />
     <Content Include="Views\Category\Edit.cshtml" />
-    <Content Include="Views\Category\Index.cshtml" />
+    <Content Include="Views\Category\List.cshtml" />
     <Content Include="Views\SubCategory\Index.cshtml" />
     <Content Include="Views\SubCategory\Create.cshtml" />
     <Content Include="Views\SubCategory\Edit.cshtml" />
@@ -349,6 +362,10 @@
     <Content Include="Views\Allocation\Create.cshtml" />
     <Content Include="Views\Allocation\Edit.cshtml" />
     <Content Include="Views\Allocation\Index.cshtml" />
+    <Content Include="Views\Menu\GenerateMenu.cshtml" />
+    <Content Include="Views\Shared\_MenuLayout.cshtml" />
+    <Content Include="Views\Default\Index.cshtml" />
+    <Content Include="Views\Default\Index1.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

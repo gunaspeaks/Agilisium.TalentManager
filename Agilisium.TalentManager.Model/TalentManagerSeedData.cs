@@ -11,6 +11,7 @@ namespace Agilisium.TalentManager.Model
             GetCategories().ForEach(c => context.DropDownCategories.Add(c));
             GetSubCategories().ForEach(c => context.DropDownSubCategories.Add(c));
             GetPractices().ForEach(p => context.Practices.Add(p));
+            GetIDTracketEntries().ForEach(p => context.EmployeeIDTrackers.Add(p));
             context.SaveChanges();
         }
 
@@ -345,6 +346,38 @@ namespace Agilisium.TalentManager.Model
                     PracticeName = "Others",
                     ShortName = "OTH",
                     IsReserved = true
+                },
+                new Practice
+                {
+                    PracticeID = 19,
+                    PracticeName = "Delivery Manager",
+                    ShortName = "DM",
+                    IsReserved = true
+                }
+            };
+        }
+
+        private static List<EmployeeIDTracker> GetIDTracketEntries()
+        {
+            return new List<EmployeeIDTracker>
+            {
+                new EmployeeIDTracker
+                {
+                    EmployeeTypeName = "Permanent",
+                    IDPrefix = string.Empty,
+                    RunningID = 10000
+                },
+                new EmployeeIDTracker
+                {
+                    EmployeeTypeName = "Internship",
+                    IDPrefix = "CI",
+                    RunningID = 1000
+                },
+                new EmployeeIDTracker
+                {
+                    EmployeeTypeName = "Contract",
+                    IDPrefix = "CE",
+                    RunningID = 1000
                 }
             };
         }

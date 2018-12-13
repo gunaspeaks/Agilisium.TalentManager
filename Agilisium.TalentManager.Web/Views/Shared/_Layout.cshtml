@@ -38,7 +38,7 @@
                     {
                         <li>@Html.ActionLink("Employees", "Index", "Employee")</li>
                     }
-                    
+
                     @if (Request.Url.ToString().Contains("Project"))
                     {
                         <li>@Html.ActionLink("Projects", "Index", "Project", new { @style = "color:Yellow; font-size:large;" })</li>
@@ -47,7 +47,7 @@
                     {
                         <li>@Html.ActionLink("Projects", "Index", "Project")</li>
                     }
-                    
+
                     *@if (Request.Url.ToString().Contains("Allocation"))
                     {
                         <li>@Html.ActionLink("Project Allocations", "Index", "Allocation", new { @style = "color:Yellow; font-size:large;" })</li>
@@ -64,9 +64,23 @@
         </div>
     </div>
     <div>
-        @if (TempData["AlertMessage"] != null)
+        @if (TempData["SuccessMessage"] != null)
         {
-            <div class="alert alert-success">@TempData["AlertMessage"]</div>
+            <div style="font-weight:bold;color:blue; border-radius:25%; font-size:x-large; text-align:center" class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["WarningMessage"] != null)
+        {
+            <div style="font-weight:bold;color:darkgreen; border-radius:25%; font-size:x-large; text-align:center" class="alert alert-warning">
+                @TempData["WarningMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div style="font-weight:bold;color:red; border-radius:25%; font-size:x-large; text-align:center" class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
         }
         @RenderBody()
     </div>

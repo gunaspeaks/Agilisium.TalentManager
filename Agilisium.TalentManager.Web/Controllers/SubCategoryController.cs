@@ -128,7 +128,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
-                subCategoryService.DeleteSubCategory(id);
+                subCategoryService.DeleteSubCategory(new DropDownSubCategoryDto { SubCategoryID = id });
                 TempData["AlertMessage"] = "Sub-Category has been deleted successfully";
                 int categoryID = int.Parse(Session["SelectedCategoryID"].ToString());
                 return RedirectToAction("Index");

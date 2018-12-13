@@ -11,40 +11,44 @@ namespace Agilisium.TalentManager.Data.Repositories
     {
         public void Add(SubPracticeDto entity)
         {
-            SubPractice subPractice = ConvertToEntity(entity, true);
+            SubPractice subPractice = CreateBusinessEntity(entity, true);
             Entities.Add(subPractice);
             DataContext.Entry(subPractice).State = EntityState.Added;
             DataContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(SubPracticeDto entity)
         {
-            SubPractice entity = Entities.FirstOrDefault(e => e.SubPracticeID == id);
-            Entities.Remove(entity);
-            DataContext.Entry(entity).State = EntityState.Deleted;
+            SubPractice buzEntity = Entities.FirstOrDefault(e => e.SubPracticeID == entity.SubPracticeID);
+            buzEntity.IsDeleted = true;
+            Entities.Add(buzEntity);
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
         public bool Exists(string itemName, int id)
         {
-            return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower() && c.SubPracticeID != id);
+            return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower() &&
+            c.SubPracticeID != id && c.IsDeleted == false);
         }
 
         public bool Exists(string itemName)
         {
-            return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower());
+            return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower() && c.IsDeleted == false);
         }
 
         public bool Exists(int id)
         {
-            return Entities.Any(c => c.SubPracticeID == id);
+            return Entities.Any(c => c.SubPracticeID == id && c.IsDeleted == false);
         }
 
-        public IEnumerable<SubPracticeDto> GetAll()
+        public IEnumerable<SubPracticeDto> GetAll(int pageSize, int pageNo = -1)
         {
             return (from c in Entities
                     join p in DataContext.Practices on c.PracticeID equals p.PracticeID
                     orderby c.SubPracticeName
+                    where c.IsDeleted == false
                     select new SubPracticeDto
                     {
                         PracticeID = c.PracticeID,
@@ -55,12 +59,12 @@ namespace Agilisium.TalentManager.Data.Repositories
                     });
         }
 
-        public IEnumerable<SubPracticeDto> GetAll(int practiceID)
+        public IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID)
         {
             return (from c in Entities
                     join p in DataContext.Practices on c.PracticeID equals p.PracticeID into pr
                     from prd in pr.DefaultIfEmpty()
-                    where c.PracticeID == practiceID
+                    where c.PracticeID == practiceID && c.IsDeleted == false
                     orderby c.SubPracticeName
                     select new SubPracticeDto
                     {
@@ -75,7 +79,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         public SubPracticeDto GetByID(int id)
         {
             return (from c in Entities
-                    where c.SubPracticeID == id
+                    where c.SubPracticeID == id && c.IsDeleted == false
                     select new SubPracticeDto
                     {
                         PracticeID = c.PracticeID,
@@ -87,33 +91,41 @@ namespace Agilisium.TalentManager.Data.Repositories
 
         public void Update(SubPracticeDto entity)
         {
-            SubPractice SubPractice = ConvertToEntity(entity);
-            Entities.Add(SubPractice);
-            DataContext.Entry(SubPractice).State = EntityState.Modified;
+            SubPractice buzEntity = Entities.FirstOrDefault(s => s.SubPracticeID == entity.SubPracticeID);
+            MigrateEntity(entity, buzEntity);
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(buzEntity);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
-        private SubPractice ConvertToEntity(SubPracticeDto categoryDto, bool isNewEntity = false)
+        private SubPractice CreateBusinessEntity(SubPracticeDto subPracticeDto, bool isNewEntity = false)
         {
             SubPractice subPractice = new SubPractice
             {
-                PracticeID = categoryDto.PracticeID,
-                SubPracticeName = categoryDto.SubPracticeName,
-                ShortName = categoryDto.ShortName
+                PracticeID = subPracticeDto.PracticeID,
+                SubPracticeName = subPracticeDto.SubPracticeName,
+                ShortName = subPracticeDto.ShortName,
+                SubPracticeID = subPracticeDto.SubPracticeID
             };
 
-            if (isNewEntity == false)
-            {
-                subPractice.SubPracticeID = categoryDto.SubPracticeID;
-            }
-
+            subPractice.UpdateTimeStamp(subPracticeDto.LoggedInUserName, true);
             return subPractice;
+        }
+
+        private void MigrateEntity(SubPracticeDto sourceEntity, SubPractice targetEntity)
+        {
+            targetEntity.PracticeID = sourceEntity.PracticeID;
+            targetEntity.SubPracticeName = sourceEntity.SubPracticeName;
+            targetEntity.ShortName = sourceEntity.ShortName;
+            targetEntity.SubPracticeID = sourceEntity.SubPracticeID;
+            targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
     }
 
     public interface ISubPracticeRepository : IRepository<SubPracticeDto>
     {
-        IEnumerable<SubPracticeDto> GetAll(int practiceID);
+        IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID);
 
         bool Exists(string itemName, int id);
     }

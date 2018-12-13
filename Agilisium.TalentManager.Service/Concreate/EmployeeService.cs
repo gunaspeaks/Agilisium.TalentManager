@@ -20,14 +20,14 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Add(employee);
         }
 
-        public void Delete(int id)
+        public void Delete(EmployeeDto employee)
         {
-            repository.Delete(id);
+            repository.Delete(employee);
         }
 
-        public List<EmployeeDto> GetAllEmployees()
+        public List<EmployeeDto> GetAllEmployees(int pageSize = 0, int pageNo = -1)
         {
-            return repository.GetAll().ToList();
+            return repository.GetAll(pageSize, pageNo).ToList();
         }
 
         public EmployeeDto GetEmployee(int id)
@@ -58,6 +58,16 @@ namespace Agilisium.TalentManager.Service.Concreate
         public bool IsDuplicateEmployeeID(int employeeEntryID, string employeeID)
         {
             return repository.IsDuplicateEmployeeID(employeeEntryID, employeeID);
+        }
+
+        public string GenerateNewEmployeeID(int trackerID)
+        {
+            return repository.GenerateNewEmployeeID(trackerID);
+        }
+
+        public List<EmployeeDto> GetAllManagers()
+        {
+            return repository.GetAllManagers().ToList();
         }
     }
 }

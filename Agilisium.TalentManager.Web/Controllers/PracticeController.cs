@@ -106,7 +106,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
-                service.DeletePractice(id);
+                service.DeletePractice(new PracticeDto { PracticeID = id });
                 TempData["AlertMessage"] = "Practice has been deleted successfully";
                 return RedirectToAction("Index");
             }

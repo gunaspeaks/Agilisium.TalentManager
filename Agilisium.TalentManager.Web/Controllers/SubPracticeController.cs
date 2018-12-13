@@ -129,7 +129,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
-                subPracticeService.DeleteSubPractice(id);
+                subPracticeService.DeleteSubPractice(new SubPracticeDto { SubPracticeID = id });
                 TempData["AlertMessage"] = "Sub-Practice has been deleted successfully";
                 int practiceID = int.Parse(Session["SelectedPracticeID"].ToString());
                 return RedirectToAction("Index");

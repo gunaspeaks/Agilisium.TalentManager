@@ -29,6 +29,8 @@ namespace Agilisium.TalentManager.Model
 
         public DbSet<ProjectAllocation> ProjectAllocations { get; set; }
 
+        public DbSet<EmployeeIDTracker> EmployeeIDTrackers { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new PracticeEntityConfiguration());
@@ -38,6 +40,7 @@ namespace Agilisium.TalentManager.Model
             modelBuilder.Configurations.Add(new EmployeeEntityConfiguration());
             modelBuilder.Configurations.Add(new ProjectEntityConfiguration());
             modelBuilder.Configurations.Add(new ProjectAllocationEntityConfiguration());
+            modelBuilder.Configurations.Add(new EmployeeIDTrackerEntityConfiguration());
         }
     }
 }

@@ -1,11 +1,7 @@
 ﻿using Agilisium.TalentManager.Data.Repositories;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -23,9 +19,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Add(entity);
         }
 
-        public void Delete(int id)
+        public void Delete(ProjectAllocationDto entity)
         {
-            repository.Delete(id);
+            repository.Delete(entity);
         }
 
         public bool Exists(int empEntryID, int projectID)
@@ -48,9 +44,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(itemName);
         }
 
-        public IEnumerable<ProjectAllocationDto> GetAll()
+        public IEnumerable<ProjectAllocationDto> GetAll(int pageNo = -1)
         {
-            return repository.GetAll();
+            return repository.GetAll(pageNo);
         }
 
         public ProjectAllocationDto GetByID(int id)

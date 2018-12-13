@@ -21,7 +21,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         {
             ProjectAllocation allocation = Entities.FirstOrDefault(e => e.AllocationEntryID == entity.AllocationEntryID);
             allocation.IsDeleted = true;
-            allocation.UpdateEntityBase(entity.LoggedInUserName);
+            allocation.UpdateTimeStamp(entity.LoggedInUserName);
             DataContext.Entry(allocation).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
@@ -52,7 +52,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                     select a).Any();
         }
 
-        public IEnumerable<ProjectAllocationDto> GetAll()
+        public IEnumerable<ProjectAllocationDto> GetAll(int pageSize, int pageNo = -1)
         {
             return (from p in Entities
                     join em in DataContext.Employees on p.EmployeeID equals em.EmployeeEntryID into eme
@@ -100,6 +100,7 @@ namespace Agilisium.TalentManager.Data.Repositories
             ProjectAllocation buzEntity = Entities.FirstOrDefault(e => e.AllocationEntryID == entity.AllocationEntryID);
             MigrateEntity(entity, buzEntity);
             Entities.Add(buzEntity);
+            Entities.Add(buzEntity);
             DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
@@ -114,26 +115,22 @@ namespace Agilisium.TalentManager.Data.Repositories
                 EmployeeID = projectDto.EmployeeID,
                 ProjectID = projectDto.ProjectID,
                 PercentageOfAllocation = projectDto.PercentageOfAllocation,
+                AllocationEntryID = projectDto.AllocationEntryID
             };
 
-            if (isNewEntity == false)
-            {
-                entity.AllocationEntryID = projectDto.AllocationEntryID;
-            }
-
-            entity.UpdateEntityBase(projectDto.LoggedInUserName, isNewEntity: true);
+            entity.UpdateTimeStamp(projectDto.LoggedInUserName, isNewEntity: true);
             return entity;
         }
 
-        private void MigrateEntity(ProjectAllocationDto sourceEntity, ProjectAllocation destinationEntity)
+        private void MigrateEntity(ProjectAllocationDto sourceEntity, ProjectAllocation targetEntity)
         {
-            destinationEntity.AllocationEndDate = sourceEntity.AllocationEndDate;
-            destinationEntity.AllocationStartDate = sourceEntity.AllocationStartDate;
-            destinationEntity.AllocationTypeID = sourceEntity.AllocationTypeID;
-            destinationEntity.EmployeeID = sourceEntity.EmployeeID;
-            destinationEntity.ProjectID = sourceEntity.ProjectID;
-            destinationEntity.PercentageOfAllocation = sourceEntity.PercentageOfAllocation;
-            destinationEntity.UpdateEntityBase(sourceEntity.LoggedInUserName);
+            targetEntity.AllocationEndDate = sourceEntity.AllocationEndDate;
+            targetEntity.AllocationStartDate = sourceEntity.AllocationStartDate;
+            targetEntity.AllocationTypeID = sourceEntity.AllocationTypeID;
+            targetEntity.EmployeeID = sourceEntity.EmployeeID;
+            targetEntity.ProjectID = sourceEntity.ProjectID;
+            targetEntity.PercentageOfAllocation = sourceEntity.PercentageOfAllocation;
+            targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
 
         public int GetPercentageOfAllocation(int employeeID, int projectID)

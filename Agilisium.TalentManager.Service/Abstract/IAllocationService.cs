@@ -11,7 +11,7 @@ namespace Agilisium.TalentManager.Service.Abstract
     {
         void Add(ProjectAllocationDto entity);
 
-        void Delete(int id);
+        void Delete(ProjectAllocationDto entity);
 
         bool Exists(int empEntryID, int projectID);
 
@@ -21,7 +21,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(string itemName);
 
-        IEnumerable<ProjectAllocationDto> GetAll();
+        IEnumerable<ProjectAllocationDto> GetAll(int pageNo = -1);
 
         ProjectAllocationDto GetByID(int id);
 

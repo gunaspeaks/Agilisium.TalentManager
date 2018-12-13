@@ -67,13 +67,13 @@ namespace Agilisium.TalentManager.Web.Models
         public string SecondarySkills { get; set; }
 
         [DisplayName("Reporting Manager")]
-        public int? ReportingManagerID { get; set; }
+        public int ReportingManagerID { get; set; }
 
         [DisplayName("Reporting Manager")]
         public string ReportingManagerName { get; set; }
 
         [DisplayName("Project Manager")]
-        public int? ProjectManagerID { get; set; }
+        public int ProjectManagerID { get; set; }
 
         [DisplayName("Project Manager")]
         public string ProjectManagerName { get; set; }
@@ -84,5 +84,10 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Utilization Type")]
         public string UtilizationTypeName { get; set; }
 
+        [DisplayName("Employment Type")]
+        public int EmploymentTypeID { get; set; }
+
+        [DisplayName("Employment Type")]
+        public string EmploymentTypeName { get; set; }
     }
 }

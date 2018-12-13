@@ -23,9 +23,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Add(practice);
         }
 
-        public void DeletePractice(int id)
+        public void DeletePractice(PracticeDto practice)
         {
-            repository.Delete(id);
+            repository.Delete(practice);
         }
 
         public bool Exists(string practice)
@@ -43,9 +43,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(practiceName, id);
         }
 
-        public IEnumerable<PracticeDto> GetPractices()
+        public IEnumerable<PracticeDto> GetPractices(int pageSize, int pageNo = -1)
         {
-            return repository.GetAll();
+            return repository.GetAll(pageSize, pageNo);
         }
 
         public PracticeDto GetPractice(int id)

@@ -22,7 +22,7 @@ namespace Agilisium.TalentManager.Web.App_Start
 
         public DomainToViewModelMappingProfile()
         {
-            CreateMap<DropDownCategoryDto, CategoryViewModel>();
+            CreateMap<DropDownCategoryDto, CategoryModel>();
             CreateMap<DropDownSubCategoryDto, SubCategoryViewModel>();
             CreateMap<EmployeeDto, EmployeeViewModel>();
             CreateMap<PracticeDto, PracticeViewModel>();
@@ -38,7 +38,7 @@ namespace Agilisium.TalentManager.Web.App_Start
 
         public ViewModelToDomainMappingProfile()
         {
-            CreateMap<CategoryViewModel, DropDownCategoryDto>();
+            CreateMap<CategoryModel, DropDownCategoryDto>();
             CreateMap<SubCategoryViewModel, DropDownSubCategoryDto>();
             CreateMap<EmployeeViewModel, EmployeeDto>();
             CreateMap<PracticeViewModel, PracticeDto>();

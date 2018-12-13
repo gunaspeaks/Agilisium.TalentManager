@@ -1,7 +1,6 @@
 ﻿using Agilisium.TalentManager.Data.Abstract;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
-using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -12,42 +11,46 @@ namespace Agilisium.TalentManager.Data.Repositories
     {
         public void Add(DropDownSubCategoryDto entity)
         {
-            DropDownSubCategory subCategory = ConvertToEntity(entity, true);
+            DropDownSubCategory subCategory = CreateBusinessEntity(entity, true);
             Entities.Add(subCategory);
             DataContext.Entry(subCategory).State = EntityState.Added;
             DataContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(DropDownSubCategoryDto entity)
         {
-            DropDownSubCategory entity = Entities.FirstOrDefault(e => e.CategoryID == id);
-            Entities.Remove(entity);
-            DataContext.Entry(entity).State = EntityState.Deleted;
+            DropDownSubCategory subCategory = Entities.FirstOrDefault(e => e.SubCategoryID == entity.SubCategoryID);
+            subCategory.IsDeleted = true;
+            subCategory.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(subCategory);
+            DataContext.Entry(subCategory).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
         public bool Exists(string itemName, int id)
         {
-            return Entities.Any(c => c.SubCategoryName.ToLower() == itemName.ToLower() && c.SubCategoryID != id);
+            return Entities.Any(c => c.SubCategoryName.ToLower() == itemName.ToLower() &&
+            c.SubCategoryID != id && c.IsDeleted == false);
         }
 
-        public bool Exists(string itemName)
+        public bool Exists(string subCategoryName)
         {
-            return Entities.Any(c => c.SubCategoryName.ToLower() == itemName.ToLower());
+            return Entities.Any(c => c.SubCategoryName.ToLower() == subCategoryName.ToLower() && c.IsDeleted == false);
         }
 
         public bool Exists(int id)
         {
-            return Entities.Any(c => c.SubCategoryID == id);
+            return Entities.Any(c => c.SubCategoryID == id && c.IsDeleted == false);
 
         }
 
-        public IEnumerable<DropDownSubCategoryDto> GetAll()
+        public IEnumerable<DropDownSubCategoryDto> GetAll(int pageSize, int pageNo = -1)
         {
             return (from s in Entities
                     join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID into ce
                     from cd in ce.DefaultIfEmpty()
                     orderby s.SubCategoryName
+                    where s.IsDeleted == false && cd.IsDeleted == false
                     select new DropDownSubCategoryDto
                     {
                         SubCategoryID = s.SubCategoryID,
@@ -63,8 +66,9 @@ namespace Agilisium.TalentManager.Data.Repositories
         public DropDownSubCategoryDto GetByID(int id)
         {
             return (from s in Entities
-                    join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID
-                    where s.SubCategoryID == id
+                    join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID into ce
+                    from cd in ce.DefaultIfEmpty()
+                    where s.SubCategoryID == id && s.IsDeleted == false && cd.IsDeleted == false
                     select new DropDownSubCategoryDto
                     {
                         SubCategoryID = s.SubCategoryID,
@@ -72,7 +76,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                         CategoryID = s.CategoryID,
                         Description = s.Description,
                         ShortName = s.ShortName,
-                        CategoryName = c.CategoryName
+                        CategoryName = cd.CategoryName
                     }).FirstOrDefault();
         }
 
@@ -81,7 +85,7 @@ namespace Agilisium.TalentManager.Data.Repositories
             return (from s in Entities
                     join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID into ce
                     from cd in ce.DefaultIfEmpty()
-                    where s.CategoryID == categoryID
+                    where s.CategoryID == categoryID && s.IsDeleted == false && cd.IsDeleted == false
                     select new DropDownSubCategoryDto
                     {
                         SubCategoryID = s.SubCategoryID,
@@ -96,13 +100,15 @@ namespace Agilisium.TalentManager.Data.Repositories
 
         public void Update(DropDownSubCategoryDto entity)
         {
-            DropDownSubCategory subCategory = ConvertToEntity(entity, true);
-            Entities.Add(subCategory);
-            DataContext.Entry(subCategory).State = EntityState.Modified;
+            DropDownSubCategory buzEntity = Entities.FirstOrDefault(e => e.SubCategoryID == entity.SubCategoryID);
+            MigrateEntity(entity, buzEntity);
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(buzEntity);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
-        private DropDownSubCategory ConvertToEntity(DropDownSubCategoryDto subCategoryDto, bool isNewEntity = false)
+        private DropDownSubCategory CreateBusinessEntity(DropDownSubCategoryDto subCategoryDto, bool isNewEntity = false)
         {
             DropDownSubCategory category = new DropDownSubCategory
             {
@@ -110,17 +116,22 @@ namespace Agilisium.TalentManager.Data.Repositories
                 SubCategoryID = subCategoryDto.SubCategoryID,
                 SubCategoryName = subCategoryDto.SubCategoryName,
                 Description = subCategoryDto.Description,
-                ShortName = subCategoryDto.ShortName
+                ShortName = subCategoryDto.ShortName,
             };
 
-            if (isNewEntity == false)
-            {
-                category.SubCategoryID = subCategoryDto.SubCategoryID;
-            }
-
+            category.UpdateTimeStamp(subCategoryDto.LoggedInUserName, true);
             return category;
         }
 
+        private void MigrateEntity(DropDownSubCategoryDto sourceEntity, DropDownSubCategory targetEntity)
+        {
+            targetEntity.CategoryID = sourceEntity.CategoryID;
+            targetEntity.Description = sourceEntity.Description;
+            targetEntity.ShortName = sourceEntity.ShortName;
+            targetEntity.SubCategoryID = sourceEntity.SubCategoryID;
+            targetEntity.SubCategoryName = sourceEntity.SubCategoryName;
+            targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
+        }
     }
 
     public interface IDropDownSubCategoryRepository : IRepository<DropDownSubCategoryDto>

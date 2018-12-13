@@ -11,55 +11,58 @@ namespace Agilisium.TalentManager.Data.Repositories
     {
         public void Add(ProjectDto entity)
         {
-            Project project = ConvertToEntity(entity, true);
+            Project project = CreateBusinessEntity(entity, true);
             Entities.Add(project);
             DataContext.Entry(project).State = EntityState.Added;
             DataContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public void Delete(ProjectDto entity)
         {
-            Project entity = Entities.FirstOrDefault(e => e.ProjectID == id);
-            Entities.Remove(entity);
-            DataContext.Entry(entity).State = EntityState.Deleted;
+            Project buzEntity = Entities.FirstOrDefault(e => e.ProjectID == entity.ProjectID);
+            buzEntity.IsDeleted = true;
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(buzEntity);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
         public bool Exists(string itemName)
         {
-            return Entities.Any(p => p.ProjectName.ToLower() == itemName.ToLower());
+            return Entities.Any(p => p.ProjectName.ToLower() == itemName.ToLower() && p.IsDeleted == false);
         }
 
         public bool Exists(int id)
         {
-            return Entities.Any(p => p.ProjectID == id);
+            return Entities.Any(p => p.ProjectID == id && p.IsDeleted == false);
         }
 
         public bool Exists(int id, string projectName)
         {
-            return Entities.Any(p => p.ProjectID != id && p.ProjectName.ToLower() == projectName.ToLower());
+            return Entities.Any(p => p.ProjectID != id &&
+            p.ProjectName.ToLower() == projectName.ToLower() && p.IsDeleted == false);
         }
 
         public bool IsDuplicateProjectCode(string projectCode)
         {
-            return Entities.Any(p => p.ProjectCode.ToLower() == projectCode.ToLower());
+            return Entities.Any(p => p.ProjectCode.ToLower() == projectCode.ToLower() && p.IsDeleted == false);
         }
 
         public bool IsDuplicateProjectCode(string projectCode, int projectID)
         {
-            return Entities.Any(p => p.ProjectCode.ToLower() == projectCode.ToLower() && p.ProjectID != projectID);
+            return Entities.Any(p => p.ProjectCode.ToLower() == projectCode.ToLower() &&
+            p.ProjectID != projectID && p.IsDeleted == false);
         }
 
-        public IEnumerable<ProjectDto> GetAll()
+        public IEnumerable<ProjectDto> GetAll(int pageSize, int pageNo = -1)
         {
             return (from p in Entities
                     orderby p.ProjectName
+                    where p.IsDeleted == false
                     join dm in DataContext.Employees on p.DeliveryManagerID equals dm.EmployeeEntryID into dme
                     from dmd in dme.DefaultIfEmpty()
                     join pr in DataContext.Practices on p.PraticeID equals pr.PracticeID into pre
                     from prd in pre.DefaultIfEmpty()
-                    join pm in DataContext.Employees on p.ProjectManagerID equals pm.ProjectManagerID into pme
-                    from pmd in pme.DefaultIfEmpty()
                     join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
                     from ptd in pte.DefaultIfEmpty()
                     join sp in DataContext.SubPractices on p.SubPracticeID equals sp.SubPracticeID into spe
@@ -74,7 +77,6 @@ namespace Agilisium.TalentManager.Data.Repositories
                         ProjectCode = p.ProjectCode,
                         ProjectID = p.ProjectID,
                         ProjectManagerID = p.ProjectManagerID,
-                        ProjectManagerName = pmd.LastName + ", " + pmd.FirstName,
                         ProjectName = p.ProjectName,
                         ProjectTypeID = p.ProjectTypeID,
                         ProjectTypeName = ptd.SubCategoryName,
@@ -89,7 +91,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         {
             return (from p in Entities
                     orderby p.ProjectName
-                    where p.ProjectID == id
+                    where p.ProjectID == id && p.IsDeleted == false
                     select new ProjectDto
                     {
                         DeliveryManagerID = p.DeliveryManagerID,
@@ -108,14 +110,16 @@ namespace Agilisium.TalentManager.Data.Repositories
 
         public void Update(ProjectDto entity)
         {
-            Project project = ConvertToEntity(entity);
-            Entities.Add(project);
-            DataContext.Entry(project).State = EntityState.Modified;
+            Project buzEntity = Entities.FirstOrDefault(p => p.ProjectID == entity.ProjectID);
+            MigrateEntity(entity, buzEntity);
+            buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(buzEntity);
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
 
         }
 
-        private Project ConvertToEntity(ProjectDto projectDto, bool isNewEntity = false)
+        private Project CreateBusinessEntity(ProjectDto projectDto, bool isNewEntity = false)
         {
             Project entity = new Project
             {
@@ -128,15 +132,27 @@ namespace Agilisium.TalentManager.Data.Repositories
                 ProjectTypeID = projectDto.ProjectTypeID,
                 Remarks = projectDto.Remarks,
                 StartDate = projectDto.StartDate,
-                SubPracticeID = projectDto.SubPracticeID
+                SubPracticeID = projectDto.SubPracticeID,
+                ProjectID = projectDto.ProjectID
             };
 
-            if (isNewEntity == false)
-            {
-                entity.ProjectID = projectDto.ProjectID;
-            }
-
+            entity.UpdateTimeStamp(projectDto.LoggedInUserName, true);
             return entity;
+        }
+
+        private void MigrateEntity(ProjectDto sourceEntity, Project targetEntity)
+        {
+            targetEntity.DeliveryManagerID = sourceEntity.DeliveryManagerID;
+            targetEntity.EndDate = sourceEntity.EndDate;
+            targetEntity.PraticeID = sourceEntity.PraticeID;
+            targetEntity.ProjectCode = sourceEntity.ProjectCode;
+            targetEntity.ProjectManagerID = sourceEntity.ProjectManagerID;
+            targetEntity.ProjectName = sourceEntity.ProjectName;
+            targetEntity.ProjectTypeID = sourceEntity.ProjectTypeID;
+            targetEntity.Remarks = sourceEntity.Remarks;
+            targetEntity.StartDate = sourceEntity.StartDate;
+            targetEntity.SubPracticeID = sourceEntity.SubPracticeID;
+            targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
     }
 

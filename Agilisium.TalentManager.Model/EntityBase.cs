@@ -19,7 +19,7 @@ namespace Agilisium.TalentManager.Model
 
         public bool IsDeleted { get; set; }
 
-        public virtual void UpdateEntityBase(string userName, bool isNewEntity = false)
+        public virtual void UpdateTimeStamp(string userName, bool isNewEntity = false)
         {
             if (isNewEntity)
             {
