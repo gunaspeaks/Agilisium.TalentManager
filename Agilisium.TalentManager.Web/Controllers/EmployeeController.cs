@@ -203,7 +203,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private void GetOtherDropDownItems()
         {
-            List<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories();
+            IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetAll();
 
             List<SelectListItem> buListItems = (from c in buList
                                                 orderby c.SubCategoryName

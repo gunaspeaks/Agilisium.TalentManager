@@ -5,6 +5,11 @@ namespace Agilisium.TalentManager.Web.Helpers
 {
     public class BaseController : Controller
     {
+        private const string readErrorMessage = "Oops! an error has occured while retrieving the details";
+        private const string updateErrorMessage = "Oops! an error has occured while updating the details";
+        private const string deleteErrorMessage = "Oops! an error has occured while deleting the details";
+        private const string loadErrorMessage = "Oops! an error has occured while loading the page";
+
         public virtual void SendWarningMessage(string message)
         {
             TempData["WarningMessage"] = message;
@@ -18,6 +23,26 @@ namespace Agilisium.TalentManager.Web.Helpers
         public virtual void SendErrorMessage(string message)
         {
             TempData["ErrorMessage"] = message;
+        }
+
+        public virtual void SendReadErrorMessage()
+        {
+            SendErrorMessage(readErrorMessage);
+        }
+
+        public virtual void SendUpdateErrorMessage()
+        {
+            SendErrorMessage(updateErrorMessage);
+        }
+
+        public virtual void SendDeleteErrorMessage()
+        {
+            SendErrorMessage(deleteErrorMessage);
+        }
+
+        public virtual void SendLoadErrorMessage()
+        {
+            SendErrorMessage(loadErrorMessage);
         }
 
         public bool IsPaginationEnabled

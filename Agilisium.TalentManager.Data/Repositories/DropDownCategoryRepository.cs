@@ -43,7 +43,7 @@ namespace Agilisium.TalentManager.Data.Repositories
             return Entities.Any(c => c.CategoryID == categoryID && c.IsDeleted == false);
         }
 
-        public IEnumerable<DropDownCategoryDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<DropDownCategoryDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
             IQueryable<DropDownCategoryDto> categories = from c in Entities
                                                          orderby c.CategoryName
@@ -57,7 +57,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                                                              IsReserved = c.IsReserved
                                                          };
 
-            if (pageNo <= 0)
+            if (pageSize <= 0 || pageNo < 1)
             {
                 return categories;
             }
@@ -124,8 +124,8 @@ namespace Agilisium.TalentManager.Data.Repositories
 
         public bool IsReservedEntry(int categoryID)
         {
-            return Entities.Any(c => c.IsDeleted == false && 
-            c.CategoryID == categoryID && 
+            return Entities.Any(c => c.IsDeleted == false &&
+            c.CategoryID == categoryID &&
             c.IsReserved == true);
         }
     }

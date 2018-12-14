@@ -200,7 +200,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private void PrepareSubCategoriesDDItems()
         {
-            List<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories();
+            IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetAll();
 
             List<SelectListItem> projectTypeItems = (from c in buList
                                                      orderby c.SubCategoryName

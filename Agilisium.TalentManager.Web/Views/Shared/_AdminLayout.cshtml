@@ -35,7 +35,7 @@
                     @*
                     <li>@Html.ImageLink("Index", "Home", null, "~/content/images/Agilisium_Logo.jpg", "Agilisium", null, null)</li>*@
                     <li>@Html.ActionLink("Agilisium - Talent Manager", "Index", "Home")</li>
-                    @if (Request.Url.ToString().Contains("Employee"))
+                    @*@if (Request.Url.ToString().Contains("Employee"))
                     {
                     <li>@Html.ActionLink("Employees", "Index", "Employee", new { @style = "color:Yellow; font-size:large;" })</li>
                     }
@@ -60,7 +60,7 @@
                     else
                     {
                     <li>@Html.ActionLink("Project Allocations", "Index", "Allocation")</li>
-                    }
+                    }*@
 
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Categories <b class="caret"></b></a>
@@ -73,8 +73,8 @@
                     <li class="dropdown">
                         <a href="#" data-toggle="dropdown" class="dropdown-toggle">Practices <b class="caret"></b></a>
                         <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Practices", "Index", "Practice")</li>
-                            <li>@Html.ActionLink("Sub Practices", "Index", "SubPractice")</li>
+                            <li>@Html.ActionLink("Practices", "List", "Practice")</li>
+                            <li>@Html.ActionLink("Sub Practices", "List", "SubPractice")</li>
                         </ul>
                     </li>
                 </ul>
@@ -85,19 +85,19 @@
     <div>
         @if (TempData["SuccessMessage"] != null)
         {
-        <div style="font-weight:bold;color:darkgreen; border-bottom-width:1px; border-radius:25%; font-size:x-large; text-align:center" class="alert alert-success">
+        <div style="font-weight:bold;color:darkgreen; border-bottom-width:1px; border-radius:25%; font-size:large; text-align:center" class="alert alert-success">
             @TempData["SuccessMessage"]
         </div>
         }
         @if (TempData["WarningMessage"] != null)
         {
-        <div style="font-weight:bold;color:yellowgreen; border-bottom-width:1px; border-radius:25%; font-size:x-large; text-align:center" class="alert alert-warning">
+        <div style="font-weight:bold;color:yellowgreen; border-bottom-width:1px; border-radius:25%; font-size:large; text-align:center" class="alert alert-warning">
             @TempData["WarningMessage"]
         </div>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-        <div style="font-weight:bold;color:red; border-radius:25%; border-bottom-width:1px; font-size:x-large; text-align:center" class="alert alert-danger">
+        <div style="font-weight:bold;color:red; border-radius:25%; border-bottom-width:1px; font-size:large; text-align:center" class="alert alert-danger">
             @TempData["ErrorMessage"]
         </div>
         }

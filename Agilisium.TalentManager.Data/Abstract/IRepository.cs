@@ -17,7 +17,7 @@ namespace Agilisium.TalentManager.Data.Abstract
 
         T GetByID(int id);
 
-        IEnumerable<T> GetAll(int pageSize = 0, int pageNo = -1);
+        IEnumerable<T> GetAll(int pageSize = -1, int pageNo = -1);
 
         int TotalRecordsCount();
 

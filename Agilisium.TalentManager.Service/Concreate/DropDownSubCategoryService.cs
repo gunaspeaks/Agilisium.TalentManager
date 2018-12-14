@@ -35,9 +35,14 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(subCategoryName, id);
         }
 
-        public List<DropDownSubCategoryDto> GetSubCategories(int pageSize=0, int pageNo = -1)
+        public IEnumerable<DropDownSubCategoryDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return repository.GetAll(pageSize, pageNo).ToList();
+            return repository.GetAll(pageSize, pageNo);
+        }
+
+        public IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetSubCategories(categoryID, pageSize, pageNo).ToList();
         }
 
         public List<DropDownSubCategoryDto> GetSubCategories(int categoryID)
@@ -58,6 +63,21 @@ namespace Agilisium.TalentManager.Service.Concreate
         public void DeleteSubCategory(DropDownSubCategoryDto category)
         {
             repository.Delete(category);
+        }
+
+        public int TotalRecordsCount()
+        {
+            return repository.TotalRecordsCount();
+        }
+
+        public bool CanBeDeleted(int id)
+        {
+            return repository.CanBeDeleted(id);
+        }
+
+        public bool IsReservedEntry(int categoryID)
+        {
+            return repository.IsReservedEntry(categoryID);
         }
     }
 }

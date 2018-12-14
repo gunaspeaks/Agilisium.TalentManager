@@ -26,13 +26,16 @@ namespace Agilisium.TalentManager.Web.Controllers
             try
             {
                 viewModel.Categories = GetCategories(page);
-                viewModel.PagingInfo.TotalRecordsCount = service.TotalRecordsCount();
-                viewModel.PagingInfo.RecordsPerPage = RecordsPerPage;
-                viewModel.PagingInfo.CurentPageNo = page;
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = service.TotalRecordsCount(),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
             }
-            catch (Exception exp)
+            catch (Exception)
             {
-                SendErrorMessage(exp.Message);
+                SendLoadErrorMessage();
             }
 
             return View(viewModel);
@@ -63,9 +66,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                     return RedirectToAction("List");
                 }
             }
-            catch (Exception exp)
+            catch (Exception)
             {
-                SendErrorMessage(exp.Message);
+                SendUpdateErrorMessage();
             }
             return View(category);
         }
@@ -77,24 +80,24 @@ namespace Agilisium.TalentManager.Web.Controllers
             if (!id.HasValue)
             {
                 SendWarningMessage("Looks like, the ID is missing in your request");
-                return View(uiCategory);
-            }
-
-            if (!service.Exists(id.Value))
-            {
-                SendWarningMessage($"Sorry, We couldn't find the Category with ID: {id.Value}");
-                return View(uiCategory);
+                return RedirectToAction("List");
             }
 
             try
             {
+                if (!service.Exists(id.Value))
+                {
+                    SendWarningMessage($"Sorry, We couldn't find the Category with ID: {id.Value}");
+                    return RedirectToAction("List");
+                }
+
                 DropDownCategoryDto category = service.GetCategory(id.Value);
                 uiCategory = Mapper.Map<DropDownCategoryDto, CategoryModel>(category);
                 return View(uiCategory);
             }
-            catch (Exception exp)
+            catch (Exception)
             {
-                SendErrorMessage(exp.Message);
+                SendReadErrorMessage();
             }
 
             return View(uiCategory);
@@ -119,9 +122,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                     return RedirectToAction("List");
                 }
             }
-            catch (Exception exp)
+            catch (Exception)
             {
-                SendErrorMessage(exp.Message);
+                SendUpdateErrorMessage();
             }
             return View(category);
         }
@@ -137,22 +140,24 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             try
             {
-                if(service.CanBeDeleted(id.Value)==false)
+                if (service.CanBeDeleted(id.Value) == false)
                 {
-                    SendWarningMessage("You have some depending sub-categories under this category. So, you can't delete this category for now");
+                    SendWarningMessage("There are some dependencies with this Categories. So, you can't delete this for now");
+                    return RedirectToAction("List");
                 }
 
-                if (service.IsReservedEntry(id.Value) == false)
+                if (service.IsReservedEntry(id.Value))
                 {
-                    SendWarningMessage("Hey, why do you want to delete a Reserved Category. Please check with the system administrator");
+                    SendWarningMessage("Hey, why do you want to delete a Reserved Category. Please check with the system administrator.");
+                    return RedirectToAction("List");
                 }
 
                 service.DeleteCategory(new DropDownCategoryDto { CategoryID = id.Value });
                 SendSuccessMessage($"Category has been deleted successfully");
             }
-            catch (Exception exp)
+            catch (Exception)
             {
-                SendErrorMessage(exp.Message);
+                SendDeleteErrorMessage();
             }
             return RedirectToAction("List");
         }

@@ -1,4 +1,4 @@
-﻿@model Agilisium.TalentManager.Web.Models.SubCategoryViewModel
+﻿@model Agilisium.TalentManager.Web.Models.SubCategoryModel
 
 @{
     ViewBag.Title = "Create";
@@ -18,28 +18,31 @@
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
             @foreach (var property in ViewData.ModelMetadata.Properties)
             {
-                if (property.PropertyName != "SubCategoryID" && property.PropertyName != "CategoryName")
+                if (property.PropertyName != "SubCategoryID" &&
+                    property.PropertyName != "IsReserved" &&
+                    property.PropertyName != "CategoryName" &&
+                    property.PropertyName != "LoggedInUserName")
                 {
-            <div class="form-group">
-                <label>@(property.DisplayName ?? property.PropertyName) </label>
-                @if (property.PropertyName == "CategoryID")
-                {
-                    @Html.DropDownList("CategoryID", (IEnumerable<SelectListItem>)ViewData["CategoriesList"], null, new { @class = "form-control" });
-                }
-                else if (property.PropertyName == "Description")
-                {
-                    @Html.TextArea(property.PropertyName, null, new { @class = "form-control", rows = 2 })
-                }
-                else
-                {
-                    @Html.TextBox(property.PropertyName, null, new { @class = "form-control" })
-                }
-            </div>
+                    <div class="form-group">
+                        <label>@(property.DisplayName ?? property.PropertyName) </label>
+                        @if (property.PropertyName == "CategoryID")
+                        {
+                            @Html.DropDownList("CategoryID", (IEnumerable<SelectListItem>)ViewBag.CategoryListItems, null, new { @class = "form-control" });
+                        }
+                        else if (property.PropertyName == "Description")
+                        {
+                            @Html.TextArea(property.PropertyName, null, new { @class = "form-control", rows = 2 })
+                        }
+                        else
+                        {
+                            @Html.TextBox(property.PropertyName, null, new { @class = "form-control" })
+                        }
+                    </div>
                 }
             }
             <div class="panel-footer">
                 <input type="submit" value="Save" class="btn btn-primary" />
-                @Html.ActionLink("Cancel and Go Back", "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
             </div>
         </div>
     }

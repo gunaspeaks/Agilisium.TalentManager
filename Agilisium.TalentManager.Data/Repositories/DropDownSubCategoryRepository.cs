@@ -44,23 +44,30 @@ namespace Agilisium.TalentManager.Data.Repositories
 
         }
 
-        public IEnumerable<DropDownSubCategoryDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<DropDownSubCategoryDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return (from s in Entities
-                    join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID into ce
-                    from cd in ce.DefaultIfEmpty()
-                    orderby s.SubCategoryName
-                    where s.IsDeleted == false && cd.IsDeleted == false
-                    select new DropDownSubCategoryDto
-                    {
-                        SubCategoryID = s.SubCategoryID,
-                        SubCategoryName = s.SubCategoryName,
-                        CategoryID = s.CategoryID,
-                        Description = s.Description,
-                        ShortName = s.ShortName,
-                        CategoryName = cd.CategoryName,
-                        IsReserved = cd.IsReserved
-                    });
+            IQueryable<DropDownSubCategoryDto> subCategories = from s in Entities
+                                                               join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID into ce
+                                                               from cd in ce.DefaultIfEmpty()
+                                                               orderby s.SubCategoryName
+                                                               where s.IsDeleted == false
+                                                               select new DropDownSubCategoryDto
+                                                               {
+                                                                   SubCategoryID = s.SubCategoryID,
+                                                                   SubCategoryName = s.SubCategoryName,
+                                                                   CategoryID = s.CategoryID,
+                                                                   Description = s.Description,
+                                                                   ShortName = s.ShortName,
+                                                                   CategoryName = cd.CategoryName,
+                                                                   IsReserved = cd.IsReserved
+                                                               };
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return subCategories;
+            }
+
+            return subCategories.Skip((pageNo - 1) * pageSize).Take(pageSize);
         }
 
         public DropDownSubCategoryDto GetByID(int id)
@@ -80,7 +87,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                     }).FirstOrDefault();
         }
 
-        public IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID)
+        public IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize = -1, int pageNo = -1)
         {
             return (from s in Entities
                     join c in DataContext.DropDownCategories on s.CategoryID equals c.CategoryID into ce
@@ -106,6 +113,34 @@ namespace Agilisium.TalentManager.Data.Repositories
             Entities.Add(buzEntity);
             DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
+        }
+
+        public override bool CanBeDeleted(int id)
+        {
+            if (DataContext.Employees.Any(c => c.IsDeleted == false
+                && (c.BusinessUnitID == id || c.EmploymentTypeID == id || c.UtilizationTypeID == id)))
+            {
+                return false;
+            }
+            else if (DataContext.Projects.Any(p => p.IsDeleted == false && p.ProjectTypeID == id))
+            {
+                return false;
+            }
+            else if (DataContext.ProjectAllocations.Any(p => p.IsDeleted == false && p.AllocationTypeID == id))
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public bool IsReservedEntry(int subCategoryID)
+        {
+            return Entities.Any(c => c.IsDeleted == false &&
+            c.SubCategoryID == subCategoryID &&
+            c.IsReserved == true);
         }
 
         private DropDownSubCategory CreateBusinessEntity(DropDownSubCategoryDto subCategoryDto, bool isNewEntity = false)
@@ -136,8 +171,10 @@ namespace Agilisium.TalentManager.Data.Repositories
 
     public interface IDropDownSubCategoryRepository : IRepository<DropDownSubCategoryDto>
     {
-        IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID);
+        IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize = -1, int pageNo = -1);
 
         bool Exists(string itemName, int id);
+
+        bool IsReservedEntry(int subCategoryID);
     }
 }

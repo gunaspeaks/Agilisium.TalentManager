@@ -11,9 +11,9 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(string subCategoryName, int id);
 
-        List<DropDownSubCategoryDto> GetSubCategories(int pageSize = 0, int pageNo = -1);
+        IEnumerable<DropDownSubCategoryDto> GetAll(int pageSize = -1, int pageNo = -1);
 
-        List<DropDownSubCategoryDto> GetSubCategories(int categoryID);
+        IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize, int pageNo);
 
         DropDownSubCategoryDto GetSubCategory(int id);
 
@@ -22,5 +22,11 @@ namespace Agilisium.TalentManager.Service.Abstract
         void UpdateSubCategory(DropDownSubCategoryDto category);
 
         void DeleteSubCategory(DropDownSubCategoryDto category);
+
+        int TotalRecordsCount();
+
+        bool CanBeDeleted(int id);
+
+        bool IsReservedEntry(int categoryID);
     }
 }

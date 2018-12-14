@@ -1,36 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Models
 {
     public class SubCategoryViewModel : ViewModelBase
     {
-        public int SubCategoryID { get; set; }
+        public SubCategoryViewModel()
+        {
+            CategoryListItems = new List<SelectListItem>();
+            SubCategories = new List<SubCategoryModel>();
+        }
 
-        [DisplayName("Sub Category Name")]
-        [Required(ErrorMessage ="Sub Category Name is required", AllowEmptyStrings =false)]
-        [MaxLength(100, ErrorMessage = "Sub Category Name should not exceed 100 characters")]
-        public string SubCategoryName { get; set; }
+        public IEnumerable<SelectListItem> CategoryListItems { get; set; }
 
-        [DisplayName("Short Name")]
-        [Required(ErrorMessage = "Short Name is required", AllowEmptyStrings = false)]
-        [MaxLength(100, ErrorMessage = "Short Name should not exceed 10 characters")]
-        public string ShortName { get; set; }
+        public int SelectedCategoryID { get; set; }
 
-        [DataType(DataType.MultilineText)]
-        [MaxLength(500, ErrorMessage = "Description should not exceed 500 characters")]
-        public string Description { get; set; }
+        public PagingInfo PagingInfo { get; set; }
 
-        [Required(ErrorMessage ="Category is required")]
-        public int CategoryID { get; set; }
-
-        [DisplayName("Category Name")]
-        public string CategoryName { get; set; }
-
-        public bool IsReserved { get; set; }
+        public IEnumerable<SubCategoryModel> SubCategories { get; set; }
     }
 }
