@@ -1,6 +1,7 @@
 ﻿using Agilisium.TalentManager.Model.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Linq;
 
 namespace Agilisium.TalentManager.Model
 {
@@ -11,7 +12,9 @@ namespace Agilisium.TalentManager.Model
             GetCategories().ForEach(c => context.DropDownCategories.Add(c));
             GetSubCategories().ForEach(c => context.DropDownSubCategories.Add(c));
             GetPractices().ForEach(p => context.Practices.Add(p));
-            GetIDTracketEntries().ForEach(p => context.EmployeeIDTrackers.Add(p));
+            context.SaveChanges();
+
+            GetEmployeeIDTrackers(context).ForEach(e => context.EmployeeIDTrackers.Add(e));
             context.SaveChanges();
         }
 
@@ -20,7 +23,6 @@ namespace Agilisium.TalentManager.Model
             return new List<DropDownCategory>() {
                 new DropDownCategory
                 {
-                     CategoryID = 1,
                      CategoryName = "Business Unit",
                      Description = "Business Unit",
                      ShortName = "BU",
@@ -28,7 +30,6 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownCategory
                 {
-                     CategoryID = 2,
                      CategoryName = "Utilization Type",
                      Description = "Resource utilization types",
                      ShortName = "UT",
@@ -36,7 +37,6 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownCategory
                 {
-                     CategoryID = 3,
                      CategoryName = "Project Type",
                      Description = "Project Types",
                      ShortName = "PT",
@@ -44,7 +44,6 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownCategory
                 {
-                     CategoryID = 4,
                      CategoryName = "Employment Type",
                      Description = "Employment Types",
                      ShortName = "ET",
@@ -357,25 +356,32 @@ namespace Agilisium.TalentManager.Model
             };
         }
 
-        private static List<EmployeeIDTracker> GetIDTracketEntries()
+        private static List<EmployeeIDTracker> GetEmployeeIDTrackers(TalentManagerDataContext context)
         {
+            int? empTypeCategory = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Employment Type")?.CategoryID;
+            List<DropDownSubCategory> empTypes = context.DropDownSubCategories.Where(c => c.CategoryID == empTypeCategory).ToList();
+
+            int? contracEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Contract")?.SubCategoryID;
+            int? permanentEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Permanent")?.SubCategoryID;
+            int? internshipEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Internship")?.SubCategoryID;
+
             return new List<EmployeeIDTracker>
             {
                 new EmployeeIDTracker
                 {
-                    EmployeeTypeName = "Permanent",
+                    EmploymentTypeID = permanentEmpTypeID.Value,
                     IDPrefix = string.Empty,
                     RunningID = 10000
                 },
                 new EmployeeIDTracker
                 {
-                    EmployeeTypeName = "Internship",
+                    EmploymentTypeID = internshipEmpTypeID.Value,
                     IDPrefix = "CI",
                     RunningID = 1000
                 },
                 new EmployeeIDTracker
                 {
-                    EmployeeTypeName = "Contract",
+                    EmploymentTypeID = contracEmpTypeID.Value,
                     IDPrefix = "CE",
                     RunningID = 1000
                 }

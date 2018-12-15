@@ -38,12 +38,12 @@ namespace Agilisium.TalentManager.Web.Controllers
                 }
                 else
                 {
-                    SendWarningMessage("There are no Practices to display");
+                    DisplayWarningMessage("There are no Practices to display");
                 }
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
 
             return View(viewModel);
@@ -65,18 +65,18 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (service.Exists(practice.PracticeName))
                     {
-                        SendWarningMessage($"The Practice Name '{practice.PracticeName}' is duplicate");
+                        DisplayWarningMessage($"The Practice Name '{practice.PracticeName}' is duplicate");
                         return View(practice);
                     }
                     PracticeDto practiceModel = Mapper.Map<PracticeModel, PracticeDto>(practice);
                     service.CreatePractice(practiceModel);
-                    SendSuccessMessage($"New Practice '{practice.PracticeName}' has been stored successfully");
+                    DisplaySuccessMessage($"New Practice '{practice.PracticeName}' has been stored successfully");
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
             return View(practice);
         }
@@ -88,7 +88,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -96,7 +96,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (!service.Exists(id.Value))
                 {
-                    SendWarningMessage($"Sorry, We couldn't find the Practice with ID: {id.Value}");
+                    DisplayWarningMessage($"Sorry, We couldn't find the Practice with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
@@ -105,7 +105,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendReadErrorMessage(exp);
+                DisplayReadErrorMessage(exp);
             }
 
             return View(practice);
@@ -121,19 +121,19 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (service.Exists(practice.PracticeName, practice.PracticeID))
                     {
-                        SendWarningMessage($"Practice Name '{practice.PracticeName}' is duplicate");
+                        DisplayWarningMessage($"Practice Name '{practice.PracticeName}' is duplicate");
                         return View(practice);
                     }
 
                     PracticeDto practiceModel = Mapper.Map<PracticeModel, PracticeDto>(practice);
                     service.UpdatePractice(practiceModel);
-                    SendSuccessMessage($"Practice '{practice.PracticeName}' details have been modified successfully");
+                    DisplaySuccessMessage($"Practice '{practice.PracticeName}' details have been modified successfully");
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(practice);
         }
@@ -144,7 +144,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -152,22 +152,22 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (service.IsReservedEntry(id.Value))
                 {
-                    SendWarningMessage("Hey, why do you want to delete a Reserved Practice. Please check with the system administrator.");
+                    DisplayWarningMessage("Hey, why do you want to delete a Reserved Practice. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
                 if (service.CanBeDeleted(id.Value) == false)
                 {
-                    SendWarningMessage("There are some dependencies with this Practice. So, you can't delete this for now");
+                    DisplayWarningMessage("There are some dependencies with this Practice. So, you can't delete this for now");
                     return RedirectToAction("List");
                 }
 
                 service.DeletePractice(new PracticeDto { PracticeID = id.Value });
-                SendSuccessMessage("Practice has been deleted successfully");
+                DisplaySuccessMessage("Practice has been deleted successfully");
             }
             catch(Exception exp)
             {
-                SendDeleteErrorMessage(exp);
+                DisplayDeleteErrorMessage(exp);
             }
             return RedirectToAction("List");
         }

@@ -1,4 +1,4 @@
-﻿using Agilisium.TalentManager.Data.Repositories;
+﻿using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
 using System.Collections.Generic;
@@ -9,6 +9,11 @@ namespace Agilisium.TalentManager.Service.Concreate
     public class EmployeeService : IEmployeeService
     {
         private readonly IEmployeeRepository repository;
+
+        public bool Exists(int employeeEntryID)
+        {
+            return repository.Exists(employeeEntryID);
+        }
 
         public EmployeeService(IEmployeeRepository repository)
         {
@@ -68,6 +73,11 @@ namespace Agilisium.TalentManager.Service.Concreate
         public List<EmployeeDto> GetAllManagers()
         {
             return repository.GetAllManagers().ToList();
+        }
+
+        public int TotalRecordsCount()
+        {
+            return repository.TotalRecordsCount();
         }
     }
 }

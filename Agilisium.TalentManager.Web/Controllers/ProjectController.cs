@@ -31,7 +31,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Project
-        public ActionResult Index()
+        public ActionResult List()
         {
             IEnumerable<ProjectViewModel> projects = GetProjects();
             return View(projects);
@@ -241,12 +241,12 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private List<SelectListItem> GetEmployeesDDList()
         {
-            List<EmployeeViewModel> employeeModels = (List<EmployeeViewModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
+            List<EmployeeModel> employeeModels = (List<EmployeeModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
 
             if (employeeModels == null)
             {
                 List<EmployeeDto> employees = empService.GetAllEmployees();
-                employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeViewModel>>(employees);
+                employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeModel>>(employees);
                 CacheHelper.AddOrUpdateItem(UIConstants.EMPLOYEE_MODELS_LIST, employeeModels, HttpContext);
             }
 
@@ -257,7 +257,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             if (employeeModels != null)
             {
-                foreach (EmployeeViewModel item in employeeModels)
+                foreach (EmployeeModel item in employeeModels)
                 {
                     empDDList.Add(new SelectListItem
                     {

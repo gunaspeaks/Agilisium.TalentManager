@@ -4,7 +4,7 @@ using System;
 using System.Data.Entity;
 using System.Linq;
 
-namespace Agilisium.TalentManager.Data.Abstract
+namespace Agilisium.TalentManager.Repository.Abstract
 {
     public abstract class RepositoryBase<T> : IDisposable where T : EntityBase
     {

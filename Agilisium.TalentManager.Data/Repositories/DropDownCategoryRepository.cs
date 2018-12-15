@@ -1,11 +1,11 @@
-﻿using Agilisium.TalentManager.Data.Abstract;
+﻿using Agilisium.TalentManager.Repository.Abstract;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace Agilisium.TalentManager.Data.Repositories
+namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class DropDownCategoryRepository : RepositoryBase<DropDownCategory>, IDropDownCategoryRepository
     {

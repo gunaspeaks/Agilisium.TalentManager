@@ -1,11 +1,11 @@
-﻿using Agilisium.TalentManager.Data.Abstract;
-using Agilisium.TalentManager.Dto;
+﻿using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
+using Agilisium.TalentManager.Repository.Abstract;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace Agilisium.TalentManager.Data.Repositories
+namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class ProjectRepository : RepositoryBase<Project>, IProjectRepository
     {
@@ -54,37 +54,35 @@ namespace Agilisium.TalentManager.Data.Repositories
             p.ProjectID != projectID && p.IsDeleted == false);
         }
 
-        public IEnumerable<ProjectDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<ProjectDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return (from p in Entities
-                    orderby p.ProjectName
-                    where p.IsDeleted == false
-                    join dm in DataContext.Employees on p.DeliveryManagerID equals dm.EmployeeEntryID into dme
-                    from dmd in dme.DefaultIfEmpty()
-                    join pr in DataContext.Practices on p.PracticeID equals pr.PracticeID into pre
-                    from prd in pre.DefaultIfEmpty()
-                    join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
-                    from ptd in pte.DefaultIfEmpty()
-                    join sp in DataContext.SubPractices on p.SubPracticeID equals sp.SubPracticeID into spe
-                    from spd in spe.DefaultIfEmpty()
-                    select new ProjectDto
-                    {
-                        DeliveryManagerID = p.DeliveryManagerID,
-                        DeliveryManagerName = dmd.LastName + ", " + dmd.FirstName,
-                        EndDate = p.EndDate,
-                        PracticeName = prd.PracticeName,
-                        PraticeID = p.PracticeID,
-                        ProjectCode = p.ProjectCode,
-                        ProjectID = p.ProjectID,
-                        ProjectManagerID = p.ProjectManagerID,
-                        ProjectName = p.ProjectName,
-                        ProjectTypeID = p.ProjectTypeID,
-                        ProjectTypeName = ptd.SubCategoryName,
-                        SubPracticeID = p.SubPracticeID,
-                        Remarks = p.Remarks,
-                        StartDate = p.StartDate,
-                        SubPracticeName = spd.SubPracticeName
-                    });
+            IQueryable<ProjectDto> projects = from p in Entities
+                                              orderby p.ProjectName
+                                              where p.IsDeleted == false
+                                              join dm in DataContext.Employees on p.DeliveryManagerID equals dm.EmployeeEntryID into dme
+                                              from dmd in dme.DefaultIfEmpty()
+                                              join pr in DataContext.Practices on p.PracticeID equals pr.PracticeID into pre
+                                              from prd in pre.DefaultIfEmpty()
+                                              join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
+                                              from ptd in pte.DefaultIfEmpty()
+                                              select new ProjectDto
+                                              {
+                                                  ProjectID = p.ProjectID,
+                                                  DeliveryManagerName = dmd.LastName + ", " + dmd.FirstName,
+                                                  EndDate = p.EndDate,
+                                                  PracticeName = prd.PracticeName,
+                                                  ProjectCode = p.ProjectCode,
+                                                  ProjectName = p.ProjectName,
+                                                  ProjectTypeName = ptd.SubCategoryName,
+                                                  Remarks = p.Remarks,
+                                                  StartDate = p.StartDate,
+                                              };
+
+            if (pageSize < 0)
+            {
+                return projects;
+            }
+            return projects.Skip((pageNo - 1) * pageSize).Take(pageSize);
         }
 
         public ProjectDto GetByID(int id)

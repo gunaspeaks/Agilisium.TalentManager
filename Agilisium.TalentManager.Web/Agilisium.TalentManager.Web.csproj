@@ -253,8 +253,8 @@
     <Compile Include="Models\WidgetModels.cs" />
     <Compile Include="Models\AllocationViewModel.cs" />
     <Compile Include="Models\CategoryModel.cs" />
+    <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Models\EmployeeViewModel.cs" />
-    <Compile Include="Models\EmployeePageViewModel.cs" />
     <Compile Include="Models\EmployeeWidgetModel.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
@@ -345,7 +345,7 @@
     <Content Include="Views\SubCategory\List.cshtml" />
     <Content Include="Views\SubCategory\Create.cshtml" />
     <Content Include="Views\SubCategory\Edit.cshtml" />
-    <Content Include="Views\Employee\Index.cshtml" />
+    <Content Include="Views\Employee\List.cshtml" />
     <Content Include="Views\Home\EmployeesDashboard.cshtml" />
     <Content Include="Views\Home\AllocationsDashboard.cshtml" />
     <Content Include="Views\Employee\Create.cshtml" />
@@ -359,10 +359,10 @@
     <Content Include="Views\Employee\Edit.cshtml" />
     <Content Include="Views\Project\Create.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
-    <Content Include="Views\Project\Index.cshtml" />
+    <Content Include="Views\Project\List.cshtml" />
     <Content Include="Views\Allocation\Create.cshtml" />
     <Content Include="Views\Allocation\Edit.cshtml" />
-    <Content Include="Views\Allocation\Index.cshtml" />
+    <Content Include="Views\Allocation\List.cshtml" />
     <Content Include="Views\Menu\GenerateMenu.cshtml" />
     <Content Include="Views\Shared\_MenuLayout.cshtml" />
     <Content Include="Views\Default\Index.cshtml" />
@@ -386,9 +386,9 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Agilisium.TalentManager.Data\Agilisium.TalentManager.Data.csproj">
+    <ProjectReference Include="..\Agilisium.TalentManager.Data\Agilisium.TalentManager.Repository.csproj">
       <Project>{5cfe3b1b-f50d-4d49-9008-819f6f708f21}</Project>
-      <Name>Agilisium.TalentManager.Data</Name>
+      <Name>Agilisium.TalentManager.Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Agilisium.TalentManager.Dto\Agilisium.TalentManager.Dto.csproj">
       <Project>{210c185d-668e-4460-9df0-e96460a1ae81}</Project>

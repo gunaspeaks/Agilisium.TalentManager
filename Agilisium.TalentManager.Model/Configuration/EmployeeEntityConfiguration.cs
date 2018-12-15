@@ -20,7 +20,7 @@ namespace Agilisium.TalentManager.Model.Configuration
             Property(e => e.LastWorkingDay).IsOptional();
             Property(e => e.PrimarySkills).IsRequired().HasMaxLength(100);
             Property(e => e.SecondarySkills).IsOptional().HasMaxLength(100);
-            Property(e => e.ReportingManagerID).IsRequired();
+            Property(e => e.ReportingManagerID).IsOptional();
             Property(e => e.UtilizationTypeID).IsOptional();
             Property(e => e.SubPracticeID).IsOptional();
             Property(e => e.EmploymentTypeID).IsRequired();

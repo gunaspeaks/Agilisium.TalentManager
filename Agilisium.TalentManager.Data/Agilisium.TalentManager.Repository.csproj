@@ -7,8 +7,8 @@
     <ProjectGuid>{5CFE3B1B-F50D-4D49-9008-819F6F708F21}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Agilisium.TalentManager.Data</RootNamespace>
-    <AssemblyName>Agilisium.TalentManager.Data</AssemblyName>
+    <RootNamespace>Agilisium.TalentManager.Repository</RootNamespace>
+    <AssemblyName>Agilisium.TalentManager.Repository</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -58,9 +58,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Agilisium.TalentManager.Data\Agilisium.TalentManager.Data.csproj">
+    <ProjectReference Include="..\Agilisium.TalentManager.Data\Agilisium.TalentManager.Repository.csproj">
       <Project>{5cfe3b1b-f50d-4d49-9008-819f6f708f21}</Project>
-      <Name>Agilisium.TalentManager.Data</Name>
+      <Name>Agilisium.TalentManager.Repository</Name>
     </ProjectReference>
     <ProjectReference Include="..\Agilisium.TalentManager.Dto\Agilisium.TalentManager.Dto.csproj">
       <Project>{210c185d-668e-4460-9df0-e96460a1ae81}</Project>

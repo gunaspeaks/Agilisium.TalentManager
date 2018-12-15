@@ -29,34 +29,51 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Employee
-        public ActionResult Index()
+        public ActionResult List(int page = 1)
         {
-            List<EmployeeViewModel> employees = new List<EmployeeViewModel>();
+            EmployeeViewModel viewModel = new EmployeeViewModel();
+
             try
             {
-                employees = GetEmployees();
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = empService.TotalRecordsCount(),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Employees = GetEmployees(page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Employees to display");
+                }
             }
             catch (Exception exp)
             {
-                SendSuccessMessage(exp.Message);
+                DisplayLoadErrorMessage(exp);
             }
 
-            return View(employees);
+            return View(viewModel);
         }
 
         // GET: Employe/Create
         public ActionResult Create()
         {
-            EmployeeViewModel emp = new EmployeeViewModel();
+            EmployeeModel emp = new EmployeeModel()
+            {
+                DateOfJoin = DateTime.Now
+            };
 
             try
             {
-                InitializeAddUpdatePageData(-1);
-                emp = new EmployeeViewModel();
+                InitializePageData(-1);
             }
             catch (Exception exp)
             {
-                SendErrorMessage(exp.Message);
+                DisplayLoadErrorMessage(exp);
             }
 
             return View(emp);
@@ -64,95 +81,90 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         // POST: Employe/Create
         [HttpPost]
-        public ActionResult Create(EmployeeViewModel employee)
+        public ActionResult Create(EmployeeModel employee)
         {
+            InitializePageData(-1);
+
             try
             {
                 if (ModelState.IsValid)
                 {
-                    if (empService.IsDuplicateEmployeeID(employee.EmployeeID))
-                    {
-                        SendWarningMessage("I guess, the Employee ID is duplicate");
-                        return View(employee);
-                    }
-
                     if (empService.IsDuplicateName(employee.FirstName, employee.LastName))
                     {
-                        SendWarningMessage("There is already an Employee with the same First and Last Name");
+                        DisplayWarningMessage("There is already an Employee with the same First and Last Name");
                         return View(employee);
                     }
 
-                    EmployeeDto employeeDto = Mapper.Map<EmployeeViewModel, EmployeeDto>(employee);
+                    EmployeeDto employeeDto = Mapper.Map<EmployeeModel, EmployeeDto>(employee);
                     empService.Create(employeeDto);
-                    SendSuccessMessage("New Employee details have been stored successfully");
+                    DisplaySuccessMessage("New Employee details have been stored successfully");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendWarningMessage(exp.Message);
+                DisplayWarningMessage(exp.Message);
             }
-            return RedirectToAction("Index");
+            return View(employee);
         }
 
         // GET: Employe/Edit/5
         public ActionResult Edit(int? id)
         {
+            EmployeeModel empModel = new EmployeeModel();
+            InitializePageData(empModel.PracticeID, id.HasValue ? id.Value : -1);
+
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the employee ID is missing in your request");
-                return View(new EmployeeViewModel());
+                DisplayWarningMessage("Looks like, the employee ID is missing in your request");
+                return View(empModel);
             }
 
-            EmployeeViewModel empModel = new EmployeeViewModel();
             try
             {
-                EmployeeDto emp = empService.GetEmployee(id.Value);
 
-                if (emp == null)
+                if (!empService.Exists(id.Value))
                 {
-                    SendWarningMessage($"Sorry, We couldn't find the Employee with ID: {id.Value}");
-                    return View(new EmployeeViewModel());
+                    DisplayWarningMessage($"Sorry, we couldn't find the Employee with ID: {id.Value}");
+                    return View(empModel);
                 }
-                empModel = Mapper.Map<EmployeeDto, EmployeeViewModel>(emp);
-                InitializeAddUpdatePageData(empModel.PracticeID);
+
+                EmployeeDto emp = empService.GetEmployee(id.Value);
+                empModel = Mapper.Map<EmployeeDto, EmployeeModel>(emp);
             }
             catch (Exception exp)
             {
-                SendErrorMessage(exp.Message);
+                DisplayReadErrorMessage(exp);
             }
             return View(empModel);
         }
 
         // POST: Employe/Edit/5
         [HttpPost]
-        public ActionResult Edit(EmployeeViewModel employee)
+        public ActionResult Edit(EmployeeModel employee)
         {
             try
             {
+                InitializePageData(employee.PracticeID, employee.EmployeeEntryID);
                 if (ModelState.IsValid)
                 {
-                    if (empService.IsDuplicateEmployeeID(employee.EmployeeEntryID, employee.EmployeeID))
-                    {
-                        ModelState.AddModelError("", "I guess, the Employee ID is duplicate");
-                        return View(employee);
-                    }
-
                     if (empService.IsDuplicateName(employee.EmployeeEntryID, employee.FirstName, employee.LastName))
                     {
-                        ModelState.AddModelError("", "There is already an Employee with the same First and Last Name");
+                        DisplayWarningMessage("There is already an Employee with the same First and Last Name");
                         return View(employee);
                     }
 
-                    EmployeeDto employeeDto = Mapper.Map<EmployeeViewModel, EmployeeDto>(employee);
+                    EmployeeDto employeeDto = Mapper.Map<EmployeeModel, EmployeeDto>(employee);
                     empService.Update(employeeDto);
-                    TempData["AlertMessage"] = "Employee details have been Updated successfully";
+                    DisplaySuccessMessage("Employee details have been Updated successfully");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayUpdateErrorMessage(exp);
             }
-            return RedirectToAction("Index");
+            return View(employee);
         }
 
         // GET: Employe/Delete/5
@@ -161,42 +173,47 @@ namespace Agilisium.TalentManager.Web.Controllers
             if (!id.HasValue)
             {
                 ModelState.AddModelError("", "Looks like, the employee ID is missing in your request");
-                return View(new EmployeeViewModel());
+                return RedirectToAction("List");
             }
 
             try
             {
                 empService.Delete(new EmployeeDto { EmployeeEntryID = id.Value });
-                TempData["AlertMessage"] = "Employee details have been deleted successfully";
-                return RedirectToAction("Index");
+                DisplaySuccessMessage("Employee details have been deleted successfully");
+                return RedirectToAction("List");
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
-                return View();
+                DisplayDeleteErrorMessage(exp);
+                return RedirectToAction("List");
             }
         }
 
         [HttpPost]
-        public JsonResult SubPracticeList(int id)
+        public JsonResult GetSubPracticeList(int id)
         {
             return Json(GetSubPractices(id));
         }
 
-        private List<EmployeeViewModel> GetEmployees()
+        [HttpPost]
+        public string GenerateNewEmployeeID(int id)
         {
-            List<EmployeeDto> employees = empService.GetAllEmployees().ToList();
-            List<EmployeeViewModel> employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeViewModel>>(employees);
-            CacheHelper.AddOrUpdateItem(UIConstants.EMPLOYEE_MODELS_LIST, employeeModels, HttpContext);
+            return empService.GenerateNewEmployeeID(id);
+        }
+
+        private IEnumerable<EmployeeModel> GetEmployees(int pageNo)
+        {
+            IEnumerable<EmployeeDto> employees = empService.GetAllEmployees(RecordsPerPage, pageNo);
+            IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
 
             return employeeModels;
         }
 
-        private void InitializeAddUpdatePageData(int subPracticeID, int employeeID = -1)
+        private void InitializePageData(int subPracticeID = -1, int employeeID = -1)
         {
             ViewBag.IsNewEntry = true;
             GetPracticeList();
-            GetProjectManagersList(employeeID);
+            GetReportingManagersList(employeeID);
             GetSubPractices(subPracticeID);
             GetOtherDropDownItems();
         }
@@ -215,7 +232,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                 }).ToList();
 
             InsertDefaultListItem(buListItems);
-            ViewBag.BUsList = buListItems;
+            ViewBag.BuListItems = buListItems;
 
             List<SelectListItem> ucListItems = (from c in buList
                                                 orderby c.SubCategoryName
@@ -227,7 +244,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                 }).ToList();
 
             InsertDefaultListItem(ucListItems);
-            ViewBag.UtilizationTypesList = ucListItems;
+            ViewBag.UtilizationTypeListItems = ucListItems;
 
             List<SelectListItem> empTypeList = (from c in buList
                                                 orderby c.SubCategoryName
@@ -239,7 +256,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                 }).ToList();
 
             InsertDefaultListItem(empTypeList);
-            ViewBag.EmploymentTypesList = empTypeList;
+            ViewBag.EmploymentTypeListItems = empTypeList;
         }
 
         private void GetPracticeList()
@@ -253,7 +270,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                       Value = p.PracticeID.ToString()
                                                   }).ToList();
             InsertDefaultListItem(practiceItems);
-            ViewBag.PracticeList = practiceItems;
+            ViewBag.PracticeListItems = practiceItems;
         }
 
         private List<SelectListItem> GetSubPractices(int practiceID)
@@ -268,30 +285,30 @@ namespace Agilisium.TalentManager.Web.Controllers
                                            }).ToList();
 
             InsertDefaultListItem(ddList);
-            ViewBag.SubPracticesList = ddList;
+            ViewBag.SubPracticeListItems = ddList;
             return ddList;
         }
 
-        private void GetProjectManagersList(int employeeID)
+        private void GetReportingManagersList(int employeeID)
         {
             List<EmployeeDto> managers = empService.GetAllManagers();
 
             List<SelectListItem> empDDList = new List<SelectListItem>();
-            InsertDefaultListItem(empDDList);
 
             if (managers != null)
             {
-                foreach (EmployeeDto item in managers)
-                {
-                    empDDList.Add(new SelectListItem
-                    {
-                        Text = $"{item.LastName}, {item.FirstName}",
-                        Value = item.EmployeeEntryID.ToString()
-                    });
-                }
+                empDDList = (from e in managers
+                             where e.EmployeeEntryID != employeeID
+                             select new SelectListItem
+                             {
+                                 Text = $"{e.LastName}, {e.FirstName}",
+                                 Value = e.EmployeeEntryID.ToString()
+                             }).ToList();
             }
 
-            ViewBag.ProjectManagersList = empDDList;
+            InsertDefaultListItem(empDDList);
+
+            ViewBag.ReportingManagerListItems = empDDList;
         }
     }
 }

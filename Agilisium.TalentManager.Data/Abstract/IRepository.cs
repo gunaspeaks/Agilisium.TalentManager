@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Agilisium.TalentManager.Data.Abstract
+namespace Agilisium.TalentManager.Repository.Abstract
 {
     public interface IRepository<T> : IDisposable where T : class
     {

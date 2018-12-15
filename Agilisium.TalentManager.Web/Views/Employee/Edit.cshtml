@@ -1,4 +1,4 @@
-﻿@model Agilisium.TalentManager.Web.Models.EmployeeViewModel
+﻿@model Agilisium.TalentManager.Web.Models.EmployeeModel
 
 @{
     ViewBag.Title = "Edit Employee Details";
@@ -6,27 +6,37 @@
 }
 
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        if ($("#PracticeID").text() != "Please Select") {
+            loadSubPracticeDropDown();
+        }
+    })
+
     $(function () {
         $("#PracticeID").change(function (evt) {
-
             if ($("#PracticeID").text() != "Please Select") {
-
-                $.ajax({
-                    url: "/Employee/SubPracticeList",
-                    type: 'POST',
-                    data: { id: $("#PracticeID").val() },
-                    success: function (data) {
-                        $('#SubPracticeID').empty();
-                        $.each(data, function () {
-                            $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
-                        });
-                        ddlSubPractice.prop('disabled', false);
-                    },
-                    error: function (xhr) { alert('Error while loading the Sub Practice list'); }
-                });
+                loadSubPracticeItems();
             }
+        }
+    });
+
+    function loadSubPracticeItems() {
+        $.ajax({
+            url: "/Employee/SubPracticeList",
+            type: 'POST',
+            data: { id: $("#PracticeID").val() },
+            success: function (data) {
+                $('#SubPracticeID').empty();
+                $.each(data, function () {
+                    $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
+                });
+                ddlSubPractice.prop('disabled', false);
+            },
+            error: function (xhr) { alert('Error while loading the Sub Practice list'); }
         });
     });
+
 </script>
 
 <div class="panel panel-default">
@@ -40,14 +50,30 @@
         <div class="panel-body">
             @Html.ValidationSummary(false, "", new { @class = "text-danger" })
             <div>
-                <table style="width:80%">
+                <table style="width:80%;">
                     <tr>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.EmployeeID)
-                                @Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.LabelFor(model => model.EmploymentTypeID)
+                                @Html.HiddenFor(model => model.EmploymentTypeID)
+                                @Html.EditorFor(model => model.EmploymentTypeName, new { htmlAttributes = new { @class = "form-control", @readonly="true" } })
                             </div>
                         </td>
+                        <td>
+                            <div class="form-group">
+                                @Html.HiddenFor(model => model.EmployeeID, new { id = "empID" })
+                                @Html.LabelFor(model => model.EmployeeID)
+                                @Html.EditorFor(model => model.EmployeeID, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ReportingManagerID)
+                                @Html.DropDownListFor(model => model.ReportingManagerID, (IEnumerable<SelectListItem>)ViewBag.ReportingManagerListItems, null, new { @class = "form-control" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.FirstName)
@@ -60,24 +86,30 @@
                                 @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BusinessUnitID)
+                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewBag.BuListItems, null, new { @class = "form-control" })
+                            </div>
+                        </td>
                     </tr>
                     <tr>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.BusinessUnitID)
-                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewData["BuDDList"], null, new { @class = "form-control" })
+                                @Html.LabelFor(model => model.UtilizationTypeID)
+                                @Html.DropDownListFor(model => model.UtilizationTypeID, (IEnumerable<SelectListItem>)ViewBag.UtilizationTypeListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.PracticeID)
-                                @Html.DropDownListFor(model => model.PracticeID, (IEnumerable<SelectListItem>)ViewData["PracticeDDList"], null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.PracticeID, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.SubPracticeID)
-                                @Html.DropDownListFor(model => model.SubPracticeID, (IEnumerable<SelectListItem>)ViewData["SubPracticeDDList"], null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.SubPracticeID, (IEnumerable<SelectListItem>)ViewBag.SubPracticeListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -113,32 +145,12 @@
                         </td>
                         <td></td>
                     </tr>
-                    <tr>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ReportingManagerID)
-                                @Html.DropDownListFor(model => model.ReportingManagerID, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectManagerID)
-                                @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.UtilizationTypeID)
-                                @Html.DropDownListFor(model => model.UtilizationTypeID, (IEnumerable<SelectListItem>)ViewData["UtilizationTypeDDList"], null, new { @class = "form-control" })
-                            </div>
-                        </td>
-                    </tr>
                 </table>
             </div>
-            @Html.HiddenFor(model => model.EmployeeEntryID);
             <div class="panel-footer">
+                @Html.HiddenFor(model => model.EmployeeEntryID)
                 <input type="submit" value="Save" class="btn btn-primary" />
-                @Html.ActionLink("Cancel and Go Back", "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
             </div>
 
         </div>

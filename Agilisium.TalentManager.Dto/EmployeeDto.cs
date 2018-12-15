@@ -38,7 +38,7 @@ namespace Agilisium.TalentManager.Dto
 
         public string SecondarySkills { get; set; }
 
-        public int ReportingManagerID { get; set; }
+        public int? ReportingManagerID { get; set; }
 
         public string ReportingManagerName { get; set; }
 

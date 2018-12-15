@@ -1,11 +1,11 @@
-﻿using Agilisium.TalentManager.Data.Abstract;
-using Agilisium.TalentManager.Dto;
+﻿using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
+using Agilisium.TalentManager.Repository.Abstract;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
 
-namespace Agilisium.TalentManager.Data.Repositories
+namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
@@ -25,11 +25,17 @@ namespace Agilisium.TalentManager.Data.Repositories
         public EmployeeDto GetByID(int id)
         {
             return (from emp in Entities
-                    join pa in DataContext.ProjectAllocations on emp.EmployeeEntryID equals pa.EmployeeID into pae
-                    from pad in pae.DefaultIfEmpty()
-                    join p in DataContext.Projects on pad.ProjectID equals p.ProjectID into pe
-                    from pd in pe.DefaultIfEmpty()
-                    where emp.EmployeeEntryID == id && emp.IsDeleted == false
+                    join bc in DataContext.DropDownSubCategories on emp.BusinessUnitID equals bc.SubCategoryID into bue
+                    from bcd in bue.DefaultIfEmpty()
+                    join pc in DataContext.Practices on emp.PracticeID equals pc.PracticeID into pce
+                    from pcd in pce.DefaultIfEmpty()
+                    join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
+                    from utd in ute.DefaultIfEmpty()
+                    join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
+                    from etd in ete.DefaultIfEmpty()
+                    join pm in DataContext.Employees on emp.EmployeeEntryID equals pm.EmployeeEntryID into pme
+                    from pmd in pme.DefaultIfEmpty()
+                    where emp.EmployeeEntryID == id
                     select new EmployeeDto
                     {
                         BusinessUnitID = emp.BusinessUnitID,
@@ -42,16 +48,18 @@ namespace Agilisium.TalentManager.Data.Repositories
                         LastWorkingDay = emp.LastWorkingDay,
                         PracticeID = emp.PracticeID,
                         PrimarySkills = emp.PrimarySkills,
-                        ProjectManagerID = pd.ProjectManagerID,
+                        ProjectManagerID = pmd.EmployeeEntryID,
+                        ProjectManagerName = pmd.LastName + ", " + pmd.FirstName,
                         ReportingManagerID = emp.ReportingManagerID,
                         SecondarySkills = emp.SecondarySkills,
                         SubPracticeID = emp.SubPracticeID,
                         UtilizationTypeID = emp.UtilizationTypeID,
                         EmploymentTypeID = emp.EmploymentTypeID,
+                        EmploymentTypeName = etd.SubCategoryName
                     }).FirstOrDefault();
         }
 
-        public IEnumerable<EmployeeDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<EmployeeDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
             IQueryable<EmployeeDto> employees = from emp in Entities
                                                 join bc in DataContext.DropDownSubCategories on emp.BusinessUnitID equals bc.SubCategoryID into bue
@@ -61,8 +69,9 @@ namespace Agilisium.TalentManager.Data.Repositories
                                                 join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
                                                 from utd in ute.DefaultIfEmpty()
                                                 join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
-                                                from etd in bue.DefaultIfEmpty()
+                                                from etd in ete.DefaultIfEmpty()
                                                 where emp.IsDeleted == false
+                                                orderby emp.FirstName, emp.LastName
                                                 select new EmployeeDto
                                                 {
                                                     BusinessUnitName = bcd.SubCategoryName,
@@ -77,7 +86,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                                                     EmploymentTypeName = etd.SubCategoryName
                                                 };
 
-            if (pageNo <= 0)
+            if (pageSize <= 0 || pageNo < 1)
             {
                 return employees;
             }
@@ -129,7 +138,7 @@ namespace Agilisium.TalentManager.Data.Repositories
             buzEntity.IsDeleted = true;
             buzEntity.UpdateTimeStamp(entity.LoggedInUserName);
             Entities.Add(buzEntity);
-            DataContext.Entry(entity).State = EntityState.Modified;
+            DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
@@ -189,30 +198,38 @@ namespace Agilisium.TalentManager.Data.Repositories
         {
             string employeeID = string.Empty;
 
-            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.TrackerID == employeeTypeID);
+            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeTypeID);
             bool isDuplicate = true;
 
             int runningID = tracker.RunningID;
+            int newRunningID = tracker.RunningID;
             string idPrefix = tracker.IDPrefix.ToLower();
             while (isDuplicate)
             {
-                runningID += 1;
-                string runningNumber = runningID.ToString().Substring(1);
+                string runningNumber = newRunningID.ToString().Substring(1);
                 employeeID = $"{tracker.IDPrefix}{runningNumber}";
+
                 if (!Entities.Any(e => e.EmployeeID.ToLower() == employeeID))
                 {
                     isDuplicate = false;
                 }
+                else
+                {
+                    newRunningID += 1;
+                }
             }
 
-            UpdateEmployeeIDTracker(employeeTypeID, runningID);
+            if (runningID != newRunningID)
+            {
+                UpdateEmployeeIDTracker(employeeTypeID, runningID);
+            }
 
             return employeeID;
         }
 
         private void UpdateEmployeeIDTracker(int trackerID, int runningID)
         {
-            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.TrackerID == trackerID);
+            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == trackerID);
             tracker.RunningID = runningID;
             DataContext.EmployeeIDTrackers.Add(tracker);
             DataContext.Entry(tracker).State = EntityState.Modified;
@@ -222,7 +239,8 @@ namespace Agilisium.TalentManager.Data.Repositories
         public IEnumerable<EmployeeDto> GetAllManagers()
         {
             return (from emp in Entities
-                    where (emp.PracticeID == PM_PRACTICE_ID || emp.PracticeID == DM_PRACTICE_ID) && emp.IsDeleted == false
+                    where (emp.PracticeID == PM_PRACTICE_ID || emp.PracticeID == DM_PRACTICE_ID)
+                    && emp.IsDeleted == false
                     orderby emp.FirstName, emp.LastName
                     select new EmployeeDto
                     {

@@ -64,17 +64,17 @@ namespace Agilisium.TalentManager.Web.Controllers
                     string practiceName = practiceService.GetPracticeName(model.SelectedPracticeID);
                     if (string.IsNullOrEmpty(practiceName))
                     {
-                        SendWarningMessage("Hey, please check whether you are trying to access the correct Practice.");
+                        DisplayWarningMessage("Hey, please check whether you are trying to access the correct Practice.");
                     }
                     else
                     {
-                        SendWarningMessage($"There are no Sub-Practices found for Practice '{practiceName}'");
+                        DisplayWarningMessage($"There are no Sub-Practices found for Practice '{practiceName}'");
                     }
                 }
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
 
             return View(model);
@@ -89,7 +89,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
             return View(new SubPracticeModel());
         }
@@ -106,13 +106,13 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (subPracticeService.Exists(subPractice.SubPracticeName))
                     {
-                        SendWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
+                        DisplayWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
                         return View(subPractice);
                     }
 
                     SubPracticeDto subPracticeModel = Mapper.Map<SubPracticeModel, SubPracticeDto>(subPractice);
                     subPracticeService.CreateSubPractice(subPracticeModel);
-                    SendSuccessMessage($"New Sub-Practice '{subPractice.SubPracticeName}' has been stored successfully");
+                    DisplaySuccessMessage($"New Sub-Practice '{subPractice.SubPracticeName}' has been stored successfully");
                     Session["SelectedPracticeID"] = subPractice.PracticeID.ToString();
                     return RedirectToAction("List");
                 }
@@ -120,7 +120,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(subPractice);
         }
@@ -132,7 +132,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -140,7 +140,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (!subPracticeService.Exists(id.Value))
                 {
-                    SendWarningMessage($"Sorry, We couldn't find the Sub-Practice with ID: {id.Value}");
+                    DisplayWarningMessage($"Sorry, We couldn't find the Sub-Practice with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
@@ -151,7 +151,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendReadErrorMessage(exp);
+                DisplayReadErrorMessage(exp);
             }
 
             return View(uiPractice);
@@ -169,20 +169,20 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (subPracticeService.Exists(subPractice.SubPracticeName, subPractice.SubPracticeID))
                     {
-                        SendWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
+                        DisplayWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
                         return View(subPractice);
                     }
 
                     SubPracticeDto subPracticeDto = Mapper.Map<SubPracticeModel, SubPracticeDto>(subPractice);
                     subPracticeService.UpdateSubPractice(subPracticeDto);
-                    SendSuccessMessage("Sub-Practice has been updated successfully");
+                    DisplaySuccessMessage("Sub-Practice has been updated successfully");
                     Session["SelectedPracticeID"] = subPractice.PracticeID.ToString();
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(subPractice);
         }
@@ -193,7 +193,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -201,17 +201,17 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (subPracticeService.CanBeDeleted(id.Value) == false)
                 {
-                    SendWarningMessage("There are some dependencies with this Sub-Practice. So, you can't delete this for now.");
+                    DisplayWarningMessage("There are some dependencies with this Sub-Practice. So, you can't delete this for now.");
                     return RedirectToAction("List");
                 }
 
                 subPracticeService.DeleteSubPractice(new SubPracticeDto { SubPracticeID = id.Value });
-                SendSuccessMessage("Sub-Practice has been deleted successfully");
+                DisplaySuccessMessage("Sub-Practice has been deleted successfully");
                 return RedirectToAction("List");
             }
             catch (Exception exp)
             {
-                SendDeleteErrorMessage(exp);
+                DisplayDeleteErrorMessage(exp);
             }
             return RedirectToAction("List");
         }

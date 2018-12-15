@@ -64,17 +64,17 @@ namespace Agilisium.TalentManager.Web.Controllers
                     string categoryName = categoryService.GetCategoryName(model.SelectedCategoryID);
                     if (string.IsNullOrEmpty(categoryName))
                     {
-                        SendWarningMessage("Hey, please check whether you are trying to access the correct Category.");
+                        DisplayWarningMessage("Hey, please check whether you are trying to access the correct Category.");
                     }
                     else
                     {
-                        SendWarningMessage($"There are no Sub-Categories found for Category '{categoryName}'");
+                        DisplayWarningMessage($"There are no Sub-Categories found for Category '{categoryName}'");
                     }
                 }
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
 
             return View(model);
@@ -89,7 +89,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
             return View(new SubCategoryModel());
         }
@@ -106,20 +106,20 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (subCategoryService.Exists(subCategory.SubCategoryName))
                     {
-                        SendWarningMessage($"Sub-Category Name '{subCategory.SubCategoryName}' is duplicate");
+                        DisplayWarningMessage($"Sub-Category Name '{subCategory.SubCategoryName}' is duplicate");
                         return View(subCategory);
                     }
 
                     DropDownSubCategoryDto subCategoryModel = Mapper.Map<SubCategoryModel, DropDownSubCategoryDto>(subCategory);
                     subCategoryService.CreateSubCategory(subCategoryModel);
-                    SendSuccessMessage($"New Sub-Category '{subCategory.SubCategoryName}' has been stored successfully");
+                    DisplaySuccessMessage($"New Sub-Category '{subCategory.SubCategoryName}' has been stored successfully");
                     Session["SelectedCategoryID"] = subCategory.CategoryID.ToString();
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(subCategory);
         }
@@ -131,7 +131,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -139,7 +139,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (!subCategoryService.Exists(id.Value))
                 {
-                    SendWarningMessage($"Sorry, We couldn't find the Sub-Category with ID: {id.Value}");
+                    DisplayWarningMessage($"Sorry, We couldn't find the Sub-Category with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
@@ -150,7 +150,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendReadErrorMessage(exp);
+                DisplayReadErrorMessage(exp);
             }
 
             return View(uiCategory);
@@ -169,20 +169,20 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (subCategoryService.Exists(subCategory.SubCategoryName, subCategory.SubCategoryID))
                     {
-                        SendWarningMessage($"Sub-Category Name '{subCategory.SubCategoryName}' is duplicate");
+                        DisplayWarningMessage($"Sub-Category Name '{subCategory.SubCategoryName}' is duplicate");
                         return View(subCategory);
                     }
 
                     DropDownSubCategoryDto subCategoryDto = Mapper.Map<SubCategoryModel, DropDownSubCategoryDto>(subCategory);
                     subCategoryService.UpdateSubCategory(subCategoryDto);
-                    SendSuccessMessage("Sub-Category has been updated successfully");
+                    DisplaySuccessMessage("Sub-Category has been updated successfully");
                     Session["SelectedCategoryID"] = subCategory.CategoryID.ToString();
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(subCategory);
         }
@@ -193,7 +193,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -201,22 +201,22 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (subCategoryService.IsReservedEntry(id.Value))
                 {
-                    SendWarningMessage("Hey, why do you want to delete a Reserved Sub-Category. Please check with the system administrator.");
+                    DisplayWarningMessage("Hey, why do you want to delete a Reserved Sub-Category. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
                 if (subCategoryService.CanBeDeleted(id.Value) == false)
                 {
-                    SendWarningMessage("There are some dependencies with this Sub-Category. So, you can't delete this for now.");
+                    DisplayWarningMessage("There are some dependencies with this Sub-Category. So, you can't delete this for now.");
                     return RedirectToAction("List");
                 }
 
                 subCategoryService.DeleteSubCategory(new DropDownSubCategoryDto { SubCategoryID = id.Value });
-                SendSuccessMessage("Sub-Category has been deleted successfully");
+                DisplaySuccessMessage("Sub-Category has been deleted successfully");
             }
             catch (Exception exp)
             {
-                SendDeleteErrorMessage(exp);
+                DisplayDeleteErrorMessage(exp);
             }
             return RedirectToAction("List");
         }

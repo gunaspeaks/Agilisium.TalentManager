@@ -11,7 +11,7 @@ namespace Agilisium.TalentManager.Model.Configuration
             HasKey(p => p.TrackerID);
 
             Property(p => p.TrackerID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
-            Property(p => p.EmployeeTypeName).IsRequired().HasMaxLength(50);
+            Property(p => p.EmploymentTypeID).IsRequired();
             Property(p => p.IDPrefix).IsRequired().HasMaxLength(5);
             Property(p => p.RunningID).IsRequired();
 

@@ -1,4 +1,4 @@
-﻿using Agilisium.TalentManager.Data.Repositories;
+﻿using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Service.Concreate;
 using Autofac;
 using Autofac.Integration.Mvc;

@@ -28,7 +28,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Project
-        public ActionResult Index()
+        public ActionResult List()
         {
             IEnumerable<AllocationViewModel> allocations = GetAllocations();
             return View(allocations);
@@ -64,7 +64,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 ModelState.AddModelError("", exp.Message);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("List");
         }
 
         // GET: Project/Edit/5
@@ -119,7 +119,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 ModelState.AddModelError("", exp.Message);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("List");
         }
 
         // GET: Project/Delete/5
@@ -135,7 +135,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 allocationService.Delete(new ProjectAllocationDto { AllocationEntryID = id.Value });
                 TempData["AlertMessage"] = "Allocation details have been removed successfully";
-                return RedirectToAction("Index");
+                return RedirectToAction("List");
             }
             catch (Exception exp)
             {
@@ -183,12 +183,12 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private List<SelectListItem> GetEmployeesDDList()
         {
-            List<EmployeeViewModel> employeeModels = (List<EmployeeViewModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
+            List<EmployeeModel> employeeModels = (List<EmployeeModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
 
             if (employeeModels == null)
             {
                 List<EmployeeDto> employees = empService.GetAllEmployees();
-                employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeViewModel>>(employees);
+                employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeModel>>(employees);
                 CacheHelper.AddOrUpdateItem(UIConstants.EMPLOYEE_MODELS_LIST, employeeModels, HttpContext);
             }
 
@@ -199,7 +199,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             if (employeeModels != null)
             {
-                foreach (EmployeeViewModel item in employeeModels)
+                foreach (EmployeeModel item in employeeModels)
                 {
                     empDDList.Add(new SelectListItem
                     {

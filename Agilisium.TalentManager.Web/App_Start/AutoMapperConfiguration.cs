@@ -24,7 +24,7 @@ namespace Agilisium.TalentManager.Web.App_Start
         {
             CreateMap<DropDownCategoryDto, CategoryModel>();
             CreateMap<DropDownSubCategoryDto, SubCategoryModel>();
-            CreateMap<EmployeeDto, EmployeeViewModel>();
+            CreateMap<EmployeeDto, EmployeeModel>();
             CreateMap<PracticeDto, PracticeModel>();
             CreateMap<SubPracticeDto, SubPracticeModel>();
             CreateMap<ProjectDto, ProjectViewModel>();
@@ -40,7 +40,7 @@ namespace Agilisium.TalentManager.Web.App_Start
         {
             CreateMap<CategoryModel, DropDownCategoryDto>();
             CreateMap<SubCategoryModel, DropDownSubCategoryDto>();
-            CreateMap<EmployeeViewModel, EmployeeDto>();
+            CreateMap<EmployeeModel, EmployeeDto>();
             CreateMap<PracticeModel, PracticeDto>();
             CreateMap<SubPracticeModel, SubPracticeDto>();
             CreateMap<ProjectViewModel, ProjectDto>();

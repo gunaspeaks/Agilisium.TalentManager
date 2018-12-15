@@ -9,6 +9,8 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         EmployeeDto GetEmployee(int id);
 
+        bool Exists(int employeeEntryID);
+
         void Create(EmployeeDto employee);
 
         void Update(EmployeeDto employee);
@@ -26,5 +28,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         string GenerateNewEmployeeID(int trackerID);
 
         List<EmployeeDto> GetAllManagers();
+
+        int TotalRecordsCount();
     }
 }

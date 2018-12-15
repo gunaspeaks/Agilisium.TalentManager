@@ -1,4 +1,4 @@
-﻿using Agilisium.TalentManager.Data.Repositories;
+﻿using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
 using System.Collections.Generic;

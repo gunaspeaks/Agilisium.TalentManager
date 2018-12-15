@@ -11,17 +11,17 @@ namespace Agilisium.TalentManager.Web.Helpers
         private const string deleteErrorMessage = "Oops! an error has occured while deleting the details";
         private const string loadErrorMessage = "Oops! an error has occured while loading the page";
 
-        public virtual void SendWarningMessage(string message)
+        public virtual void DisplayWarningMessage(string message)
         {
             TempData["WarningMessage"] = message;
         }
 
-        public virtual void SendSuccessMessage(string message)
+        public virtual void DisplaySuccessMessage(string message)
         {
             TempData["SuccessMessage"] = message;
         }
 
-        public virtual void SendErrorMessage(string message, Exception exp = null)
+        public virtual void DisplayErrorMessage(string message, Exception exp = null)
         {
             TempData["ErrorMessage"] = message;
 
@@ -29,33 +29,33 @@ namespace Agilisium.TalentManager.Web.Helpers
             // Error logging
         }
 
-        public virtual void SendReadErrorMessage(Exception exp)
+        public virtual void DisplayReadErrorMessage(Exception exp)
         {
-            SendErrorMessage(readErrorMessage);
+            DisplayErrorMessage(readErrorMessage);
 
             // TODO
             // Error logging
         }
 
-        public virtual void SendUpdateErrorMessage(Exception exp)
+        public virtual void DisplayUpdateErrorMessage(Exception exp)
         {
-            SendErrorMessage(updateErrorMessage);
+            DisplayErrorMessage(updateErrorMessage);
 
             // TODO
             // Error logging
         }
 
-        public virtual void SendDeleteErrorMessage(Exception exp)
+        public virtual void DisplayDeleteErrorMessage(Exception exp)
         {
-            SendErrorMessage(deleteErrorMessage);
+            DisplayErrorMessage(deleteErrorMessage);
 
             // TODO
             // Error logging
         }
 
-        public virtual void SendLoadErrorMessage(Exception exp)
+        public virtual void DisplayLoadErrorMessage(Exception exp)
         {
-            SendErrorMessage(loadErrorMessage);
+            DisplayErrorMessage(loadErrorMessage);
 
             // TODO
             // Error logging

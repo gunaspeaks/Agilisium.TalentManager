@@ -4,7 +4,7 @@
     {
         public int TrackerID { get; set; }
 
-        public string EmployeeTypeName { get; set; }
+        public int EmploymentTypeID { get; set; }
 
         public string IDPrefix { get; set; }
 

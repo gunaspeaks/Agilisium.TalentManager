@@ -38,12 +38,12 @@ namespace Agilisium.TalentManager.Web.Controllers
                 }
                 else
                 {
-                    SendWarningMessage("There are no Categories to display");
+                    DisplayWarningMessage("There are no Categories to display");
                 }
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage(exp);
+                DisplayLoadErrorMessage(exp);
             }
 
             return View(viewModel);
@@ -65,18 +65,18 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (service.Exists(category.CategoryName))
                     {
-                        SendWarningMessage($"The Category Name '{category.CategoryName}' is duplicate");
+                        DisplayWarningMessage($"The Category Name '{category.CategoryName}' is duplicate");
                         return View(category);
                     }
                     DropDownCategoryDto categoryModel = Mapper.Map<CategoryModel, DropDownCategoryDto>(category);
                     service.CreateCategory(categoryModel);
-                    SendSuccessMessage($"New Category '{category.CategoryName}' has been stored successfully");
+                    DisplaySuccessMessage($"New Category '{category.CategoryName}' has been stored successfully");
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(category);
         }
@@ -87,7 +87,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             CategoryModel uiCategory = new CategoryModel();
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -95,7 +95,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (!service.Exists(id.Value))
                 {
-                    SendWarningMessage($"Sorry, We couldn't find the Category with ID: {id.Value}");
+                    DisplayWarningMessage($"Sorry, We couldn't find the Category with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
@@ -104,7 +104,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendReadErrorMessage(exp);
+                DisplayReadErrorMessage(exp);
             }
 
             return View(uiCategory);
@@ -120,18 +120,18 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (service.Exists(category.CategoryName, category.CategoryID))
                     {
-                        SendWarningMessage($"Category Name '{category.CategoryName}' is duplicate");
+                        DisplayWarningMessage($"Category Name '{category.CategoryName}' is duplicate");
                         return View(category);
                     }
                     DropDownCategoryDto categoryModel = Mapper.Map<CategoryModel, DropDownCategoryDto>(category);
                     service.UpdateCategory(categoryModel);
-                    SendSuccessMessage($"Category '{category.CategoryName}' details have been modified successfully");
+                    DisplaySuccessMessage($"Category '{category.CategoryName}' details have been modified successfully");
                     return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage(exp);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(category);
         }
@@ -142,29 +142,29 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                SendWarningMessage("Looks like, the ID is missing in your request");
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
                 return RedirectToAction("List");
             }
             try
             {
                 if (service.IsReservedEntry(id.Value))
                 {
-                    SendWarningMessage("Hey, why do you want to delete a Reserved Category. Please check with the system administrator.");
+                    DisplayWarningMessage("Hey, why do you want to delete a Reserved Category. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
                 if (service.CanBeDeleted(id.Value) == false)
                 {
-                    SendWarningMessage("There are some dependencies with this Category. So, you can't delete this for now");
+                    DisplayWarningMessage("There are some dependencies with this Category. So, you can't delete this for now");
                     return RedirectToAction("List");
                 }
 
                 service.DeleteCategory(new DropDownCategoryDto { CategoryID = id.Value });
-                SendSuccessMessage($"Category has been deleted successfully");
+                DisplaySuccessMessage($"Category has been deleted successfully");
             }
             catch (Exception exp)
             {
-                SendDeleteErrorMessage(exp);
+                DisplayDeleteErrorMessage(exp);
             }
             return RedirectToAction("List");
         }
