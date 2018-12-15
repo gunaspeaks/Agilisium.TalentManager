@@ -118,22 +118,14 @@ namespace Agilisium.TalentManager.Data.Repositories
         public override bool CanBeDeleted(int id)
         {
             if (DataContext.Employees.Any(c => c.IsDeleted == false
-                && (c.BusinessUnitID == id || c.EmploymentTypeID == id || c.UtilizationTypeID == id)))
+                && (c.BusinessUnitID == id || c.EmploymentTypeID == id || c.UtilizationTypeID == id))
+                || DataContext.Projects.Any(p => p.IsDeleted == false && p.ProjectTypeID == id)
+                || DataContext.ProjectAllocations.Any(p => p.IsDeleted == false && p.AllocationTypeID == id))
             {
                 return false;
             }
-            else if (DataContext.Projects.Any(p => p.IsDeleted == false && p.ProjectTypeID == id))
-            {
-                return false;
-            }
-            else if (DataContext.ProjectAllocations.Any(p => p.IsDeleted == false && p.AllocationTypeID == id))
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+
+            return true;
         }
 
         public bool IsReservedEntry(int subCategoryID)
@@ -141,6 +133,11 @@ namespace Agilisium.TalentManager.Data.Repositories
             return Entities.Any(c => c.IsDeleted == false &&
             c.SubCategoryID == subCategoryID &&
             c.IsReserved == true);
+        }
+
+        public int TotalRecordsCountByCategoryID(int categoryID)
+        {
+            return Entities.Count(c => c.CategoryID == categoryID && c.IsDeleted == false);
         }
 
         private DropDownSubCategory CreateBusinessEntity(DropDownSubCategoryDto subCategoryDto, bool isNewEntity = false)
@@ -176,5 +173,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         bool Exists(string itemName, int id);
 
         bool IsReservedEntry(int subCategoryID);
+
+        int TotalRecordsCountByCategoryID(int categoryID);
     }
 }

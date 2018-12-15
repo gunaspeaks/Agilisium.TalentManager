@@ -1,11 +1,8 @@
 ﻿using Agilisium.TalentManager.Data.Repositories;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -43,24 +40,39 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(subPracticeName, id);
         }
 
-        public SubPracticeDto GetSubPractice(int id)
+        public SubPracticeDto GetByID(int subPracticeID)
         {
-            return repository.GetByID(id);
+            return repository.GetByID(subPracticeID);
         }
 
-        public List<SubPracticeDto> GetSubPractices()
+        public IEnumerable<SubPracticeDto> GetSubPractices(int pageSize = -1, int pageNo = -1)
         {
-            return repository.GetAll().ToList();
+            return repository.GetAll(pageSize, pageNo);
         }
 
-        public List<SubPracticeDto> GetSubPractices(int practiceID)
+        public IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID, int pageSize = -1, int pageNo = -1)
         {
-            return repository.GetAll(practiceID).ToList();
+            return repository.GetAllByPracticeID(practiceID, pageSize, pageNo);
         }
 
         public void UpdateSubPractice(SubPracticeDto subPractice)
         {
             repository.Update(subPractice);
+        }
+
+        public int TotalRecordsCount()
+        {
+            return repository.TotalRecordsCount();
+        }
+
+        public int TotalRecordsCountByPracticeID(int practiceID)
+        {
+            return repository.TotalRecordsCountByPracticeID(practiceID);
+        }
+
+        public bool CanBeDeleted(int id)
+        {
+            return repository.CanBeDeleted(id);
         }
     }
 }

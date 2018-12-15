@@ -162,7 +162,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         [HttpPost]
         public JsonResult SubPracticeList(int id)
         {
-            List<SubPracticeDto> subPracticeList = subPracticeService.GetSubPractices(id);
+            IEnumerable<SubPracticeDto> subPracticeList = subPracticeService.GetAllByPracticeID(id);
             List<SelectListItem> ddList = (from c in subPracticeList
                                            orderby c.SubPracticeName
                                            select new SelectListItem

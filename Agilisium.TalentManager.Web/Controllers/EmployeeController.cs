@@ -258,7 +258,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private List<SelectListItem> GetSubPractices(int practiceID)
         {
-            List<SubPracticeDto> subPracticeList = subPracticeService.GetSubPractices(practiceID);
+            IEnumerable<SubPracticeDto> subPracticeList = subPracticeService.GetAllByPracticeID(practiceID);
             List<SelectListItem> ddList = (from c in subPracticeList
                                            orderby c.SubPracticeName
                                            select new SelectListItem

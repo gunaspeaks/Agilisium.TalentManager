@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Controllers
 {
-    public class SubPracticeController : Controller
+    public class SubPracticeController : BaseController
     {
         private readonly ISubPracticeService subPracticeService;
         private readonly IPracticeService practiceService;
@@ -22,135 +22,204 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: SubPractice/1
-        public ActionResult Index(string selectedPracticeID)
+        public ActionResult List(string selectedPracticeID, int page = 1)
         {
-            SubPracticeListViewModel model = new SubPracticeListViewModel
-            {
-                Practices = GetPracticesList()
-            };
+            SubPracticeViewModel model = new SubPracticeViewModel();
 
-            if (string.IsNullOrEmpty(selectedPracticeID))
+            try
             {
-                model.SelectedPracticeID = int.Parse(model.Practices.First().Value);
+                model.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
+
+                if (string.IsNullOrEmpty(selectedPracticeID))
+                {
+                    if (Session["SelectedPracticeID"] == null
+                        || (Session["SelectedPracticeID"] != null && string.IsNullOrEmpty(Session["SelectedPracticeID"].ToString())))
+                    {
+                        model.SelectedPracticeID = int.Parse(model.PracticeListItems.FirstOrDefault(c => c.Text != "Please Select")?.Value);
+                    }
+                    else
+                    {
+                        model.SelectedPracticeID = int.Parse(Session["SelectedPracticeID"].ToString());
+                    }
+                }
+                else
+                {
+                    model.SelectedPracticeID = int.Parse(selectedPracticeID);
+                }
+
+                model.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = subPracticeService.TotalRecordsCountByPracticeID(model.SelectedPracticeID),
+                    CurentPageNo = page,
+                    RecordsPerPage = RecordsPerPage
+                };
+
+                if (model.PagingInfo.TotalRecordsCount > 0)
+                {
+                    Session["SelectedPracticeID"] = model.SelectedPracticeID.ToString();
+                    model.SubPractices = GetSubPractices(model.SelectedPracticeID, page);
+                }
+                else
+                {
+                    string practiceName = practiceService.GetPracticeName(model.SelectedPracticeID);
+                    if (string.IsNullOrEmpty(practiceName))
+                    {
+                        SendWarningMessage("Hey, please check whether you are trying to access the correct Practice.");
+                    }
+                    else
+                    {
+                        SendWarningMessage($"There are no Sub-Practices found for Practice '{practiceName}'");
+                    }
+                }
             }
-            else
+            catch (Exception exp)
             {
-                model.SelectedPracticeID = int.Parse(model.Practices.First(c => c.Value == selectedPracticeID.ToString())?.Value);
+                SendLoadErrorMessage(exp);
             }
 
-            Session["SelectedPracticeID"] = model.SelectedPracticeID.ToString();
-            model.SubPractices = GetSubPractices(model.SelectedPracticeID).ToList();
             return View(model);
         }
 
         // GET: SubPractice/Create
         public ActionResult Create()
         {
-            IEnumerable<SelectListItem> listItems = GetPracticesList();
-            ViewData["PracticesList"] = listItems;
-            return View(new SubPracticeViewModel());
+            try
+            {
+                ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
+            }
+            catch (Exception exp)
+            {
+                SendLoadErrorMessage(exp);
+            }
+            return View(new SubPracticeModel());
         }
 
         // POST: SubPractice/Create
         [HttpPost]
-        public ActionResult Create(SubPracticeViewModel subPractice)
+        public ActionResult Create(SubPracticeModel subPractice)
         {
             try
             {
-                IEnumerable<SelectListItem> listItems = GetPracticesList();
-                ViewData["PracticesList"] = listItems;
+                ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
 
                 if (ModelState.IsValid)
                 {
                     if (subPracticeService.Exists(subPractice.SubPracticeName))
                     {
-                        ModelState.AddModelError("", "This Sub-Practice Name is duplicate");
+                        SendWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
                         return View(subPractice);
                     }
-                    SubPracticeDto subPracticeModel = Mapper.Map<SubPracticeViewModel, SubPracticeDto>(subPractice);
+
+                    SubPracticeDto subPracticeModel = Mapper.Map<SubPracticeModel, SubPracticeDto>(subPractice);
                     subPracticeService.CreateSubPractice(subPracticeModel);
-                    TempData["AlertMessage"] = "New Sub-Practice has been stored successfully";
+                    SendSuccessMessage($"New Sub-Practice '{subPractice.SubPracticeName}' has been stored successfully");
                     Session["SelectedPracticeID"] = subPractice.PracticeID.ToString();
-                    return RedirectToAction("Index");
+                    return RedirectToAction("List");
                 }
 
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                SendUpdateErrorMessage(exp);
             }
             return View(subPractice);
         }
 
         // GET: SubPractice/Edit/5
-        public ActionResult Edit(int id)
+        public ActionResult Edit(int? id)
         {
-            SubPracticeDto practice = subPracticeService.GetSubPractice(id);
-            SubPracticeViewModel uiPractice = Mapper.Map<SubPracticeDto, SubPracticeViewModel>(practice);
-            IEnumerable<SelectListItem> listItems = GetPracticesList();
-            ViewData["PracticesList"] = listItems;
+            SubPracticeModel uiPractice = new SubPracticeModel();
+
+            if (!id.HasValue)
+            {
+                SendWarningMessage("Looks like, the ID is missing in your request");
+                return RedirectToAction("List");
+            }
+
+            try
+            {
+                if (!subPracticeService.Exists(id.Value))
+                {
+                    SendWarningMessage($"Sorry, We couldn't find the Sub-Practice with ID: {id.Value}");
+                    return RedirectToAction("List");
+                }
+
+                ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
+
+                SubPracticeDto practice = subPracticeService.GetByID(id.Value);
+                uiPractice = Mapper.Map<SubPracticeDto, SubPracticeModel>(practice);
+            }
+            catch (Exception exp)
+            {
+                SendReadErrorMessage(exp);
+            }
+
             return View(uiPractice);
         }
 
         // POST: SubPractice/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, SubPracticeViewModel subPracticeModel)
+        public ActionResult Edit(SubPracticeModel subPractice)
         {
             try
             {
-                IEnumerable<SelectListItem> listItems = GetPracticesList();
-                ViewData["PracticesList"] = listItems;
+                ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
 
-                if (ModelState.IsValid || (!ModelState.IsValid && ModelState.Values.Count(p => p.Errors.Count > 0) == 1))
+                if (ModelState.IsValid)
                 {
-                    if (subPracticeService.Exists(subPracticeModel.SubPracticeName, subPracticeModel.SubPracticeID))
+                    if (subPracticeService.Exists(subPractice.SubPracticeName, subPractice.SubPracticeID))
                     {
-                        ModelState.AddModelError("", "This Sub-Practice Name is duplicate");
-                        return View(subPracticeModel);
+                        SendWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
+                        return View(subPractice);
                     }
 
-                    SubPracticeDto subPractice = Mapper.Map<SubPracticeViewModel, SubPracticeDto>(subPracticeModel);
-                    subPracticeService.UpdateSubPractice(subPractice);
-                    TempData["AlertMessage"] = "Sub-Practice has been updated successfully";
-                    Session["SelectedPracticeID"] = subPracticeModel.PracticeID.ToString();
-                    return RedirectToAction("Index");
+                    SubPracticeDto subPracticeDto = Mapper.Map<SubPracticeModel, SubPracticeDto>(subPractice);
+                    subPracticeService.UpdateSubPractice(subPracticeDto);
+                    SendSuccessMessage("Sub-Practice has been updated successfully");
+                    Session["SelectedPracticeID"] = subPractice.PracticeID.ToString();
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                SendUpdateErrorMessage(exp);
             }
-            return View(subPracticeModel);
+            return View(subPractice);
         }
 
         // GET: SubPractice/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
+            if (!id.HasValue)
+            {
+                SendWarningMessage("Looks like, the ID is missing in your request");
+                return RedirectToAction("List");
+            }
+
             try
             {
-                subPracticeService.DeleteSubPractice(new SubPracticeDto { SubPracticeID = id });
-                TempData["AlertMessage"] = "Sub-Practice has been deleted successfully";
-                int practiceID = int.Parse(Session["SelectedPracticeID"].ToString());
-                return RedirectToAction("Index");
+                if (subPracticeService.CanBeDeleted(id.Value) == false)
+                {
+                    SendWarningMessage("There are some dependencies with this Sub-Practice. So, you can't delete this for now.");
+                    return RedirectToAction("List");
+                }
+
+                subPracticeService.DeleteSubPractice(new SubPracticeDto { SubPracticeID = id.Value });
+                SendSuccessMessage("Sub-Practice has been deleted successfully");
+                return RedirectToAction("List");
             }
-            catch
+            catch (Exception exp)
             {
-                ModelState.AddModelError("", "Oops! an error has occured while deleting");
+                SendDeleteErrorMessage(exp);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("List");
         }
 
-        private IEnumerable<SelectListItem> GetPracticesList()
+        private IEnumerable<SelectListItem> GetPracticesDropDownList()
         {
-            var practiceModels = (IEnumerable<PracticeViewModel>)CacheHelper.GetItem(UIConstants.PRACTICE_MODELS_LIST, HttpContext);
-            if (practiceModels == null)
-            {
-                IEnumerable<PracticeDto> practices = practiceService.GetPractices();
-                practiceModels = Mapper.Map<IEnumerable<PracticeDto>, IEnumerable<PracticeViewModel>>(practices);
-                CacheHelper.AddOrUpdateItem(UIConstants.PRACTICE_MODELS_LIST, practiceModels, HttpContext);
-            }
-
+            IEnumerable<PracticeDto> practices = practiceService.GetPractices();
+            IEnumerable<PracticeModel> practiceModels = Mapper.Map<IEnumerable<PracticeDto>, IEnumerable<PracticeModel>>(practices);
             List<SelectListItem> practicesList = (from cat in practiceModels
                                                   orderby cat.PracticeName
                                                   select new SelectListItem
@@ -158,21 +227,16 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                       Text = cat.PracticeName,
                                                       Value = $"{cat.PracticeID}"
                                                   }).ToList();
-            if (practicesList != null && practicesList.Count > 0)
-            {
-                return practicesList;
-            }
 
-            return new List<SelectListItem>
-            {
-                new SelectListItem{Text = "None", Value = "0"}
-            };
+            InsertDefaultListItem(practicesList);
+            Session["PracticeListItems"] = practicesList;
+            return practicesList;
         }
 
-        private IEnumerable<SubPracticeViewModel> GetSubPractices(int practiceID)
+        private IEnumerable<SubPracticeModel> GetSubPractices(int practiceID, int pageNo)
         {
-            IEnumerable<SubPracticeDto> subPractices = subPracticeService.GetSubPractices(practiceID);
-            IEnumerable<SubPracticeViewModel> uiPractices = Mapper.Map<IEnumerable<SubPracticeDto>, IEnumerable<SubPracticeViewModel>>(subPractices);
+            IEnumerable<SubPracticeDto> subPractices = subPracticeService.GetAllByPracticeID(practiceID, RecordsPerPage, pageNo);
+            IEnumerable<SubPracticeModel> uiPractices = Mapper.Map<IEnumerable<SubPracticeDto>, IEnumerable<SubPracticeModel>>(subPractices);
             return uiPractices;
         }
     }

@@ -43,7 +43,7 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(id);
         }
 
-        public IEnumerable<ProjectDto> GetAll()
+        public IEnumerable<ProjectDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
             return repository.GetAll();
         }

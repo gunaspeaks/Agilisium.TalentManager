@@ -27,7 +27,7 @@ namespace Agilisium.TalentManager.Model.Entities
 
         public string Remarks { get; set; }
 
-        public int PraticeID { get; set; }
+        public int PracticeID { get; set; }
 
         public int SubPracticeID { get; set; }
     }

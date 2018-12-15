@@ -14,7 +14,6 @@ namespace Agilisium.TalentManager.Web.Models
         public CategoryViewModel()
         {
             Categories = new List<CategoryModel>();
-            PagingInfo = new PagingInfo();
         }
     }
 }

@@ -15,16 +15,22 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(string subPracticeName, int id);
 
-        List<SubPracticeDto> GetSubPractices();
+        IEnumerable<SubPracticeDto> GetSubPractices(int pageSize = -1, int pageNo = -1);
 
-        List<SubPracticeDto> GetSubPractices(int subPracticeID);
+        IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID, int pageSize = -1, int pageNo = -1);
 
-        SubPracticeDto GetSubPractice(int id);
+        SubPracticeDto GetByID(int subPracticeID);
 
         void CreateSubPractice(SubPracticeDto subPractice);
 
         void UpdateSubPractice(SubPracticeDto subPractice);
 
         void DeleteSubPractice(SubPracticeDto subPractice);
+
+        int TotalRecordsCount();
+
+        int TotalRecordsCountByPracticeID(int practiceID);
+
+        bool CanBeDeleted(int id);
     }
 }

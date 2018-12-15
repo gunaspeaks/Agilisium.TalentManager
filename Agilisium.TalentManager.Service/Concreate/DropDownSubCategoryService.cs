@@ -45,9 +45,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.GetSubCategories(categoryID, pageSize, pageNo).ToList();
         }
 
-        public List<DropDownSubCategoryDto> GetSubCategories(int categoryID)
+        public IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID)
         {
-            return repository.GetSubCategories(categoryID).ToList();
+            return repository.GetSubCategories(categoryID);
         }
 
         public DropDownSubCategoryDto GetSubCategory(int id)
@@ -68,6 +68,11 @@ namespace Agilisium.TalentManager.Service.Concreate
         public int TotalRecordsCount()
         {
             return repository.TotalRecordsCount();
+        }
+
+        public int TotalRecordsCountByCategoryID(int categoryID)
+        {
+            return repository.TotalRecordsCountByCategoryID(categoryID);
         }
 
         public bool CanBeDeleted(int id)

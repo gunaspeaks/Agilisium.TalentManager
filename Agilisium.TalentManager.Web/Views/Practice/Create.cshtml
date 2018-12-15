@@ -1,4 +1,4 @@
-﻿@model Agilisium.TalentManager.Web.Models.PracticeViewModel
+﻿@model Agilisium.TalentManager.Web.Models.PracticeModel
 
 @{
     ViewBag.Title = "Create Practice";
@@ -17,7 +17,9 @@
             @Html.ValidationSummary(false, "")
             @foreach (var property in ViewData.ModelMetadata.Properties)
             {
-                if (property.PropertyName != "PracticeID")
+                if (property.PropertyName != "PracticeID"
+                    && property.PropertyName != "IsReserved"
+                    && property.PropertyName != "LoggedInUserName")
                 {
                     <div class="form-group">
                         <label>@(property.DisplayName ?? property.PropertyName)</label>
@@ -27,7 +29,7 @@
             }
             <div class="panel-footer">
                 <input type="submit" value="Save" class="btn btn-primary" />
-                @Html.ActionLink("Cancel and Go Back", "Index", null, new { @class = "btn btn-default" })
+                @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
             </div>
         </div>
     }

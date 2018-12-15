@@ -27,9 +27,9 @@ namespace Agilisium.TalentManager.Data.Repositories
             DataContext.SaveChanges();
         }
 
-        public bool Exists(string itemName, int id)
+        public bool Exists(string subPracticeName, int id)
         {
-            return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower() &&
+            return Entities.Any(c => c.SubPracticeName.ToLower() == subPracticeName.ToLower() &&
             c.SubPracticeID != id && c.IsDeleted == false);
         }
 
@@ -43,37 +43,52 @@ namespace Agilisium.TalentManager.Data.Repositories
             return Entities.Any(c => c.SubPracticeID == id && c.IsDeleted == false);
         }
 
-        public IEnumerable<SubPracticeDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<SubPracticeDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return (from c in Entities
-                    join p in DataContext.Practices on c.PracticeID equals p.PracticeID
-                    orderby c.SubPracticeName
-                    where c.IsDeleted == false
-                    select new SubPracticeDto
-                    {
-                        PracticeID = c.PracticeID,
-                        PracticeName = p.PracticeName,
-                        SubPracticeID = c.SubPracticeID,
-                        SubPracticeName = c.SubPracticeName,
-                        ShortName = c.ShortName
-                    });
+            IQueryable<SubPracticeDto> practices = from c in Entities
+                                                   join p in DataContext.Practices on c.PracticeID equals p.PracticeID
+                                                   orderby c.SubPracticeName
+                                                   where c.IsDeleted == false
+                                                   select new SubPracticeDto
+                                                   {
+                                                       PracticeID = c.PracticeID,
+                                                       PracticeName = p.PracticeName,
+                                                       SubPracticeID = c.SubPracticeID,
+                                                       SubPracticeName = c.SubPracticeName,
+                                                       ShortName = c.ShortName
+                                                   };
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return practices;
+            }
+
+            return practices.Skip((pageNo - 1) * pageSize).Take(pageSize);
         }
 
-        public IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID)
+        public IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID, int pageSize = -1, int pageNo = -1)
         {
-            return (from c in Entities
-                    join p in DataContext.Practices on c.PracticeID equals p.PracticeID into pr
-                    from prd in pr.DefaultIfEmpty()
-                    where c.PracticeID == practiceID && c.IsDeleted == false
-                    orderby c.SubPracticeName
-                    select new SubPracticeDto
-                    {
-                        PracticeID = c.PracticeID,
-                        PracticeName = prd.PracticeName,
-                        SubPracticeID = c.SubPracticeID,
-                        SubPracticeName = c.SubPracticeName,
-                        ShortName = c.ShortName
-                    });
+            IQueryable<SubPracticeDto> practices = from c in Entities
+                                                   join p in DataContext.Practices on c.PracticeID equals p.PracticeID into pr
+                                                   from prd in pr.DefaultIfEmpty()
+                                                   where c.PracticeID == practiceID && c.IsDeleted == false
+                                                   orderby c.SubPracticeName
+                                                   select new SubPracticeDto
+                                                   {
+                                                       PracticeID = c.PracticeID,
+                                                       PracticeName = prd.PracticeName,
+                                                       SubPracticeID = c.SubPracticeID,
+                                                       SubPracticeName = c.SubPracticeName,
+                                                       ShortName = c.ShortName
+                                                   };
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return practices;
+            }
+
+            return practices.Skip((pageNo - 1) * pageSize).Take(pageSize);
+
         }
 
         public SubPracticeDto GetByID(int id)
@@ -97,6 +112,23 @@ namespace Agilisium.TalentManager.Data.Repositories
             Entities.Add(buzEntity);
             DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
+        }
+
+        public override bool CanBeDeleted(int id)
+        {
+            // are there any depending employees
+            if (DataContext.Employees.Any(c => c.IsDeleted == false && c.SubPracticeID == id)
+                || DataContext.Projects.Any(c => c.IsDeleted == false && c.SubPracticeID == id))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public int TotalRecordsCountByPracticeID(int practiceID)
+        {
+            return Entities.Count(p => p.PracticeID == practiceID && p.IsDeleted == false);
         }
 
         private SubPractice CreateBusinessEntity(SubPracticeDto subPracticeDto, bool isNewEntity = false)
@@ -125,8 +157,10 @@ namespace Agilisium.TalentManager.Data.Repositories
 
     public interface ISubPracticeRepository : IRepository<SubPracticeDto>
     {
-        IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID);
+        IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID, int pageSize = -1, int pageNo = -1);
 
-        bool Exists(string itemName, int id);
+        bool Exists(string subPracticeName, int id);
+
+        int TotalRecordsCountByPracticeID(int practiceID);
     }
 }

@@ -25,6 +25,8 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         int TotalRecordsCount();
 
+        int TotalRecordsCountByCategoryID(int categoryID);
+
         bool CanBeDeleted(int id);
 
         bool IsReservedEntry(int categoryID);

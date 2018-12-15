@@ -68,5 +68,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.IsReservedEntry(categoryID);
         }
+
+        public string GetCategoryName(int categoryID)
+        {
+            return repository.GetCategoryName(categoryID);
+        }
     }
 }

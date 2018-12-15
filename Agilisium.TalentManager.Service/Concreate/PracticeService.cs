@@ -1,11 +1,7 @@
 ﻿using Agilisium.TalentManager.Data.Repositories;
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -43,7 +39,7 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(practiceName, id);
         }
 
-        public IEnumerable<PracticeDto> GetPractices(int pageSize, int pageNo = -1)
+        public IEnumerable<PracticeDto> GetPractices(int pageSize = -1, int pageNo = -1)
         {
             return repository.GetAll(pageSize, pageNo);
         }
@@ -56,6 +52,26 @@ namespace Agilisium.TalentManager.Service.Concreate
         public void UpdatePractice(PracticeDto practice)
         {
             repository.Update(practice);
+        }
+
+        public int TotalRecordsCount()
+        {
+            return repository.TotalRecordsCount();
+        }
+
+        public bool CanBeDeleted(int id)
+        {
+            return repository.CanBeDeleted(id);
+        }
+
+        public bool IsReservedEntry(int id)
+        {
+            return repository.IsReservedEntry(id);
+        }
+
+        public string GetPracticeName(int practiceID)
+        {
+            return repository.GetPracticeName(practiceID);
         }
     }
 }

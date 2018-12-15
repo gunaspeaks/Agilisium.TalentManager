@@ -1,4 +1,6 @@
-﻿@model IEnumerable<Agilisium.TalentManager.Web.Models.PracticeViewModel>
+﻿@using Agilisium.TalentManager.Web.Helpers
+
+@model Agilisium.TalentManager.Web.Models.PracticeViewModel
 
 @{
     ViewBag.Title = "All Practices";
@@ -13,14 +15,14 @@
         <table style="width: 50%" class="table table-striped table-condensed table-bordered">
             <tr>
                 <th class="text-center">
-                    @Html.DisplayNameFor(model => model.PracticeName)
+                    @Html.DisplayNameFor(model => model.Practices.FirstOrDefault().PracticeName)
                 </th>
                 <th class="text-center">
-                    @Html.DisplayNameFor(model => model.ShortName)
+                    @Html.DisplayNameFor(model => model.Practices.FirstOrDefault().ShortName)
                 </th>
                 <th class="text-center">Actions</th>
             </tr>
-            @foreach (var item in Model)
+            @foreach (var item in Model.Practices)
             {
                 <tr>
                     <td>
@@ -33,7 +35,7 @@
                         @using (Html.BeginForm("Delete", "Practice"))
                         {
                             @Html.Hidden("id", item.PracticeID)
-                            <input type="submit" class="btn btn-default btn-xs" value="Delete" />
+                            <input type="submit" onclick="return confirm('Are you sure you about deleting this Practice?');" class="btn btn-default btn-xs" value="Delete" />
                         }
                     </td>
                 </tr>
@@ -42,6 +44,9 @@
     </div>
     <div class="panel-footer">
         @Html.ActionLink("Add a New Practice", "Create", null, new { @class = "btn btn-default" })
+        <div class="btn-group pull-right">
+            @Html.AddPagination(Model.PagingInfo, x => Url.Action("List", new { page = x }))
+        </div>
     </div>
 </div>
 

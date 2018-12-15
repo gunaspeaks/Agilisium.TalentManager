@@ -17,7 +17,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(int id);
 
-        IEnumerable<ProjectDto> GetAll();
+        IEnumerable<ProjectDto> GetAll(int pageSize = -1, int pageNo = -1);
 
         ProjectDto GetByID(int id);
 

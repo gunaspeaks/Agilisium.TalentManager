@@ -33,50 +33,71 @@
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
                     @*
-                    <li>@Html.ImageLink("Index", "Home", null, "~/content/images/Agilisium_Logo.jpg", "Agilisium", null, null)</li>*@
+        <li>@Html.ImageLink("Index", "Home", null, "~/content/images/Agilisium_Logo.jpg", "Agilisium", null, null)</li>*@
                     <li>@Html.ActionLink("Agilisium - Talent Manager", "Index", "Home")</li>
-                    @*@if (Request.Url.ToString().Contains("Employee"))
+                    @if (Request.Url.ToString().Contains("Employee"))
                     {
-                    <li>@Html.ActionLink("Employees", "Index", "Employee", new { @style = "color:Yellow; font-size:large;" })</li>
+                        <li>@Html.ActionLink("Employees", "Index", "Employee", new { @style = "color:Yellow; font-size:large;" })</li>
                     }
                     else
                     {
-                    <li>@Html.ActionLink("Employees", "Index", "Employee")</li>
+                        <li>@Html.ActionLink("Employees", "Index", "Employee")</li>
                     }
 
                     @if (Request.Url.ToString().Contains("Project"))
                     {
-                    <li>@Html.ActionLink("Projects", "Index", "Project", new { @style = "color:Yellow; font-size:large;" })</li>
+                        <li>@Html.ActionLink("Projects", "Index", "Project", new { @style = "color:Yellow; font-size:large;" })</li>
                     }
                     else
                     {
-                    <li>@Html.ActionLink("Projects", "Index", "Project")</li>
+                        <li>@Html.ActionLink("Projects", "Index", "Project")</li>
                     }
 
                     @if (Request.Url.ToString().Contains("Allocation"))
                     {
-                    <li>@Html.ActionLink("Project Allocations", "Index", "Allocation", new { @style = "color:Yellow;" })</li>
+                        <li>@Html.ActionLink("Project Allocations", "Index", "Allocation", new { @style = "color:Yellow;" })</li>
                     }
                     else
                     {
-                    <li>@Html.ActionLink("Project Allocations", "Index", "Allocation")</li>
-                    }*@
+                        <li>@Html.ActionLink("Project Allocations", "Index", "Allocation")</li>
+                    }
 
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Categories <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Categories", "List", "Category")</li>
-                            <li>@Html.ActionLink("Sub Categories", "List", "SubCategory")</li>
-                        </ul>
-                    </li>
+                    @if (Request.Url.ToString().Contains("Category") && !Request.Url.ToString().Contains("SubCategory"))
+                    {
+                        <li>@Html.ActionLink("Categories", "List", "Category", new { @style = "color:Yellow;" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Categories", "List", "Category")</li>
+                    }
 
-                    <li class="dropdown">
-                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">Practices <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
-                            <li>@Html.ActionLink("Practices", "List", "Practice")</li>
-                            <li>@Html.ActionLink("Sub Practices", "List", "SubPractice")</li>
-                        </ul>
-                    </li>
+                    @if (Request.Url.ToString().Contains("SubCategory") && Request.Url.ToString().Contains("Category"))
+                    {
+                        <li>@Html.ActionLink("Sub Categories", "List", "SubCategory", new { @style = "color:Yellow;" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Sub Categories", "List", "SubCategory")</li>
+                    }
+
+                    @if (Request.Url.ToString().Contains("Practice") && !Request.Url.ToString().Contains("SubPractice"))
+                    {
+                        <li>@Html.ActionLink("Practices", "List", "Practice", new { @style = "color:Yellow;" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Practices", "List", "Practice")</li>
+                    }
+
+                    @if (Request.Url.ToString().Contains("SubPractice") && Request.Url.ToString().Contains("Category"))
+                    {
+                        <li>@Html.ActionLink("Sub Practices", "List", "SubPractice", new { @style = "color:Yellow;" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Sub Practices", "List", "SubPractice")</li>
+                    }
+
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -85,21 +106,21 @@
     <div>
         @if (TempData["SuccessMessage"] != null)
         {
-        <div style="font-weight:bold;color:darkgreen; border-bottom-width:1px; border-radius:25%; font-size:large; text-align:center" class="alert alert-success">
-            @TempData["SuccessMessage"]
-        </div>
+            <div style="font-weight:bold;color:darkgreen; border-bottom-width:1px; border-bottom-right-radius:40%; border-bottom-left-radius:40%; font-size:large; text-align:center" class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
         }
         @if (TempData["WarningMessage"] != null)
         {
-        <div style="font-weight:bold;color:yellowgreen; border-bottom-width:1px; border-radius:25%; font-size:large; text-align:center" class="alert alert-warning">
-            @TempData["WarningMessage"]
-        </div>
+            <div style="font-weight:bold;color:yellowgreen; border-bottom-width:1px; border-bottom-right-radius:40%; border-bottom-left-radius:40%; font-size:large; text-align:center" class="alert alert-warning">
+                @TempData["WarningMessage"]
+            </div>
         }
         @if (TempData["ErrorMessage"] != null)
         {
-        <div style="font-weight:bold;color:red; border-radius:25%; border-bottom-width:1px; font-size:large; text-align:center" class="alert alert-danger">
-            @TempData["ErrorMessage"]
-        </div>
+            <div style="font-weight:bold;color:red; border-bottom-right-radius:40%; border-bottom-left-radius:40%; border-bottom-width:1px; font-size:large; text-align:center" class="alert alert-danger">
+                @TempData["ErrorMessage"]
+            </div>
         }
         @RenderBody()
     </div>

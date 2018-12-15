@@ -246,6 +246,7 @@
     <Compile Include="Helpers\UIConstants.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\PracticeViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\MenuItem.cs" />
     <Compile Include="Models\PagingInfo.cs" />
@@ -258,11 +259,11 @@
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PagingViewModel.cs" />
-    <Compile Include="Models\PracticeViewModel.cs" />
+    <Compile Include="Models\PracticeModel.cs" />
     <Compile Include="Models\ProjectViewModel.cs" />
-    <Compile Include="Models\SubPracticeListViewModel.cs" />
-    <Compile Include="Models\SubCategoryViewModel.cs" />
     <Compile Include="Models\SubPracticeViewModel.cs" />
+    <Compile Include="Models\SubCategoryViewModel.cs" />
+    <Compile Include="Models\SubPracticeModel.cs" />
     <Compile Include="Models\SubCategoryModel.cs" />
     <Compile Include="Models\ViewModelBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -350,10 +351,10 @@
     <Content Include="Views\Employee\Create.cshtml" />
     <Content Include="Views\Practice\Create.cshtml" />
     <Content Include="Views\Practice\Edit.cshtml" />
-    <Content Include="Views\Practice\Index.cshtml" />
+    <Content Include="Views\Practice\List.cshtml" />
     <Content Include="Views\SubPractice\Create.cshtml" />
     <Content Include="Views\SubPractice\Edit.cshtml" />
-    <Content Include="Views\SubPractice\Index.cshtml" />
+    <Content Include="Views\SubPractice\List.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Employee\Edit.cshtml" />
     <Content Include="Views\Project\Create.cshtml" />

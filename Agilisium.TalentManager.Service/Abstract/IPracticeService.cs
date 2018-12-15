@@ -1,9 +1,5 @@
 ﻿using Agilisium.TalentManager.Dto;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Service.Abstract
 {
@@ -15,7 +11,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         bool Exists(string practiceName, int id);
 
-        IEnumerable<PracticeDto> GetPractices(int pageSize=0, int pageNo = -1);
+        IEnumerable<PracticeDto> GetPractices(int pageSize = -1, int pageNo = -1);
 
         PracticeDto GetPractice(int id);
 
@@ -24,5 +20,13 @@ namespace Agilisium.TalentManager.Service.Abstract
         void UpdatePractice(PracticeDto practice);
 
         void DeletePractice(PracticeDto practice);
+
+        int TotalRecordsCount();
+
+        bool CanBeDeleted(int id);
+
+        bool IsReservedEntry(int id);
+
+        string GetPracticeName(int practiceID);
     }
 }

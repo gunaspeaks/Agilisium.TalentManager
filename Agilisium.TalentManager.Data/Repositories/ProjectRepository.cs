@@ -61,7 +61,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                     where p.IsDeleted == false
                     join dm in DataContext.Employees on p.DeliveryManagerID equals dm.EmployeeEntryID into dme
                     from dmd in dme.DefaultIfEmpty()
-                    join pr in DataContext.Practices on p.PraticeID equals pr.PracticeID into pre
+                    join pr in DataContext.Practices on p.PracticeID equals pr.PracticeID into pre
                     from prd in pre.DefaultIfEmpty()
                     join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
                     from ptd in pte.DefaultIfEmpty()
@@ -73,7 +73,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                         DeliveryManagerName = dmd.LastName + ", " + dmd.FirstName,
                         EndDate = p.EndDate,
                         PracticeName = prd.PracticeName,
-                        PraticeID = p.PraticeID,
+                        PraticeID = p.PracticeID,
                         ProjectCode = p.ProjectCode,
                         ProjectID = p.ProjectID,
                         ProjectManagerID = p.ProjectManagerID,
@@ -96,7 +96,7 @@ namespace Agilisium.TalentManager.Data.Repositories
                     {
                         DeliveryManagerID = p.DeliveryManagerID,
                         EndDate = p.EndDate,
-                        PraticeID = p.PraticeID,
+                        PraticeID = p.PracticeID,
                         ProjectCode = p.ProjectCode,
                         ProjectID = p.ProjectID,
                         ProjectManagerID = p.ProjectManagerID,
@@ -125,7 +125,7 @@ namespace Agilisium.TalentManager.Data.Repositories
             {
                 DeliveryManagerID = projectDto.DeliveryManagerID,
                 EndDate = projectDto.EndDate,
-                PraticeID = projectDto.PraticeID,
+                PracticeID = projectDto.PraticeID,
                 ProjectCode = projectDto.ProjectCode,
                 ProjectManagerID = projectDto.ProjectManagerID,
                 ProjectName = projectDto.ProjectName,
@@ -144,7 +144,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         {
             targetEntity.DeliveryManagerID = sourceEntity.DeliveryManagerID;
             targetEntity.EndDate = sourceEntity.EndDate;
-            targetEntity.PraticeID = sourceEntity.PraticeID;
+            targetEntity.PracticeID = sourceEntity.PraticeID;
             targetEntity.ProjectCode = sourceEntity.ProjectCode;
             targetEntity.ProjectManagerID = sourceEntity.ProjectManagerID;
             targetEntity.ProjectName = sourceEntity.ProjectName;

@@ -26,5 +26,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         bool CanBeDeleted(int id);
 
         bool IsReservedEntry(int categoryID);
+
+        string GetCategoryName(int categoryID);
     }
 }

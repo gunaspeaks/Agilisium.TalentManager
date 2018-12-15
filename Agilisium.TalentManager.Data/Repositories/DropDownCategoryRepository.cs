@@ -119,6 +119,7 @@ namespace Agilisium.TalentManager.Data.Repositories
             {
                 return false;
             }
+
             return true;
         }
 
@@ -128,6 +129,11 @@ namespace Agilisium.TalentManager.Data.Repositories
             c.CategoryID == categoryID &&
             c.IsReserved == true);
         }
+
+        public string GetCategoryName(int categoryID)
+        {
+            return Entities.FirstOrDefault(c => c.CategoryID == categoryID)?.CategoryName;
+        }
     }
 
     public interface IDropDownCategoryRepository : IRepository<DropDownCategoryDto>
@@ -135,5 +141,7 @@ namespace Agilisium.TalentManager.Data.Repositories
         bool Exists(string itemName, int id);
 
         bool IsReservedEntry(int categoryID);
+
+        string GetCategoryName(int categoryID);
     }
 }

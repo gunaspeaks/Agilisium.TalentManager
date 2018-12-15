@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Helpers
@@ -20,29 +21,44 @@ namespace Agilisium.TalentManager.Web.Helpers
             TempData["SuccessMessage"] = message;
         }
 
-        public virtual void SendErrorMessage(string message)
+        public virtual void SendErrorMessage(string message, Exception exp = null)
         {
             TempData["ErrorMessage"] = message;
+
+            // TODO
+            // Error logging
         }
 
-        public virtual void SendReadErrorMessage()
+        public virtual void SendReadErrorMessage(Exception exp)
         {
             SendErrorMessage(readErrorMessage);
+
+            // TODO
+            // Error logging
         }
 
-        public virtual void SendUpdateErrorMessage()
+        public virtual void SendUpdateErrorMessage(Exception exp)
         {
             SendErrorMessage(updateErrorMessage);
+
+            // TODO
+            // Error logging
         }
 
-        public virtual void SendDeleteErrorMessage()
+        public virtual void SendDeleteErrorMessage(Exception exp)
         {
             SendErrorMessage(deleteErrorMessage);
+
+            // TODO
+            // Error logging
         }
 
-        public virtual void SendLoadErrorMessage()
+        public virtual void SendLoadErrorMessage(Exception exp)
         {
             SendErrorMessage(loadErrorMessage);
+
+            // TODO
+            // Error logging
         }
 
         public bool IsPaginationEnabled

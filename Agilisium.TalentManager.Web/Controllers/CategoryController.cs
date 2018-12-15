@@ -25,17 +25,25 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             try
             {
-                viewModel.Categories = GetCategories(page);
                 viewModel.PagingInfo = new PagingInfo
                 {
                     TotalRecordsCount = service.TotalRecordsCount(),
                     RecordsPerPage = RecordsPerPage,
                     CurentPageNo = page
                 };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Categories = GetCategories(page);
+                }
+                else
+                {
+                    SendWarningMessage("There are no Categories to display");
+                }
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                SendLoadErrorMessage();
+                SendLoadErrorMessage(exp);
             }
 
             return View(viewModel);
@@ -44,7 +52,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Category/Create
         public ActionResult Create()
         {
-            return View();
+            return View(new CategoryModel());
         }
 
         // POST: Category/Create
@@ -66,9 +74,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                     return RedirectToAction("List");
                 }
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                SendUpdateErrorMessage();
+                SendUpdateErrorMessage(exp);
             }
             return View(category);
         }
@@ -93,11 +101,10 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 DropDownCategoryDto category = service.GetCategory(id.Value);
                 uiCategory = Mapper.Map<DropDownCategoryDto, CategoryModel>(category);
-                return View(uiCategory);
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                SendReadErrorMessage();
+                SendReadErrorMessage(exp);
             }
 
             return View(uiCategory);
@@ -122,9 +129,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                     return RedirectToAction("List");
                 }
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                SendUpdateErrorMessage();
+                SendUpdateErrorMessage(exp);
             }
             return View(category);
         }
@@ -140,24 +147,24 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             try
             {
-                if (service.CanBeDeleted(id.Value) == false)
-                {
-                    SendWarningMessage("There are some dependencies with this Categories. So, you can't delete this for now");
-                    return RedirectToAction("List");
-                }
-
                 if (service.IsReservedEntry(id.Value))
                 {
                     SendWarningMessage("Hey, why do you want to delete a Reserved Category. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
+                if (service.CanBeDeleted(id.Value) == false)
+                {
+                    SendWarningMessage("There are some dependencies with this Category. So, you can't delete this for now");
+                    return RedirectToAction("List");
+                }
+
                 service.DeleteCategory(new DropDownCategoryDto { CategoryID = id.Value });
                 SendSuccessMessage($"Category has been deleted successfully");
             }
-            catch (Exception)
+            catch (Exception exp)
             {
-                SendDeleteErrorMessage();
+                SendDeleteErrorMessage(exp);
             }
             return RedirectToAction("List");
         }

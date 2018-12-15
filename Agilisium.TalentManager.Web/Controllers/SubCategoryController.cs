@@ -22,39 +22,59 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: SubCategory/1
-        public ActionResult List(string categoryID, int page = 1)
+        public ActionResult List(string selectedCategoryID, int page = 1)
         {
             SubCategoryViewModel model = new SubCategoryViewModel();
 
             try
             {
-                model.CategoryListItems = GetCategoriesDropDownList();
+                model.CategoryListItems = (IEnumerable<SelectListItem>)Session["CategoryListItems"] ?? GetCategoriesDropDownList();
 
-                if (Session["SelectedCategoryID"] != null && !string.IsNullOrEmpty(Session["SelectedCategoryID"].ToString()))
+                if (string.IsNullOrEmpty(selectedCategoryID))
                 {
-                    model.SelectedCategoryID = int.Parse(Session["SelectedCategoryID"].ToString());
-                }
-                else if (string.IsNullOrEmpty(categoryID))
-                {
-                    model.SelectedCategoryID = int.Parse(model.CategoryListItems.FirstOrDefault(c => c.Text != "Please Select")?.Value);
+                    if (Session["SelectedCategoryID"] == null
+                        || (Session["SelectedCategoryID"] != null && string.IsNullOrEmpty(Session["SelectedCategoryID"].ToString())))
+                    {
+                        model.SelectedCategoryID = int.Parse(model.CategoryListItems.FirstOrDefault(c => c.Text != "Please Select")?.Value);
+                    }
+                    else
+                    {
+                        model.SelectedCategoryID = int.Parse(Session["SelectedCategoryID"].ToString());
+                    }
                 }
                 else
                 {
-                    model.SelectedCategoryID = int.Parse(categoryID);
+                    model.SelectedCategoryID = int.Parse(selectedCategoryID);
                 }
 
-                Session["SelectedCategoryID"] = model.SelectedCategoryID.ToString();
-                model.SubCategories = GetSubCategories(model.SelectedCategoryID, page);
                 model.PagingInfo = new PagingInfo
                 {
-                    TotalRecordsCount = subCategoryService.TotalRecordsCount(),
+                    TotalRecordsCount = subCategoryService.TotalRecordsCountByCategoryID(model.SelectedCategoryID),
                     CurentPageNo = page,
                     RecordsPerPage = RecordsPerPage
                 };
+
+                if (model.PagingInfo.TotalRecordsCount > 0)
+                {
+                    Session["SelectedCategoryID"] = model.SelectedCategoryID.ToString();
+                    model.SubCategories = GetSubCategories(model.SelectedCategoryID, page);
+                }
+                else
+                {
+                    string categoryName = categoryService.GetCategoryName(model.SelectedCategoryID);
+                    if (string.IsNullOrEmpty(categoryName))
+                    {
+                        SendWarningMessage("Hey, please check whether you are trying to access the correct Category.");
+                    }
+                    else
+                    {
+                        SendWarningMessage($"There are no Sub-Categories found for Category '{categoryName}'");
+                    }
+                }
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage();
+                SendLoadErrorMessage(exp);
             }
 
             return View(model);
@@ -69,7 +89,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendLoadErrorMessage();
+                SendLoadErrorMessage(exp);
             }
             return View(new SubCategoryModel());
         }
@@ -89,6 +109,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                         SendWarningMessage($"Sub-Category Name '{subCategory.SubCategoryName}' is duplicate");
                         return View(subCategory);
                     }
+
                     DropDownSubCategoryDto subCategoryModel = Mapper.Map<SubCategoryModel, DropDownSubCategoryDto>(subCategory);
                     subCategoryService.CreateSubCategory(subCategoryModel);
                     SendSuccessMessage($"New Sub-Category '{subCategory.SubCategoryName}' has been stored successfully");
@@ -98,7 +119,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage();
+                SendUpdateErrorMessage(exp);
             }
             return View(subCategory);
         }
@@ -107,6 +128,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         public ActionResult Edit(int? id)
         {
             SubCategoryModel uiCategory = new SubCategoryModel();
+
             if (!id.HasValue)
             {
                 SendWarningMessage("Looks like, the ID is missing in your request");
@@ -121,13 +143,14 @@ namespace Agilisium.TalentManager.Web.Controllers
                     return RedirectToAction("List");
                 }
 
+                ViewBag.CategoryListItems = (IEnumerable<SelectListItem>)Session["CategoryListItems"] ?? GetCategoriesDropDownList();
+
                 DropDownSubCategoryDto category = subCategoryService.GetSubCategory(id.Value);
                 uiCategory = Mapper.Map<DropDownSubCategoryDto, SubCategoryModel>(category);
-                ViewBag.CategoryListItems = (IEnumerable<SelectListItem>)Session["CategoryListItems"] ?? GetCategoriesDropDownList();
             }
             catch (Exception exp)
             {
-                SendReadErrorMessage();
+                SendReadErrorMessage(exp);
             }
 
             return View(uiCategory);
@@ -159,7 +182,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                SendUpdateErrorMessage();
+                SendUpdateErrorMessage(exp);
             }
             return View(subCategory);
         }
@@ -176,24 +199,24 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             try
             {
-                if (subCategoryService.CanBeDeleted(id.Value) == false)
-                {
-                    SendWarningMessage("There are some dependencies with this Sub-Category. So, you can't delete this for now.");
-                    return RedirectToAction("List");
-                }
-
                 if (subCategoryService.IsReservedEntry(id.Value))
                 {
                     SendWarningMessage("Hey, why do you want to delete a Reserved Sub-Category. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
+                if (subCategoryService.CanBeDeleted(id.Value) == false)
+                {
+                    SendWarningMessage("There are some dependencies with this Sub-Category. So, you can't delete this for now.");
+                    return RedirectToAction("List");
+                }
+
                 subCategoryService.DeleteSubCategory(new DropDownSubCategoryDto { SubCategoryID = id.Value });
                 SendSuccessMessage("Sub-Category has been deleted successfully");
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
-                SendDeleteErrorMessage();
+                SendDeleteErrorMessage(exp);
             }
             return RedirectToAction("List");
         }

@@ -20,7 +20,9 @@
 
             @foreach (var property in ViewData.ModelMetadata.Properties)
             {
-                if (property.PropertyName != "CategoryID" && property.PropertyName != "IsReserved")
+                if (property.PropertyName != "CategoryID" &&
+                    property.PropertyName != "IsReserved" &&
+                    property.PropertyName != "LoggedInUserName")
                 {
                     <div class="form-group">
                         <label>@(property.DisplayName ?? property.PropertyName)</label>

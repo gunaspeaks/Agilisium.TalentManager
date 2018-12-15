@@ -27,9 +27,9 @@ namespace Agilisium.TalentManager.Data.Repositories
             DataContext.SaveChanges();
         }
 
-        public bool Exists(string itemName, int id)
+        public bool Exists(string practiceName, int id)
         {
-            return Entities.Any(c => c.PracticeName.ToLower() == itemName.ToLower() &&
+            return Entities.Any(c => c.PracticeName.ToLower() == practiceName.ToLower() &&
             c.PracticeID != id && c.IsDeleted == false);
         }
 
@@ -43,18 +43,26 @@ namespace Agilisium.TalentManager.Data.Repositories
             return Entities.Any(c => c.PracticeID == id && c.IsDeleted == false);
         }
 
-        public IEnumerable<PracticeDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<PracticeDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return (from c in Entities
-                    orderby c.PracticeName
-                    where c.IsDeleted == false
-                    select new PracticeDto
-                    {
-                        PracticeID = c.PracticeID,
-                        PracticeName = c.PracticeName,
-                        ShortName = c.ShortName,
-                        IsReserved = c.IsReserved
-                    });
+            IQueryable<PracticeDto> practices = from c in Entities
+                                                orderby c.PracticeName
+                                                where c.IsDeleted == false
+                                                select new PracticeDto
+                                                {
+                                                    PracticeID = c.PracticeID,
+                                                    PracticeName = c.PracticeName,
+                                                    ShortName = c.ShortName,
+                                                    IsReserved = c.IsReserved
+                                                };
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return practices;
+            }
+
+            return practices.Skip((pageNo - 1) * pageSize).Take(pageSize);
+
         }
 
         public PracticeDto GetByID(int id)
@@ -77,6 +85,32 @@ namespace Agilisium.TalentManager.Data.Repositories
             Entities.Add(buzEntity);
             DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
+        }
+
+        public override bool CanBeDeleted(int id)
+        {
+            // are there any depending sub practices
+            if (DataContext.SubPractices.Any(c => c.IsDeleted == false && c.PracticeID == id)
+                || DataContext.Employees.Any(c => c.IsDeleted == false && c.PracticeID == id)
+                || DataContext.Projects.Any(c => c.IsDeleted == false && c.PracticeID == id))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool IsReservedEntry(int practiceID)
+        {
+            return Entities.Any(c => c.IsDeleted == false &&
+            c.PracticeID == practiceID &&
+            c.IsReserved == true);
+        }
+
+        public string GetPracticeName(int practiceID)
+        {
+            return Entities.FirstOrDefault(c => c.PracticeID == practiceID
+            && c.IsDeleted == false)?.PracticeName;
         }
 
         private Practice CreateBusinessEntity(PracticeDto categoryDto, bool isNewEntity = false)
@@ -104,6 +138,10 @@ namespace Agilisium.TalentManager.Data.Repositories
 
     public interface IPracticeRepository : IRepository<PracticeDto>
     {
-        bool Exists(string itemName, int id);
+        bool Exists(string practiceName, int id);
+
+        bool IsReservedEntry(int practiceID);
+
+        string GetPracticeName(int practiceID);
     }
 }
