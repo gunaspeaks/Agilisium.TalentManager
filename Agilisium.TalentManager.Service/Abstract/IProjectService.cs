@@ -24,5 +24,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         bool IsDuplicateProjectCode(string projectCode);
 
         bool IsDuplicateProjectCode(string projectCode, int projectID);
+
+        int TotalRecordsCount();
     }
 }

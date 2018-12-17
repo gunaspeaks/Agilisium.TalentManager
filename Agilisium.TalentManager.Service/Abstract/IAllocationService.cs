@@ -13,20 +13,24 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void Delete(ProjectAllocationDto entity);
 
-        bool Exists(int empEntryID, int projectID);
+        int Exists(int empEntryID, int projectID);
 
-        bool Exists(int allocationID, int empEntryID, int projectID);
+        int Exists(int allocationID, int empEntryID, int projectID);
 
         bool Exists(int id);
 
         bool Exists(string itemName);
 
-        IEnumerable<ProjectAllocationDto> GetAll(int pageNo = -1);
+        IEnumerable<ProjectAllocationDto> GetAll(int pageSize = -1, int pageNo = -1);
 
         ProjectAllocationDto GetByID(int id);
 
         void Update(ProjectAllocationDto entity);
 
         int GetPercentageOfAllocation(int employeeID, int projectID);
+
+        int TotalRecordsCount();
+
+        IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude);
     }
 }

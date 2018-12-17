@@ -1,1 +1,2 @@
-﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Agilisium.TalentManager.Web.MvcApplication" Language="C#" %>
+﻿<%@ Application Codebehind="Global.asax.cs" Inherits="Agilisium.TalentManager.Web.MvcApplication" 
+    Language="C#" %>

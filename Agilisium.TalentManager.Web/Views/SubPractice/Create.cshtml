@@ -2,8 +2,8 @@
 
 @{
     ViewBag.Title = "Create";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/Content/error-styles.css" rel="stylesheet" />
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -14,32 +14,32 @@
     {
         @Html.AntiForgeryToken()
 
-        <div class="panel-body">
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-            @foreach (var property in ViewData.ModelMetadata.Properties)
+    <div class="panel-body">
+        @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
+        @foreach (var property in ViewData.ModelMetadata.Properties)
+        {
+            if (property.PropertyName != "SubPracticeID"
+                && property.PropertyName != "PracticeName"
+                && property.PropertyName != "IsReserved"
+                && property.PropertyName != "LoggedInUserName")
             {
-                if (property.PropertyName != "SubPracticeID" 
-                    && property.PropertyName != "PracticeName"
-                    && property.PropertyName != "IsReserved"
-                    && property.PropertyName != "LoggedInUserName")
-                {
-            <div class="form-group">
-                <label>@(property.DisplayName ?? property.PropertyName) </label>
-                @if (property.PropertyName == "PracticeID")
-                {
-                    @Html.DropDownList("PracticeID", (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, null, new { @class = "form-control" });
-                }
-                else
-                {
-                    @Html.TextBox(property.PropertyName, null, new { @class = "form-control", rows = 2 })
-                }
-            </div>
-                }
+                <div class="form-group">
+                    <label>@(property.DisplayName ?? property.PropertyName) </label>
+                    @if (property.PropertyName == "PracticeID")
+                    {
+                        @Html.DropDownList("PracticeID", (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, null, new { @class = "form-control" });
+                    }
+                    else
+                    {
+                        @Html.TextBox(property.PropertyName, null, new { @class = "form-control", rows = 2 })
+                    }
+                </div>
             }
-            <div class="panel-footer">
-                <input type="submit" value="Save" class="btn btn-primary" />
-                @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
-            </div>
+        }
+        <div class="panel-footer">
+            <input type="submit" value="Save" class="btn btn-primary" />
+            @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
         </div>
+    </div>
     }
 </div>

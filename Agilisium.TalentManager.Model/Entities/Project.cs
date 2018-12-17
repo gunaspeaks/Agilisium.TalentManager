@@ -15,7 +15,7 @@ namespace Agilisium.TalentManager.Model.Entities
 
         public string ProjectCode { get; set; }
 
-        public int DeliveryManagerID { get; set; }
+        public int? DeliveryManagerID { get; set; }
 
         public int ProjectManagerID { get; set; }
 

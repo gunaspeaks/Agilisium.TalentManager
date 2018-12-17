@@ -1,23 +1,50 @@
-﻿using System.Web;
+﻿using Agilisium.TalentManager.Web.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
 
 namespace Agilisium.TalentManager.Web.Helpers
 {
     public class CacheHelper
     {
-        public static void AddOrUpdateItem(string key, object item, HttpContextBase context)
+        private static HttpContextBase contextBase;
+
+        public static void SetContext(HttpContextBase context)
         {
-            context.Cache.Remove(key);
-            context.Cache.Insert(key, item);
+            contextBase = context;
         }
 
-        public static  object GetItem(string key, HttpContextBase context)
+        public static void AddOrUpdateItem(string key, object item, HttpContextBase context = null)
         {
-            return context.Cache[key];
+            contextBase.Cache.Remove(key);
+            contextBase.Cache.Insert(key, item);
+        }
+
+        public static object GetItem(string key, HttpContextBase context = null)
+        {
+            return contextBase.Cache[key];
+        }
+
+        public static bool HasDataForCollection(string key)
+        {
+            IEnumerable<ViewModelBase> items = (IEnumerable<ViewModelBase>)contextBase.Cache[key];
+
+            if (items == null)
+            {
+                return false;
+            }
+
+            if (items != null && items.Count() == 0)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public static bool IsCached(string key, HttpContextBase context)
         {
-            return !(context.Cache[key] == null);
+            return !(contextBase.Cache[key] == null);
         }
     }
 }

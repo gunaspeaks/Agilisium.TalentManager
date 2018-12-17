@@ -1,11 +1,10 @@
-﻿@model Agilisium.TalentManager.Web.Models.ProjectViewModel
+﻿@model Agilisium.TalentManager.Web.Models.ProjectModel
 
 @{
     ViewBag.Title = "Create New Project";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/Content/error-styles.css" rel="stylesheet" />
 
-<script src="~/Scripts/jquery-3.3.1.js"></script>
 
 <script type="text/javascript">
     $(function () {
@@ -40,7 +39,7 @@
     {
         @Html.AntiForgeryToken()
         <div class="panel-body">
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
             <div>
                 <table style="width:80%">
                     <tr>
@@ -58,8 +57,8 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectManagerID)
-                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" })
+                                @Html.LabelFor(model => model.DeliveryManagerID)
+                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -67,13 +66,13 @@
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectManagerID)
-                                @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTypeID)
-                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewData["ProjectTypeDDList"], null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td rowspan="2">
@@ -96,8 +95,7 @@
                                 @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
-                        <td>
-                        </td>
+                        <td></td>
                     </tr>
                 </table>
             </div>

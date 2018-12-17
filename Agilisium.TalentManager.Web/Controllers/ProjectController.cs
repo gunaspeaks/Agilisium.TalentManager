@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Controllers
 {
-    public class ProjectController : Controller
+    public class ProjectController : BaseController
     {
         private readonly IEmployeeService empService;
         private readonly IDropDownSubCategoryService subCategoryService;
@@ -31,110 +31,167 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Project
-        public ActionResult List()
+        public ActionResult List(int page = 1)
         {
-            IEnumerable<ProjectViewModel> projects = GetProjects();
-            return View(projects);
+            ProjectViewModel viewModel = new ProjectViewModel();
+
+            try
+            {
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = projectService.TotalRecordsCount(),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Projects = GetProjects(page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Projects to display");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(viewModel);
         }
 
         // GET: Project/Create
         public ActionResult Create()
         {
-            InitializeAddUpdatePageData();
-            return View(new ProjectViewModel());
+            ProjectModel project = new ProjectModel()
+            {
+                StartDate = DateTime.Now
+            };
+
+            try
+            {
+                InitializePageData();
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(project);
         }
 
         // POST: Project/Create
         [HttpPost]
-        public ActionResult Create(ProjectViewModel project)
+        public ActionResult Create(ProjectModel project)
         {
             try
             {
+                InitializePageData();
+
                 if (ModelState.IsValid)
                 {
+                    if (project.StartDate <= project.EndDate)
+                    {
+                        DisplayWarningMessage("The End date should be greater than the Start date");
+                        return View(project);
+                    }
+
                     if (projectService.Exists(project.ProjectName))
                     {
-                        ModelState.AddModelError("", "I guess, the Project Name is duplicate");
+                        DisplayWarningMessage($"The Project Name '{project.ProjectName}' is duplicate");
                         return View(project);
                     }
 
                     if (projectService.IsDuplicateProjectCode(project.ProjectCode))
                     {
-                        ModelState.AddModelError("", "The Project Code is duplicate");
+                        DisplayWarningMessage("The Project Code looks duplicated");
                         return View(project);
                     }
 
-                    ProjectDto projectDto = Mapper.Map<ProjectViewModel, ProjectDto>(project);
+                    ProjectDto projectDto = Mapper.Map<ProjectModel, ProjectDto>(project);
                     projectService.Create(projectDto);
-                    TempData["AlertMessage"] = "New Project details have been stored successfully";
+                    DisplaySuccessMessage("New Project details have been stored successfully");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayUpdateErrorMessage(exp);
             }
-            return RedirectToAction("Index");
+            return View(project);
         }
 
         // GET: Project/Edit/5
         public ActionResult Edit(int? id)
         {
-            ProjectViewModel empModel = new ProjectViewModel();
+            ProjectModel projectModel = new ProjectModel();
+
             try
             {
+                InitializePageData();
                 if (!id.HasValue)
                 {
-                    ModelState.AddModelError("", "Looks like, the project ID is missing in your request");
-                    return View(new ProjectViewModel());
+                    DisplayWarningMessage("Looks like, the ID is missing in your request");
+                    RedirectToAction("List");
+                }
+
+                if (!projectService.Exists(id.Value))
+                {
+                    DisplayWarningMessage("Sorry, we couldn't find the Project details");
+                    RedirectToAction("List");
                 }
 
                 ProjectDto emp = projectService.GetByID(id.Value);
-
-                if (emp == null)
-                {
-                    ModelState.AddModelError("", $"Sorry, we couldn't find the Project with ID: {id.Value}");
-                    return View(new ProjectViewModel());
-                }
-                empModel = Mapper.Map<ProjectDto, ProjectViewModel>(emp);
-                InitializeAddUpdatePageData();
+                projectModel = Mapper.Map<ProjectDto, ProjectModel>(emp);
+                return View(projectModel);
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayReadErrorMessage(exp);
             }
-            return View(empModel);
+
+            return View(projectModel);
         }
 
         // POST: Project/Edit/5
         [HttpPost]
-        public ActionResult Edit(ProjectViewModel project)
+        public ActionResult Edit(ProjectModel project)
         {
             try
             {
+                InitializePageData();
                 if (ModelState.IsValid)
                 {
+                    if (project.StartDate <= project.EndDate)
+                    {
+                        DisplayWarningMessage("The End date should be greater than the Start date");
+                        return View(project);
+                    }
+
                     if (projectService.Exists(project.ProjectName, project.ProjectID))
                     {
-                        ModelState.AddModelError("", "I guess, the Project Name is duplicate");
+                        DisplayWarningMessage($"The Project Name '{project.ProjectName}' is duplicate");
                         return View(project);
                     }
 
                     if (projectService.IsDuplicateProjectCode(project.ProjectCode, project.ProjectID))
                     {
-                        ModelState.AddModelError("", "The Project Code is duplicate");
+                        DisplayWarningMessage("The Project Code looks duplicated");
                         return View(project);
                     }
 
-                    ProjectDto projectDto = Mapper.Map<ProjectViewModel, ProjectDto>(project);
+                    ProjectDto projectDto = Mapper.Map<ProjectModel, ProjectDto>(project);
                     projectService.Update(projectDto);
-                    TempData["AlertMessage"] = "Project details have been Updated successfully";
+                    DisplaySuccessMessage("Project details have been updated successfully");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayUpdateErrorMessage(exp);
             }
-            return RedirectToAction("Index");
+            return View(project);
         }
 
         // GET: Project/Delete/5
@@ -142,21 +199,21 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                ModelState.AddModelError("", "Looks like, the Project ID is missing in your request");
-                return View(new ProjectViewModel());
+                DisplayWarningMessage("Looks like, the Project ID is missing in your request");
+                RedirectToAction("List");
             }
 
             try
             {
                 projectService.Delete(new ProjectDto { ProjectID = id.Value });
-                TempData["AlertMessage"] = "Project details have been deleted successfully";
-                return RedirectToAction("Index");
+                DisplaySuccessMessage("Project details have been deleted successfully");
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
-                return View();
+                DisplayDeleteErrorMessage(exp);
             }
+
+            return RedirectToAction("List");
         }
 
         [HttpPost]
@@ -178,21 +235,21 @@ namespace Agilisium.TalentManager.Web.Controllers
             return Json(ddList);
         }
 
-        private IEnumerable<ProjectViewModel> GetProjects()
+        private IEnumerable<ProjectModel> GetProjects(int pageNo)
         {
-            IEnumerable<ProjectDto> projects = projectService.GetAll();
-            IEnumerable<ProjectViewModel> projectModels = Mapper.Map<IEnumerable<ProjectDto>, IEnumerable<ProjectViewModel>>(projects);
-            CacheHelper.AddOrUpdateItem(UIConstants.PROJECT_MODELS_LILST, projectModels, HttpContext);
+            IEnumerable<ProjectDto> projects = projectService.GetAll(RecordsPerPage, pageNo);
+            IEnumerable<ProjectModel> projectModels = Mapper.Map<IEnumerable<ProjectDto>, IEnumerable<ProjectModel>>(projects);
+
             return projectModels;
         }
 
-        private void InitializeAddUpdatePageData()
+        private void InitializePageData()
         {
             ViewData["IsNewProject"] = true;
             PrepareSubCategoriesDDItems();
-            ViewData["PracticeDDList"] = GetPracticeList();
-            ViewData["EmployeesDDList"] = GetEmployeesDDList();
-            ViewData["SubPracticeDDList"] = new List<SelectListItem>
+            GetAllManagersList();
+            ViewBag.PracticeListItems = GetPracticeList();
+            ViewBag.SubPracticeListItems = new List<SelectListItem>
             {
                 new SelectListItem{Text="Please Select", Value="0"}
             };
@@ -211,13 +268,8 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                          Value = c.SubCategoryID.ToString()
                                                      }).ToList();
 
-            projectTypeItems.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
-
-            ViewData["ProjectTypeDDList"] = projectTypeItems;
+            InsertDefaultListItem(projectTypeItems);
+            ViewBag.ProjectTypeListItems = projectTypeItems;
         }
 
         private List<SelectListItem> GetPracticeList()
@@ -230,44 +282,23 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                       Text = p.PracticeName,
                                                       Value = p.PracticeID.ToString()
                                                   }).ToList();
-            practiceItems.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
-
+            InsertDefaultListItem(practiceItems);
             return practiceItems;
         }
 
-        private List<SelectListItem> GetEmployeesDDList()
+        private void GetAllManagersList()
         {
-            List<EmployeeModel> employeeModels = (List<EmployeeModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
+            List<EmployeeDto> employees = empService.GetAllManagers();
 
-            if (employeeModels == null)
-            {
-                List<EmployeeDto> employees = empService.GetAllEmployees();
-                employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeModel>>(employees);
-                CacheHelper.AddOrUpdateItem(UIConstants.EMPLOYEE_MODELS_LIST, employeeModels, HttpContext);
-            }
+            List<SelectListItem> empDDList = (from e in employees
+                                              select new SelectListItem
+                                              {
+                                                  Text = $"{e.LastName}, {e.FirstName}",
+                                                  Value = e.EmployeeEntryID.ToString()
+                                              }).ToList();
 
-            List<SelectListItem> empDDList = new List<SelectListItem>
-            {
-                new SelectListItem{Text = "Please Select", Value = string.Empty}
-            };
-
-            if (employeeModels != null)
-            {
-                foreach (EmployeeModel item in employeeModels)
-                {
-                    empDDList.Add(new SelectListItem
-                    {
-                        Text = $"{item.LastName}, {item.FirstName}",
-                        Value = item.EmployeeEntryID.ToString()
-                    });
-                }
-            }
-
-            return empDDList;
+            InsertDefaultListItem(empDDList);
+            ViewBag.ProjectManagerListItems = empDDList;
         }
     }
 }

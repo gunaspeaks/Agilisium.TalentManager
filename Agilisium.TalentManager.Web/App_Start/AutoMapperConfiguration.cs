@@ -27,8 +27,8 @@ namespace Agilisium.TalentManager.Web.App_Start
             CreateMap<EmployeeDto, EmployeeModel>();
             CreateMap<PracticeDto, PracticeModel>();
             CreateMap<SubPracticeDto, SubPracticeModel>();
-            CreateMap<ProjectDto, ProjectViewModel>();
-            CreateMap<ProjectAllocationDto, AllocationViewModel>();
+            CreateMap<ProjectDto, ProjectModel>();
+            CreateMap<ProjectAllocationDto, AllocationModel>();
         }
     }
 
@@ -43,8 +43,8 @@ namespace Agilisium.TalentManager.Web.App_Start
             CreateMap<EmployeeModel, EmployeeDto>();
             CreateMap<PracticeModel, PracticeDto>();
             CreateMap<SubPracticeModel, SubPracticeDto>();
-            CreateMap<ProjectViewModel, ProjectDto>();
-            CreateMap<AllocationViewModel, ProjectAllocationDto>();
+            CreateMap<ProjectModel, ProjectDto>();
+            CreateMap<AllocationModel, ProjectAllocationDto>();
         }
     }
 }

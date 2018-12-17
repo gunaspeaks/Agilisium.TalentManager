@@ -2,13 +2,12 @@
 
 @{
     ViewBag.Title = "Create New Employee";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
-<script src="~/Scripts/jquery-3.3.1.js"></script>
+<link href="~/Content/error-styles.css" rel="stylesheet" />
 
 <script type="text/javascript">
     $(document).ready(function () {
+        generateEmployeeID();
         loadSubPracticeDropDown();
     })
 
@@ -20,24 +19,27 @@
 
     $(function () {
         $("#EmploymentTypeID").change(function (event) {
-            if ($("#EmploymentTypeID").text() != "Please Select") {
-                $.ajax({
-                    url: "/Employee/GenerateNewEmployeeID",
-                    type: "POST",
-                    data: { id: $("#EmploymentTypeID").val() },
-                    success: function (data) {
-                        $("#EmployeeID").val(data);
-                        $("#empID").val(data);
-                        $("#EmployeeID").prop("disabled", true);
-                    },
-                    error: function (eid) { alert("Error while generating new Employee ID"); }
-                });
-            }
+            generateEmployeeID();
         });
     });
 
+    function generateEmployeeID() {
+        if ($("#EmploymentTypeID").val() != "") {
+            $.ajax({
+                url: "/Employee/GenerateNewEmployeeID",
+                type: "POST",
+                data: { id: $("#EmploymentTypeID").val() },
+                success: function (data) {
+                    $("#EmployeeID").val(data);
+                    $("#empID").val(data);
+                },
+                error: function (eid) { alert("Error while generating new Employee ID"); }
+            });
+        }
+    }
+
     function loadSubPracticeDropDown() {
-        if ($("#PracticeID").text() != "Please Select") {
+        if ($("#PracticeID").val() != "") {
 
             $.ajax({
                 url: "/Employee/GetSubPracticeList",
@@ -65,7 +67,7 @@
     {
         @Html.AntiForgeryToken()
         <div class="panel-body">
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
             <div>
                 <table style="width:80%;">
                     <tr>

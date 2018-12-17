@@ -83,10 +83,10 @@ namespace Agilisium.TalentManager.Web.Controllers
         [HttpPost]
         public ActionResult Create(EmployeeModel employee)
         {
-            InitializePageData(-1);
-
             try
             {
+                InitializePageData(-1);
+
                 if (ModelState.IsValid)
                 {
                     if (empService.IsDuplicateName(employee.FirstName, employee.LastName))
@@ -172,7 +172,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                ModelState.AddModelError("", "Looks like, the employee ID is missing in your request");
+                DisplayWarningMessage("Looks like, the employee ID is missing in your request");
                 return RedirectToAction("List");
             }
 
@@ -196,9 +196,16 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         [HttpPost]
-        public string GenerateNewEmployeeID(int id)
+        public JsonResult GenerateNewEmployeeID(int id)
         {
-            return empService.GenerateNewEmployeeID(id);
+            return Json(empService.GenerateNewEmployeeID(id));
+        }
+
+        [HttpPost]
+        public JsonResult GetEmployeeDetails(int id)
+        {
+            EmployeeDto emp = empService.GetEmployee(id);
+            return Json(emp);
         }
 
         private IEnumerable<EmployeeModel> GetEmployees(int pageNo)

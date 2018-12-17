@@ -14,7 +14,7 @@ namespace Agilisium.TalentManager.Dto
 
         public string ProjectCode { get; set; }
 
-        public int DeliveryManagerID { get; set; }
+        public int? DeliveryManagerID { get; set; }
 
         public string DeliveryManagerName { get; set; }
 
@@ -32,7 +32,7 @@ namespace Agilisium.TalentManager.Dto
 
         public string Remarks { get; set; }
 
-        public int PraticeID { get; set; }
+        public int PracticeID { get; set; }
 
         public string PracticeName { get; set; }
 

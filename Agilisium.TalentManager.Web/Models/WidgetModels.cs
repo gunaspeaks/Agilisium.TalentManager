@@ -7,10 +7,10 @@ namespace Agilisium.TalentManager.Web.Models
 {
     public class AllocationsModel
     {
-        public List<AllocationModel> TopAllocations { get; set; }
+        public List<AllocationWidgetModel> TopAllocations { get; set; }
     }
 
-    public class AllocationModel
+    public class AllocationWidgetModel
     {
         public string ProjectName { get; set; }
 

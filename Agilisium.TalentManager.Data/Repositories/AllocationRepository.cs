@@ -1,6 +1,6 @@
-﻿using Agilisium.TalentManager.Repository.Abstract;
-using Agilisium.TalentManager.Dto;
+﻿using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
+using Agilisium.TalentManager.Repository.Abstract;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -22,19 +22,20 @@ namespace Agilisium.TalentManager.Repository.Repositories
             ProjectAllocation allocation = Entities.FirstOrDefault(e => e.AllocationEntryID == entity.AllocationEntryID);
             allocation.IsDeleted = true;
             allocation.UpdateTimeStamp(entity.LoggedInUserName);
+            Entities.Add(allocation);
             DataContext.Entry(allocation).State = EntityState.Modified;
             DataContext.SaveChanges();
         }
 
-        public bool Exists(int empEntryID, int projectID)
+        public int Exists(int empEntryID, int projectID)
         {
-            return Entities.Any(a => a.EmployeeID == empEntryID &&
+            return Entities.Count(a => a.EmployeeID == empEntryID &&
             a.ProjectID == projectID && a.IsDeleted == false);
         }
 
-        public bool Exists(int allocationID, int empEntryID, int projectID)
+        public int Exists(int allocationID, int empEntryID, int projectID)
         {
-            return Entities.Any(a => a.AllocationEntryID != allocationID &&
+            return Entities.Count(a => a.AllocationEntryID != allocationID &&
             a.EmployeeID == empEntryID && a.ProjectID == projectID && a.IsDeleted == false);
         }
 
@@ -52,30 +53,36 @@ namespace Agilisium.TalentManager.Repository.Repositories
                     select a).Any();
         }
 
-        public IEnumerable<ProjectAllocationDto> GetAll(int pageSize, int pageNo = -1)
+        public IEnumerable<ProjectAllocationDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return (from p in Entities
-                    join em in DataContext.Employees on p.EmployeeID equals em.EmployeeEntryID into eme
-                    from emd in eme.DefaultIfEmpty()
-                    join sc in DataContext.DropDownSubCategories on p.AllocationTypeID equals sc.SubCategoryID into sce
-                    from scd in sce.DefaultIfEmpty()
-                    join pr in DataContext.Projects on p.ProjectID equals pr.ProjectID into pre
-                    from prd in pre.DefaultIfEmpty()
-                    where p.IsDeleted == false && emd.IsDeleted == false && scd.IsDeleted == false && prd.IsDeleted == false
-                    select new ProjectAllocationDto
-                    {
-                        AllocationEndDate = p.AllocationEndDate,
-                        AllocationEntryID = p.AllocationEntryID,
-                        AllocationStartDate = p.AllocationStartDate,
-                        AllocationTypeID = p.AllocationTypeID,
-                        AllocationTypeName = scd.SubCategoryName,
-                        EmployeeName = emd.LastName + ", " + emd.FirstName,
-                        ProjectName = prd.ProjectName,
-                        EmployeeID = p.EmployeeID,
-                        ProjectID = p.ProjectID,
-                        Remarks = p.Remarks,
-                        PercentageOfAllocation = p.PercentageOfAllocation
-                    });
+            IQueryable<ProjectAllocationDto> allocations = from p in Entities
+                                                           join em in DataContext.Employees on p.EmployeeID equals em.EmployeeEntryID into eme
+                                                           from emd in eme.DefaultIfEmpty()
+                                                           join sc in DataContext.DropDownSubCategories on p.AllocationTypeID equals sc.SubCategoryID into sce
+                                                           from scd in sce.DefaultIfEmpty()
+                                                           join pr in DataContext.Projects on p.ProjectID equals pr.ProjectID into pre
+                                                           from prd in pre.DefaultIfEmpty()
+                                                           where p.IsDeleted == false
+                                                           orderby p.AllocationStartDate
+                                                           select new ProjectAllocationDto
+                                                           {
+                                                               AllocationEndDate = p.AllocationEndDate,
+                                                               AllocationEntryID = p.AllocationEntryID,
+                                                               AllocationStartDate = p.AllocationStartDate,
+                                                               AllocationTypeName = scd.SubCategoryName,
+                                                               EmployeeName = emd.LastName + ", " + emd.FirstName,
+                                                               EmployeeID = p.EmployeeID,
+                                                               ProjectName = prd.ProjectName,
+                                                               Remarks = p.Remarks,
+                                                               PercentageOfAllocation = p.PercentageOfAllocation
+                                                           };
+
+            if (pageSize < 0)
+            {
+                return allocations;
+            }
+
+            return allocations.Skip((pageNo - 1) * pageSize).Take(pageSize);
         }
 
         public ProjectAllocationDto GetByID(int id)
@@ -135,18 +142,36 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public int GetPercentageOfAllocation(int employeeID, int projectID)
         {
+            if (Entities.Any(a => a.ProjectID != projectID && a.EmployeeID == employeeID))
+            {
+                return Entities.Where(a => a.ProjectID != projectID
+                && a.EmployeeID == employeeID).Sum(p => p.PercentageOfAllocation);
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude)
+        {
             return (from a in Entities
-                    where a.EmployeeID == employeeID && a.ProjectID != projectID
-                    select a.PercentageOfAllocation).Sum();
+                    join p in DataContext.Projects on a.ProjectID equals p.ProjectID into pe
+                    from pd in pe.DefaultIfEmpty()
+                    where a.ProjectID != projectToExclude && a.EmployeeID == employeeID
+                    orderby pd.ProjectName
+                    select pd.ProjectName);
         }
     }
 
     public interface IAllocationRepository : IRepository<ProjectAllocationDto>
     {
-        bool Exists(int empEntryID, int projectID);
+        int Exists(int empEntryID, int projectID);
 
-        bool Exists(int allocationID, int empEntryID, int projectID);
+        int Exists(int allocationID, int empEntryID, int projectID);
 
         int GetPercentageOfAllocation(int employeeID, int projectID);
+
+        IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude);
     }
 }

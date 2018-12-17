@@ -11,6 +11,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
     {
         private const int PM_PRACTICE_ID = 12;
         private const int DM_PRACTICE_ID = 19;
+        private const string PERMANENT_EMP_NAME = "Permanent";
 
         public bool Exists(string itemName)
         {
@@ -199,6 +200,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
             string employeeID = string.Empty;
 
             EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeTypeID);
+            string empType = DataContext.DropDownSubCategories.FirstOrDefault(s => s.SubCategoryID == employeeTypeID)?.SubCategoryName;
+
             bool isDuplicate = true;
 
             int runningID = tracker.RunningID;
@@ -206,7 +209,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
             string idPrefix = tracker.IDPrefix.ToLower();
             while (isDuplicate)
             {
-                string runningNumber = newRunningID.ToString().Substring(1);
+                string runningNumber = empType == PERMANENT_EMP_NAME ? newRunningID.ToString() : newRunningID.ToString().Substring(1);
                 employeeID = $"{tracker.IDPrefix}{runningNumber}";
 
                 if (!Entities.Any(e => e.EmployeeID.ToLower() == employeeID))

@@ -2,8 +2,8 @@
 
 @{
     ViewBag.Title = "Edit Category";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/Content/error-styles.css" rel="stylesheet" />
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -16,7 +16,7 @@
             @Html.HiddenFor(model => model.CategoryID)
             @Html.AntiForgeryToken()
 
-            @Html.ValidationSummary(false, "")
+            @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
 
             @foreach (var property in ViewData.ModelMetadata.Properties)
             {

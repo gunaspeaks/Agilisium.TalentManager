@@ -1,112 +1,108 @@
-﻿@model Agilisium.TalentManager.Web.Models.ProjectViewModel
+﻿@model Agilisium.TalentManager.Web.Models.ProjectModel
 
 @{
     ViewBag.Title = "Edit Project Details";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
-}
 
-<script src="~/Scripts/jquery-3.3.1.js"></script>
+    <script src="~/Scripts/jquery-3.3.1.js"></script>
 
-<script type="text/javascript">
-    $(function () {
-        $("#PracticeID").change(function (evt) {
+    <script type="text/javascript">
+        $(function () {
+            $("#PracticeID").change(function (evt) {
 
-            if ($("#PracticeID").text() != "Please Select") {
+                if ($("#PracticeID").text() != "Please Select") {
 
-                $.ajax({
-                    url: "/Project/SubPracticeList",
-                    type: 'POST',
-                    data: { id: $("#PracticeID").val() },
-                    success: function (data) {
-                        $('#SubPracticeID').empty();
-                        $.each(data, function () {
-                            $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
-                        });
-                        ddlSubPractice.prop('disabled', false);
-                    },
-                    error: function (xhr) { alert('Error while loading the Sub Practice list'); }
-                });
-            }
+                    $.ajax({
+                        url: "/Project/SubPracticeList",
+                        type: 'POST',
+                        data: { id: $("#PracticeID").val() },
+                        success: function (data) {
+                            $('#SubPracticeID').empty();
+                            $.each(data, function () {
+                                $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
+                            });
+                            ddlSubPractice.prop('disabled', false);
+                        },
+                        error: function (xhr) { alert('Error while loading the Sub Practice list'); }
+                    });
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-<div class="panel panel-default">
-    <div class="panel-heading">
-        <h3>Edit Project Details</h3>
-    </div>
-
-    @using (Html.BeginForm())
-    {
-        @Html.AntiForgeryToken()
-    <div class="panel-body">
-        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-        <div>
-            <table style="width:80%">
-                <tr>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectCode)
-                            @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectName)
-                            @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectManagerID)
-                            @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" })
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectManagerID)
-                            @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewData["EmployeesDDList"], null, new { @class = "form-control" })
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.ProjectTypeID)
-                            @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewData["ProjectTypeDDList"], null, new { @class = "form-control" })
-                        </div>
-                    </td>
-                    <td rowspan="2">
-                        <div class="form-group">
-                            @Html.Label("Remarks")
-                            @Html.TextArea("Remarks", null, new { @class = "form-control", rows = 5 })
-                        </div>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.StartDate)
-                            @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                    </td>
-                    <td>
-                        <div class="form-group">
-                            @Html.LabelFor(model => model.EndDate)
-                            @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
-                        </div>
-                    </td>
-                    <td>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        @Html.HiddenFor(model => model.ProjectID);
-        <div class="panel-footer">
-            <input type="submit" value="Save" class="btn btn-primary" />
-            @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3>Edit Project Details</h3>
         </div>
 
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="panel-body">
+                @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
+                <div>
+                    <table style="width:80%">
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    @Html.HiddenFor(model => model.ProjectID)
+                                    @Html.LabelFor(model => model.ProjectCode)
+                                    @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ProjectName)
+                                    @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ProjectManagerID)
+                                    @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, null, new { @class = "form-control" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ProjectManagerID)
+                                    @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, null, new { @class = "form-control" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ProjectTypeID)
+                                    @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, null, new { @class = "form-control" })
+                                </div>
+                            </td>
+                            <td rowspan="2">
+                                <div class="form-group">
+                                    @Html.Label("Remarks")
+                                    @Html.TextArea("Remarks", null, new { @class = "form-control", rows = 5 })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.StartDate)
+                                    @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.EndDate)
+                                    @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="panel-footer">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                    @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
+                </div>
+            </div>
+        }
     </div>
-    }
-</div>

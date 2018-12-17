@@ -67,7 +67,7 @@ namespace Agilisium.TalentManager.Web.Models
         public string SecondarySkills { get; set; }
 
         [DisplayName("Reporting Manager")]
-        public int ReportingManagerID { get; set; }
+        public int? ReportingManagerID { get; set; }
 
         [DisplayName("Reporting Manager")]
         public string ReportingManagerName { get; set; }

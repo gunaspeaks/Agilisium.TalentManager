@@ -17,7 +17,8 @@
                 <td>
                     @using (Html.BeginForm())
                     {
-                        <label>Categories</label> @Html.DropDownListFor(d => d.SelectedCategoryID, Model.CategoryListItems)
+                        <label>Categories</label> 
+                        @Html.DropDownListFor(d => d.SelectedCategoryID, Model.CategoryListItems)
                         <input type="submit" value="Get Sub Categories" class="btn btn-primary" />
                     }
                 </td>

@@ -2,13 +2,13 @@
 
 @{
     ViewBag.Title = "Edit Employee Details";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<link href="~/Content/error-styles.css" rel="stylesheet" />
 
 <script type="text/javascript">
 
     $(document).ready(function () {
-        if ($("#PracticeID").text() != "Please Select") {
+        if ($("#PracticeID").val() != "") {
             loadSubPracticeDropDown();
         }
     })
@@ -48,7 +48,7 @@
     {
         @Html.AntiForgeryToken()
         <div class="panel-body">
-            @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
             <div>
                 <table style="width:80%;">
                     <tr>
@@ -56,7 +56,7 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.EmploymentTypeID)
                                 @Html.HiddenFor(model => model.EmploymentTypeID)
-                                @Html.EditorFor(model => model.EmploymentTypeName, new { htmlAttributes = new { @class = "form-control", @readonly="true" } })
+                                @Html.EditorFor(model => model.EmploymentTypeName, new { htmlAttributes = new { @class = "form-control", @readonly = "true" } })
                             </div>
                         </td>
                         <td>

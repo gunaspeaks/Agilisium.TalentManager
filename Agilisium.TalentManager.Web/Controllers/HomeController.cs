@@ -30,7 +30,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         [ChildActionOnly]
         public ActionResult AllocationsDashboard()
         {
-            return PartialView(new List<AllocationModel>());
+            return PartialView(new List<AllocationWidgetModel>());
         }
     }
 }

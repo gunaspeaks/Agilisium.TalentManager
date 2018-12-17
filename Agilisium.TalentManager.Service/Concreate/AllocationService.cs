@@ -24,12 +24,12 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Delete(entity);
         }
 
-        public bool Exists(int empEntryID, int projectID)
+        public int Exists(int empEntryID, int projectID)
         {
             return repository.Exists(empEntryID, projectID);
         }
 
-        public bool Exists(int allocationID, int empEntryID, int projectID)
+        public int Exists(int allocationID, int empEntryID, int projectID)
         {
             return repository.Exists(allocationID, empEntryID, projectID);
         }
@@ -44,9 +44,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(itemName);
         }
 
-        public IEnumerable<ProjectAllocationDto> GetAll(int pageNo = -1)
+        public IEnumerable<ProjectAllocationDto> GetAll(int pageSize=-1, int pageNo = -1)
         {
-            return repository.GetAll(pageNo);
+            return repository.GetAll(pageSize, pageNo);
         }
 
         public ProjectAllocationDto GetByID(int id)
@@ -62,6 +62,16 @@ namespace Agilisium.TalentManager.Service.Concreate
         public int GetPercentageOfAllocation(int employeeID, int projectID)
         {
             return repository.GetPercentageOfAllocation(employeeID, projectID);
+        }
+
+        public int TotalRecordsCount()
+        {
+            return repository.TotalRecordsCount();
+        }
+
+        public IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude)
+        {
+            return repository.GetAllocatedProjectsByEmployeeID(employeeID, projectToExclude);
         }
     }
 }

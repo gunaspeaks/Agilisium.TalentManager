@@ -246,12 +246,14 @@
     <Compile Include="Helpers\UIConstants.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\AllocationViewModel.cs" />
+    <Compile Include="Models\ProjectViewModel.cs" />
     <Compile Include="Models\PracticeViewModel.cs" />
     <Compile Include="Models\CategoryViewModel.cs" />
     <Compile Include="Models\MenuItem.cs" />
     <Compile Include="Models\PagingInfo.cs" />
     <Compile Include="Models\WidgetModels.cs" />
-    <Compile Include="Models\AllocationViewModel.cs" />
+    <Compile Include="Models\AllocationModel.cs" />
     <Compile Include="Models\CategoryModel.cs" />
     <Compile Include="Models\EmployeeModel.cs" />
     <Compile Include="Models\EmployeeViewModel.cs" />
@@ -260,7 +262,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\PagingViewModel.cs" />
     <Compile Include="Models\PracticeModel.cs" />
-    <Compile Include="Models\ProjectViewModel.cs" />
+    <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\SubPracticeViewModel.cs" />
     <Compile Include="Models\SubCategoryViewModel.cs" />
     <Compile Include="Models\SubPracticeModel.cs" />
@@ -288,6 +290,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\Agilisium\content-updater.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -360,13 +363,14 @@
     <Content Include="Views\Project\Create.cshtml" />
     <Content Include="Views\Project\Edit.cshtml" />
     <Content Include="Views\Project\List.cshtml" />
-    <Content Include="Views\Allocation\Create.cshtml" />
+    <Content Include="Views\Allocation\CreateOld.cshtml" />
     <Content Include="Views\Allocation\Edit.cshtml" />
     <Content Include="Views\Allocation\List.cshtml" />
     <Content Include="Views\Menu\GenerateMenu.cshtml" />
     <Content Include="Views\Shared\_MenuLayout.cshtml" />
     <Content Include="Views\Default\Index.cshtml" />
     <Content Include="Views\Default\Index1.cshtml" />
+    <Content Include="Views\Allocation\Create.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

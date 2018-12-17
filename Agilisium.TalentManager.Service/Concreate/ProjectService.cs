@@ -67,5 +67,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.IsDuplicateProjectCode(projectCode, projectID);
         }
+
+        public int TotalRecordsCount()
+        {
+            return repository.TotalRecordsCount();
+        }
     }
 }

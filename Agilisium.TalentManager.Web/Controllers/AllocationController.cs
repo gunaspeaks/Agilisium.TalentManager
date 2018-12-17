@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Controllers
 {
-    public class AllocationController : Controller
+    public class AllocationController : BaseController
     {
         private readonly IEmployeeService empService;
         private readonly IDropDownSubCategoryService subCategoryService;
@@ -28,98 +28,152 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Project
-        public ActionResult List()
+        public ActionResult List(int page = 1)
         {
-            IEnumerable<AllocationViewModel> allocations = GetAllocations();
-            return View(allocations);
+            AllocationViewModel viewModel = new AllocationViewModel();
+            try
+            {
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = allocationService.TotalRecordsCount(),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Allocations = GetAllocations(page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Project Allocations to display");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(viewModel);
         }
 
         // GET: Project/Create
         public ActionResult Create()
         {
-            InitializeAddUpdatePageData();
-            return View(new AllocationViewModel());
+            AllocationModel project = new AllocationModel();
+
+            try
+            {
+                InitializePageData();
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(project);
         }
 
         // POST: Project/Create
         [HttpPost]
-        public ActionResult Create(AllocationViewModel allocation)
+        public ActionResult Create(AllocationModel allocation)
         {
             try
             {
+                InitializePageData();
+
                 if (ModelState.IsValid)
                 {
-                    if (allocationService.Exists(allocation.EmployeeID, allocation.ProjectID))
+                    if (allocation.AllocationEndDate <= allocation.AllocationStartDate)
                     {
-                        ModelState.AddModelError("", $"I guess, the project {allocation.ProjectName} is already allocated to {allocation.EmployeeName}");
+                        DisplayWarningMessage("The End date should be greater than the Start date");
                         return View(allocation);
                     }
 
-                    ProjectAllocationDto projectDto = Mapper.Map<AllocationViewModel, ProjectAllocationDto>(allocation);
+                    if (allocationService.Exists(allocation.EmployeeID, allocation.ProjectID) > 0)
+                    {
+                        DisplayWarningMessage($"Looks like the selected project is already allocated to the selected employee");
+                        return View(allocation);
+                    }
+
+                    ProjectAllocationDto projectDto = Mapper.Map<AllocationModel, ProjectAllocationDto>(allocation);
                     allocationService.Add(projectDto);
-                    TempData["AlertMessage"] = $"New project allocation has been created for {allocation.EmployeeName}";
+                    DisplaySuccessMessage($"New project allocation has been created for {allocation.EmployeeName}");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayUpdateErrorMessage(exp);
             }
-            return RedirectToAction("List");
+            return View(allocation);
         }
 
         // GET: Project/Edit/5
         public ActionResult Edit(int? id)
         {
-            AllocationViewModel empModel = new AllocationViewModel();
+            AllocationModel empModel = new AllocationModel();
+
             try
             {
+                InitializePageData();
+
                 if (!id.HasValue)
                 {
-                    ModelState.AddModelError("", "Looks like, the required data is not available with your request");
-                    return View(new AllocationViewModel());
+                    DisplayWarningMessage("Looks like, the required data is not available with your request");
+                    return RedirectToAction("List");
+                }
+
+                if (!allocationService.Exists(id.Value))
+                {
+                    DisplayWarningMessage($"Sorry, we couldn't find the allocation details with ID: {id.Value}");
+                    return RedirectToAction("List");
                 }
 
                 ProjectAllocationDto emp = allocationService.GetByID(id.Value);
-
-                if (emp == null)
-                {
-                    ModelState.AddModelError("", $"Sorry, we couldn't find the allocation details with ID: {id.Value}");
-                    return View(new AllocationViewModel());
-                }
-                empModel = Mapper.Map<ProjectAllocationDto, AllocationViewModel>(emp);
-                InitializeAddUpdatePageData();
+                empModel = Mapper.Map<ProjectAllocationDto, AllocationModel>(emp);
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayReadErrorMessage(exp);
             }
+
             return View(empModel);
         }
 
         // POST: Project/Edit/5
         [HttpPost]
-        public ActionResult Edit(AllocationViewModel allocation)
+        public ActionResult Edit(AllocationModel allocation)
         {
             try
             {
+                InitializePageData();
+
                 if (ModelState.IsValid)
                 {
-                    if (allocationService.Exists(allocation.AllocationEntryID, allocation.EmployeeID, allocation.ProjectID))
+                    if (allocation.AllocationEndDate <= allocation.AllocationStartDate)
                     {
-                        ModelState.AddModelError("", $"I guess, the project {allocation.ProjectName} is already allocated to {allocation.EmployeeName}");
+                        DisplayWarningMessage("The End date should be greater than the Start date");
                         return View(allocation);
                     }
 
-                    ProjectAllocationDto projectDto = Mapper.Map<AllocationViewModel, ProjectAllocationDto>(allocation);
+                    if (allocationService.Exists(allocation.AllocationEntryID, allocation.EmployeeID, allocation.ProjectID) > 1)
+                    {
+                        DisplayWarningMessage($"Looks like the selected project is already allocated to the selected employee");
+                        return View(allocation);
+                    }
+
+                    ProjectAllocationDto projectDto = Mapper.Map<AllocationModel, ProjectAllocationDto>(allocation);
                     allocationService.Update(projectDto);
-                    TempData["AlertMessage"] = $"Project allocation details have been updated for {allocation.EmployeeName}";
+                    DisplaySuccessMessage($"Project allocation details have been updated for {allocation.EmployeeName}");
+                    return RedirectToAction("List");
                 }
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
+                DisplayUpdateErrorMessage(exp);
             }
-            return RedirectToAction("List");
+            return View(allocation);
         }
 
         // GET: Project/Delete/5
@@ -127,39 +181,64 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             if (!id.HasValue)
             {
-                ModelState.AddModelError("", "Looks like, the Allocation ID is missing from your request");
-                return View(new AllocationViewModel());
+                DisplayWarningMessage("Looks like, the Allocation ID is missing from your request");
+                return RedirectToAction("List");
             }
 
             try
             {
                 allocationService.Delete(new ProjectAllocationDto { AllocationEntryID = id.Value });
-                TempData["AlertMessage"] = "Allocation details have been removed successfully";
+                DisplaySuccessMessage("Allocation details have been removed successfully");
                 return RedirectToAction("List");
             }
             catch (Exception exp)
             {
-                ModelState.AddModelError("", exp.Message);
-                return View();
+                DisplayDeleteErrorMessage(exp);
             }
+
+            return RedirectToAction("List");
         }
 
-        private IEnumerable<AllocationViewModel> GetAllocations()
+
+        [HttpPost]
+        public JsonResult GetProjectDetails(int projectID)
         {
-            IEnumerable<ProjectAllocationDto> allocations = allocationService.GetAll();
-            IEnumerable<AllocationViewModel> projectModels = Mapper.Map<IEnumerable<ProjectAllocationDto>, IEnumerable<AllocationViewModel>>(allocations);
-            CacheHelper.AddOrUpdateItem(UIConstants.ALLOCATION_MODELS_LIST, projectModels, HttpContext);
+            ProjectDto project = projectService.GetByID(projectID);
+            JsonResult dat = Json(project);
+            return dat;
+        }
+
+        [HttpPost]
+        public JsonResult GetEmploymentDetails(int empID, int prjID)
+        {
+            int val = allocationService.GetPercentageOfAllocation(empID, prjID);
+            JsonResult res = Json(val);
+            return res;
+        }
+
+        [HttpPost]
+        public JsonResult GetEmployeeOtherAllocations(int empID, int prjID)
+        {
+            IEnumerable<string> projects = allocationService.GetAllocatedProjectsByEmployeeID(empID, prjID);
+            return Json(projects);
+        }
+
+        private IEnumerable<AllocationModel> GetAllocations(int pageNo)
+        {
+            IEnumerable<ProjectAllocationDto> allocations = allocationService.GetAll(RecordsPerPage, pageNo);
+            IEnumerable<AllocationModel> projectModels = Mapper.Map<IEnumerable<ProjectAllocationDto>, IEnumerable<AllocationModel>>(allocations);
             return projectModels;
         }
 
-        private void InitializeAddUpdatePageData()
+        private void InitializePageData()
         {
             ViewData["IsNewProject"] = true;
-            PrepareSubCategoriesDDItems();
-            ViewData["EmployeesDDList"] = GetEmployeesDDList();
+            GetOtherDropDownItems();
+            GetEmployeesList();
+            GetProjectsList();
         }
 
-        private void PrepareSubCategoriesDDItems()
+        private void GetOtherDropDownItems()
         {
             IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetAll();
 
@@ -172,44 +251,39 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                          Value = c.SubCategoryID.ToString()
                                                      }).ToList();
 
-            projectTypeItems.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = "0",
-            });
+            InsertDefaultListItem(projectTypeItems);
 
-            ViewData["UtilizationTypeDDList"] = projectTypeItems;
+            ViewBag.ProjectTypeListItems = projectTypeItems;
         }
 
-        private List<SelectListItem> GetEmployeesDDList()
+        private void GetEmployeesList()
         {
-            List<EmployeeModel> employeeModels = (List<EmployeeModel>)CacheHelper.GetItem(UIConstants.EMPLOYEE_MODELS_LIST, HttpContext);
+            List<EmployeeDto> employees = empService.GetAllEmployees();
 
-            if (employeeModels == null)
-            {
-                List<EmployeeDto> employees = empService.GetAllEmployees();
-                employeeModels = Mapper.Map<List<EmployeeDto>, List<EmployeeModel>>(employees);
-                CacheHelper.AddOrUpdateItem(UIConstants.EMPLOYEE_MODELS_LIST, employeeModels, HttpContext);
-            }
+            List<SelectListItem> pmList = (from e in employees
+                                           select new SelectListItem
+                                           {
+                                               Text = $"{e.LastName}, {e.FirstName}",
+                                               Value = e.EmployeeEntryID.ToString()
+                                           }).ToList();
 
-            List<SelectListItem> empDDList = new List<SelectListItem>
-            {
-                new SelectListItem{Text = "Please Select", Value = string.Empty}
-            };
+            InsertDefaultListItem(pmList);
+            ViewBag.EmployeeListItems = pmList;
+        }
 
-            if (employeeModels != null)
-            {
-                foreach (EmployeeModel item in employeeModels)
-                {
-                    empDDList.Add(new SelectListItem
-                    {
-                        Text = $"{item.LastName}, {item.FirstName}",
-                        Value = item.EmployeeEntryID.ToString()
-                    });
-                }
-            }
+        private void GetProjectsList()
+        {
+            IEnumerable<ProjectDto> projects = projectService.GetAll();
 
-            return empDDList;
+            List<SelectListItem> projectList = (from p in projects
+                                                select new SelectListItem
+                                                {
+                                                    Text = p.ProjectName,
+                                                    Value = p.ProjectID.ToString()
+                                                }).ToList();
+
+            InsertDefaultListItem(projectList);
+            ViewBag.ProjectListItems = projectList;
         }
     }
 }

@@ -11,6 +11,11 @@ namespace Agilisium.TalentManager.Web.Helpers
         private const string deleteErrorMessage = "Oops! an error has occured while deleting the details";
         private const string loadErrorMessage = "Oops! an error has occured while loading the page";
 
+        public BaseController()
+        {
+            CacheHelper.SetContext(HttpContext);
+        }
+
         public virtual void DisplayWarningMessage(string message)
         {
             TempData["WarningMessage"] = message;
@@ -106,7 +111,7 @@ namespace Agilisium.TalentManager.Web.Helpers
             itemsList.Insert(0, new SelectListItem
             {
                 Text = "Please Select",
-                Value = "0",
+                Value = ""
             });
         }
     }
