@@ -232,7 +232,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                        Value = $"{cat.CategoryID}"
                                                    }).ToList();
 
-            InsertDefaultListItem(categoriesList);
             Session["CategoryListItems"] = categoriesList;
             return categoriesList;
         }

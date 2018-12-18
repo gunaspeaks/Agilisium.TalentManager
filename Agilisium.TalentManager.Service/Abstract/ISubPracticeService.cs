@@ -32,5 +32,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         int TotalRecordsCountByPracticeID(int practiceID);
 
         bool CanBeDeleted(int id);
+
+        string GetManagerName(int subPracticeID);
     }
 }

@@ -28,5 +28,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         bool IsReservedEntry(int id);
 
         string GetPracticeName(int practiceID);
+
+        string GetManagerName(int practiceID);
     }
 }

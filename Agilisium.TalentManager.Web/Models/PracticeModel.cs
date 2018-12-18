@@ -21,6 +21,14 @@ namespace Agilisium.TalentManager.Web.Models
         [MaxLength(10, ErrorMessage = "Short Name should not should not exceed 10 characters")]
         public string ShortName { get; set; }
 
+
+        [DisplayName("Practice Manager")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a Practice Manager")]
+        public int ManagerID { get; set; }
+
+        [DisplayName("Practice Manager")]
+        public string ManagerName { get; set; }
+
         public bool IsReserved { get; set; }
     }
 }

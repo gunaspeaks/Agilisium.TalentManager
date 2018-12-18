@@ -39,5 +39,11 @@ namespace Agilisium.TalentManager.Dto
         public int SubPracticeID { get; set; }
 
         public string SubPracticeName { get; set; }
+
+        public bool IsSowAvailable { get; set; }
+
+        public DateTime? SowStartDate { get; set; }
+
+        public DateTime? SowEndDate { get; set; }
     }
 }

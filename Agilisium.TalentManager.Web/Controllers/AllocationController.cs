@@ -251,8 +251,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                          Value = c.SubCategoryID.ToString()
                                                      }).ToList();
 
-            InsertDefaultListItem(projectTypeItems);
-
             ViewBag.ProjectTypeListItems = projectTypeItems;
         }
 
@@ -267,7 +265,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                Value = e.EmployeeEntryID.ToString()
                                            }).ToList();
 
-            InsertDefaultListItem(pmList);
             ViewBag.EmployeeListItems = pmList;
         }
 
@@ -282,7 +279,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                     Value = p.ProjectID.ToString()
                                                 }).ToList();
 
-            InsertDefaultListItem(projectList);
             ViewBag.ProjectListItems = projectList;
         }
     }

@@ -5,17 +5,20 @@ using Agilisium.TalentManager.Web.Models;
 using AutoMapper;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Controllers
 {
     public class PracticeController : BaseController
     {
-        private readonly IPracticeService service;
+        private readonly IPracticeService practiceService;
+        private readonly IEmployeeService empService;
 
-        public PracticeController(IPracticeService practiceService)
+        public PracticeController(IPracticeService practiceService, IEmployeeService empService)
         {
-            service = practiceService;
+            this.practiceService = practiceService;
+            this.empService = empService;
         }
 
         // GET: Practice
@@ -27,7 +30,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 viewModel.PagingInfo = new PagingInfo
                 {
-                    TotalRecordsCount = service.TotalRecordsCount(),
+                    TotalRecordsCount = practiceService.TotalRecordsCount(),
                     RecordsPerPage = RecordsPerPage,
                     CurentPageNo = page
                 };
@@ -52,6 +55,15 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Practice/Create
         public ActionResult Create()
         {
+            try
+            {
+                InitializePageData();
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
             return View(new PracticeModel());
         }
 
@@ -61,15 +73,17 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
+                InitializePageData();
+
                 if (ModelState.IsValid)
                 {
-                    if (service.Exists(practice.PracticeName))
+                    if (practiceService.Exists(practice.PracticeName))
                     {
                         DisplayWarningMessage($"The Practice Name '{practice.PracticeName}' is duplicate");
                         return View(practice);
                     }
                     PracticeDto practiceModel = Mapper.Map<PracticeModel, PracticeDto>(practice);
-                    service.CreatePractice(practiceModel);
+                    practiceService.CreatePractice(practiceModel);
                     DisplaySuccessMessage($"New Practice '{practice.PracticeName}' has been stored successfully");
                     return RedirectToAction("List");
                 }
@@ -86,21 +100,23 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             PracticeModel practice = new PracticeModel();
 
-            if (!id.HasValue)
-            {
-                DisplayWarningMessage("Looks like, the ID is missing in your request");
-                return RedirectToAction("List");
-            }
+            InitializePageData();
 
             try
             {
-                if (!service.Exists(id.Value))
+                if (!id.HasValue)
+                {
+                    DisplayWarningMessage("Looks like, the ID is missing in your request");
+                    return RedirectToAction("List");
+                }
+
+                if (!practiceService.Exists(id.Value))
                 {
                     DisplayWarningMessage($"Sorry, We couldn't find the Practice with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
-                PracticeDto practiceDto = service.GetPractice(id.Value);
+                PracticeDto practiceDto = practiceService.GetPractice(id.Value);
                 practice = Mapper.Map<PracticeDto, PracticeModel>(practiceDto);
             }
             catch (Exception exp)
@@ -117,16 +133,18 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
+                InitializePageData();
+
                 if (ModelState.IsValid)
                 {
-                    if (service.Exists(practice.PracticeName, practice.PracticeID))
+                    if (practiceService.Exists(practice.PracticeName, practice.PracticeID))
                     {
                         DisplayWarningMessage($"Practice Name '{practice.PracticeName}' is duplicate");
                         return View(practice);
                     }
 
                     PracticeDto practiceModel = Mapper.Map<PracticeModel, PracticeDto>(practice);
-                    service.UpdatePractice(practiceModel);
+                    practiceService.UpdatePractice(practiceModel);
                     DisplaySuccessMessage($"Practice '{practice.PracticeName}' details have been modified successfully");
                     return RedirectToAction("List");
                 }
@@ -150,22 +168,22 @@ namespace Agilisium.TalentManager.Web.Controllers
 
             try
             {
-                if (service.IsReservedEntry(id.Value))
+                if (practiceService.IsReservedEntry(id.Value))
                 {
                     DisplayWarningMessage("Hey, why do you want to delete a Reserved Practice. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
-                if (service.CanBeDeleted(id.Value) == false)
+                if (practiceService.CanBeDeleted(id.Value) == false)
                 {
                     DisplayWarningMessage("There are some dependencies with this Practice. So, you can't delete this for now");
                     return RedirectToAction("List");
                 }
 
-                service.DeletePractice(new PracticeDto { PracticeID = id.Value });
+                practiceService.DeletePractice(new PracticeDto { PracticeID = id.Value });
                 DisplaySuccessMessage("Practice has been deleted successfully");
             }
-            catch(Exception exp)
+            catch (Exception exp)
             {
                 DisplayDeleteErrorMessage(exp);
             }
@@ -174,9 +192,29 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private IEnumerable<PracticeModel> GetPractices(int pageNo)
         {
-            IEnumerable<PracticeDto> practices = service.GetPractices(RecordsPerPage, pageNo);
+            IEnumerable<PracticeDto> practices = practiceService.GetPractices(RecordsPerPage, pageNo);
             IEnumerable<PracticeModel> practiceModels = Mapper.Map<IEnumerable<PracticeDto>, IEnumerable<PracticeModel>>(practices);
             return practiceModels;
+        }
+
+        private void InitializePageData()
+        {
+            List<EmployeeDto> managers = empService.GetAllManagers();
+
+            List<SelectListItem> empDDList = new List<SelectListItem>();
+
+            if (managers != null)
+            {
+                empDDList = (from e in managers
+                             select new SelectListItem
+                             {
+                                 Text = $"{e.LastName}, {e.FirstName}",
+                                 Value = e.EmployeeEntryID.ToString()
+                             }).ToList();
+            }
+
+
+            ViewBag.ManagerListItems = empDDList;
         }
     }
 }

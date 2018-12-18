@@ -73,5 +73,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.GetPracticeName(practiceID);
         }
+
+        public string GetManagerName(int practiceID)
+        {
+            return repository.GetManagerName(practiceID);
+        }
     }
 }

@@ -17,6 +17,7 @@ namespace Agilisium.TalentManager.Model.Configuration
             Property(g => g.PracticeID).IsRequired().HasDatabaseGeneratedOption(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity);
             Property(g => g.PracticeName).IsRequired().HasMaxLength(100);
             Property(g => g.ShortName).IsRequired().HasMaxLength(10);
+            Property(g => g.ManagerID).IsOptional();
         }
     }
 }

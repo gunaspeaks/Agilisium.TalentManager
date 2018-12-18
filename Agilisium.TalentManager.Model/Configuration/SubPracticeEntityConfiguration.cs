@@ -18,6 +18,7 @@ namespace Agilisium.TalentManager.Model.Configuration
             Property(g => g.PracticeID).IsRequired();
             Property(g => g.SubPracticeName).IsRequired().HasMaxLength(100);
             Property(g => g.ShortName).IsRequired().HasMaxLength(10);
+            Property(g => g.ManagerID).IsOptional();
         }
     }
 }

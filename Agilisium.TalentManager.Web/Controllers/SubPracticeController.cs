@@ -14,11 +14,14 @@ namespace Agilisium.TalentManager.Web.Controllers
     {
         private readonly ISubPracticeService subPracticeService;
         private readonly IPracticeService practiceService;
+        private readonly IEmployeeService empService;
 
-        public SubPracticeController(IPracticeService practiceService, ISubPracticeService subPracticeService)
+        public SubPracticeController(IPracticeService practiceService, 
+            ISubPracticeService subPracticeService, IEmployeeService empService)
         {
             this.practiceService = practiceService;
             this.subPracticeService = subPracticeService;
+            this.empService = empService;
         }
 
         // GET: SubPractice/1
@@ -85,6 +88,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
+                InitializePageData();
                 ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
             }
             catch (Exception exp)
@@ -100,6 +104,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
+                InitializePageData();
                 ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
 
                 if (ModelState.IsValid)
@@ -144,6 +149,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                     return RedirectToAction("List");
                 }
 
+                InitializePageData();
                 ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
 
                 SubPracticeDto practice = subPracticeService.GetByID(id.Value);
@@ -163,6 +169,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             try
             {
+                InitializePageData();
                 ViewBag.PracticeListItems = (IEnumerable<SelectListItem>)Session["PracticeListItems"] ?? GetPracticesDropDownList();
 
                 if (ModelState.IsValid)
@@ -216,6 +223,19 @@ namespace Agilisium.TalentManager.Web.Controllers
             return RedirectToAction("List");
         }
 
+        public JsonResult GetPracticeName(int id)
+        {
+            string practiceName = practiceService.GetManagerName(id);
+            return Json(practiceName);
+        }
+
+        [HttpPost]
+        public JsonResult GetSubPracticeManagerName(int id)
+        {
+            string name = subPracticeService.GetManagerName(id);
+            return Json(name);
+        }
+
         private IEnumerable<SelectListItem> GetPracticesDropDownList()
         {
             IEnumerable<PracticeDto> practices = practiceService.GetPractices();
@@ -228,7 +248,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                       Value = $"{cat.PracticeID}"
                                                   }).ToList();
 
-            InsertDefaultListItem(practicesList);
             Session["PracticeListItems"] = practicesList;
             return practicesList;
         }
@@ -238,6 +257,25 @@ namespace Agilisium.TalentManager.Web.Controllers
             IEnumerable<SubPracticeDto> subPractices = subPracticeService.GetAllByPracticeID(practiceID, RecordsPerPage, pageNo);
             IEnumerable<SubPracticeModel> uiPractices = Mapper.Map<IEnumerable<SubPracticeDto>, IEnumerable<SubPracticeModel>>(subPractices);
             return uiPractices;
+        }
+
+        private void InitializePageData()
+        {
+            List<EmployeeDto> managers = empService.GetAllManagers();
+
+            List<SelectListItem> empDDList = new List<SelectListItem>();
+
+            if (managers != null)
+            {
+                empDDList = (from e in managers
+                             select new SelectListItem
+                             {
+                                 Text = $"{e.LastName}, {e.FirstName}",
+                                 Value = e.EmployeeEntryID.ToString()
+                             }).ToList();
+            }
+
+            ViewBag.ManagerListItems = empDDList;
         }
     }
 }

@@ -17,5 +17,9 @@ namespace Agilisium.TalentManager.Dto
         public int PracticeID { get; set; }
 
         public string PracticeName { get; set; }
+
+        public int? ManagerID { get; set; }
+
+        public string ManagerName { get; set; }
     }
 }

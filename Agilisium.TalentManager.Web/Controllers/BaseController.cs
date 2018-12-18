@@ -100,19 +100,5 @@ namespace Agilisium.TalentManager.Web.Helpers
                 }
             }
         }
-
-        public void InsertDefaultListItem(List<SelectListItem> itemsList)
-        {
-            if (itemsList == null)
-            {
-                itemsList = new List<SelectListItem>();
-            }
-
-            itemsList.Insert(0, new SelectListItem
-            {
-                Text = "Please Select",
-                Value = ""
-            });
-        }
     }
 }

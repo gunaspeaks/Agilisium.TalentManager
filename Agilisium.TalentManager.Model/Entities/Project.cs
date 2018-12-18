@@ -30,5 +30,11 @@ namespace Agilisium.TalentManager.Model.Entities
         public int PracticeID { get; set; }
 
         public int SubPracticeID { get; set; }
+
+        public bool IsSowAvailable { get; set; }
+
+        public DateTime? SowStartDate { get; set; }
+
+        public DateTime? SowEndDate { get; set; }
     }
 }

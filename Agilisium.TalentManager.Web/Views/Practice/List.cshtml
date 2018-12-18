@@ -20,6 +20,9 @@
                 <th class="text-center">
                     @Html.DisplayNameFor(model => model.Practices.FirstOrDefault().ShortName)
                 </th>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.Practices.FirstOrDefault().ManagerName)
+                </th>
                 <th class="text-center">Actions</th>
             </tr>
             @foreach (var item in Model.Practices)
@@ -30,6 +33,9 @@
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.ShortName)
+                    </td>
+                    <td>
+                        @Html.DisplayTextFor(modelItem => item.ManagerName)
                     </td>
                     <td class="text-center">
                         @using (Html.BeginForm("Delete", "Practice"))

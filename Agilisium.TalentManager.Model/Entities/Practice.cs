@@ -14,6 +14,8 @@ namespace Agilisium.TalentManager.Model.Entities
 
         public string ShortName { get; set; }
 
+        public int? ManagerID { get; set; }
+
         public bool IsReserved { get; set; }
     }
 }

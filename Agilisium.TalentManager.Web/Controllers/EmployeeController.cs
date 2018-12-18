@@ -103,7 +103,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
             catch (Exception exp)
             {
-                DisplayWarningMessage(exp.Message);
+                DisplayUpdateErrorMessage(exp);
             }
             return View(employee);
         }
@@ -238,7 +238,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                     Value = c.SubCategoryID.ToString()
                                                 }).ToList();
 
-            InsertDefaultListItem(buListItems);
             ViewBag.BuListItems = buListItems;
 
             List<SelectListItem> ucListItems = (from c in buList
@@ -250,7 +249,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                     Value = c.SubCategoryID.ToString()
                                                 }).ToList();
 
-            InsertDefaultListItem(ucListItems);
             ViewBag.UtilizationTypeListItems = ucListItems;
 
             List<SelectListItem> empTypeList = (from c in buList
@@ -262,7 +260,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                     Value = c.SubCategoryID.ToString()
                                                 }).ToList();
 
-            InsertDefaultListItem(empTypeList);
             ViewBag.EmploymentTypeListItems = empTypeList;
         }
 
@@ -276,7 +273,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                       Text = p.PracticeName,
                                                       Value = p.PracticeID.ToString()
                                                   }).ToList();
-            InsertDefaultListItem(practiceItems);
             ViewBag.PracticeListItems = practiceItems;
         }
 
@@ -291,7 +287,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                Value = c.SubPracticeID.ToString()
                                            }).ToList();
 
-            InsertDefaultListItem(ddList);
             ViewBag.SubPracticeListItems = ddList;
             return ddList;
         }
@@ -312,8 +307,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                                  Value = e.EmployeeEntryID.ToString()
                              }).ToList();
             }
-
-            InsertDefaultListItem(empDDList);
 
             ViewBag.ReportingManagerListItems = empDDList;
         }

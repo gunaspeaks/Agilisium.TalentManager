@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Edit Project Details";
-
+}
     <script src="~/Scripts/jquery-3.3.1.js"></script>
 
     <script type="text/javascript">
@@ -10,7 +10,6 @@
             $("#PracticeID").change(function (evt) {
 
                 if ($("#PracticeID").text() != "Please Select") {
-
                     $.ajax({
                         url: "/Project/SubPracticeList",
                         type: 'POST',
@@ -96,6 +95,26 @@
                                 </div>
                             </td>
                             <td></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.IsSowAvailable)
+                                    @Html.CheckBoxFor(model => model.IsSowAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.SowStartDate)
+                                    @Html.EditorFor(model => model.SowStartDate, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.SowEndDate)
+                                    @Html.EditorFor(model => model.SowEndDate, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </td>
                         </tr>
                     </table>
                 </div>

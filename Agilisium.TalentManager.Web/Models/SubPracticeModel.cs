@@ -9,7 +9,8 @@ namespace Agilisium.TalentManager.Web.Models
 {
     public class SubPracticeModel : ViewModelBase
     {
-        [Required(ErrorMessage = "Practice is required")]
+        [Required(ErrorMessage = "Please select a Practice")]
+        [DisplayName("Practice Name")]
         public int PracticeID { get; set; }
 
         public int SubPracticeID { get; set; }
@@ -26,5 +27,12 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Practice Name")]
         public string PracticeName { get; set; }
+
+        [DisplayName("Sub-Practice Manager")]
+        [Required(ErrorMessage = "Please select a Sub-Practice Manager", AllowEmptyStrings = false)]
+        public int ManagerID { get; set; }
+
+        [DisplayName("Sub-Practice Manager")]
+        public string ManagerName { get; set; }
     }
 }

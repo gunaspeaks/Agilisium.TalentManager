@@ -109,6 +109,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
                         SubPracticeID = p.SubPracticeID,
                         Remarks = p.Remarks,
                         StartDate = p.StartDate,
+                        IsSowAvailable = p.IsSowAvailable,
+                        SowEndDate = p.SowEndDate,
+                        SowStartDate = p.SowStartDate
                     }).FirstOrDefault();
         }
 
@@ -137,7 +140,10 @@ namespace Agilisium.TalentManager.Repository.Repositories
                 Remarks = projectDto.Remarks,
                 StartDate = projectDto.StartDate,
                 SubPracticeID = projectDto.SubPracticeID,
-                ProjectID = projectDto.ProjectID
+                ProjectID = projectDto.ProjectID,
+                IsSowAvailable = projectDto.IsSowAvailable,
+                SowEndDate = projectDto.SowEndDate,
+                SowStartDate = projectDto.SowStartDate
             };
 
             entity.UpdateTimeStamp(projectDto.LoggedInUserName, true);
@@ -156,6 +162,10 @@ namespace Agilisium.TalentManager.Repository.Repositories
             targetEntity.Remarks = sourceEntity.Remarks;
             targetEntity.StartDate = sourceEntity.StartDate;
             targetEntity.SubPracticeID = sourceEntity.SubPracticeID;
+            targetEntity.IsSowAvailable = sourceEntity.IsSowAvailable;
+            targetEntity.SowEndDate = sourceEntity.SowEndDate;
+            targetEntity.SowStartDate = sourceEntity.SowStartDate;
+
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
     }

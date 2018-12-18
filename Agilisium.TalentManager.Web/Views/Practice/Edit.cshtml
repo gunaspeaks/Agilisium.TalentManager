@@ -18,18 +18,34 @@
 
             @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
 
-            @foreach (var property in ViewData.ModelMetadata.Properties)
-            {
-                if (property.PropertyName != "PracticeID"
-                    && property.PropertyName != "IsReserved"
-                    && property.PropertyName != "LoggedInUserName")
-                {
-                    <div class="form-group">
-                        <label>@(property.DisplayName ?? property.PropertyName)</label>
-                        @Html.TextBox(property.PropertyName, null, new { @class = "form-control" })
-                    </div>
-                }
-            }
+            <div>
+                <table style="width:80%;">
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.PracticeName)
+                                @Html.EditorFor(model => model.PracticeName, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ShortName)
+                                @Html.EditorFor(model => model.ShortName, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ManagerID)
+                                @Html.DropDownListFor(model => model.ManagerID, (IEnumerable<SelectListItem>)ViewBag.ManagerListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <div class="panel-footer">
                 <input type="submit" value="Save" class="btn btn-primary" />
                 @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })

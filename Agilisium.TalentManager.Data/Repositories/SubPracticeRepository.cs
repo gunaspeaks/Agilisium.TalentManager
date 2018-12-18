@@ -1,6 +1,6 @@
-﻿using Agilisium.TalentManager.Repository.Abstract;
-using Agilisium.TalentManager.Dto;
+﻿using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
+using Agilisium.TalentManager.Repository.Abstract;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -47,6 +47,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
         {
             IQueryable<SubPracticeDto> practices = from c in Entities
                                                    join p in DataContext.Practices on c.PracticeID equals p.PracticeID
+                                                   join e in DataContext.Employees on c.ManagerID equals e.EmployeeEntryID into ee
+                                                   from ed in ee.DefaultIfEmpty()
                                                    orderby c.SubPracticeName
                                                    where c.IsDeleted == false
                                                    select new SubPracticeDto
@@ -55,7 +57,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                        PracticeName = p.PracticeName,
                                                        SubPracticeID = c.SubPracticeID,
                                                        SubPracticeName = c.SubPracticeName,
-                                                       ShortName = c.ShortName
+                                                       ShortName = c.ShortName,
+                                                       ManagerID = c.ManagerID,
+                                                       ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
                                                    };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -69,6 +73,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
         public IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID, int pageSize = -1, int pageNo = -1)
         {
             IQueryable<SubPracticeDto> practices = from c in Entities
+                                                   join e in DataContext.Employees on c.ManagerID equals e.EmployeeEntryID into ee
+                                                   from ed in ee.DefaultIfEmpty()
                                                    join p in DataContext.Practices on c.PracticeID equals p.PracticeID into pr
                                                    from prd in pr.DefaultIfEmpty()
                                                    where c.PracticeID == practiceID && c.IsDeleted == false
@@ -79,7 +85,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                        PracticeName = prd.PracticeName,
                                                        SubPracticeID = c.SubPracticeID,
                                                        SubPracticeName = c.SubPracticeName,
-                                                       ShortName = c.ShortName
+                                                       ShortName = c.ShortName,
+                                                       ManagerID = c.ManagerID,
+                                                       ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
                                                    };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -94,13 +102,17 @@ namespace Agilisium.TalentManager.Repository.Repositories
         public SubPracticeDto GetByID(int id)
         {
             return (from c in Entities
+                    join e in DataContext.Employees on c.ManagerID equals e.EmployeeEntryID into ee
+                    from ed in ee.DefaultIfEmpty()
                     where c.SubPracticeID == id && c.IsDeleted == false
                     select new SubPracticeDto
                     {
                         PracticeID = c.PracticeID,
                         SubPracticeID = c.SubPracticeID,
                         SubPracticeName = c.SubPracticeName,
-                        ShortName = c.ShortName
+                        ShortName = c.ShortName,
+                        ManagerID = c.ManagerID,
+                        ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
                     }).FirstOrDefault();
         }
 
@@ -126,6 +138,15 @@ namespace Agilisium.TalentManager.Repository.Repositories
             return true;
         }
 
+        public string GetManagerName(int subPracticeID)
+        {
+            return (from p in Entities
+                    join e in DataContext.Employees on p.ManagerID equals e.EmployeeEntryID into ee
+                    from ed in ee.DefaultIfEmpty()
+                    where p.SubPracticeID == subPracticeID
+                    select string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName).FirstOrDefault();
+        }
+
         public int TotalRecordsCountByPracticeID(int practiceID)
         {
             return Entities.Count(p => p.PracticeID == practiceID && p.IsDeleted == false);
@@ -138,7 +159,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                 PracticeID = subPracticeDto.PracticeID,
                 SubPracticeName = subPracticeDto.SubPracticeName,
                 ShortName = subPracticeDto.ShortName,
-                SubPracticeID = subPracticeDto.SubPracticeID
+                SubPracticeID = subPracticeDto.SubPracticeID,
+                ManagerID = subPracticeDto.ManagerID
             };
 
             subPractice.UpdateTimeStamp(subPracticeDto.LoggedInUserName, true);
@@ -151,6 +173,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
             targetEntity.SubPracticeName = sourceEntity.SubPracticeName;
             targetEntity.ShortName = sourceEntity.ShortName;
             targetEntity.SubPracticeID = sourceEntity.SubPracticeID;
+            targetEntity.ManagerID = sourceEntity.ManagerID;
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
     }
@@ -162,5 +185,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         bool Exists(string subPracticeName, int id);
 
         int TotalRecordsCountByPracticeID(int practiceID);
+
+        string GetManagerName(int subPracticeID);
     }
 }

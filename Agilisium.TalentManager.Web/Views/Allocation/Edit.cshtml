@@ -8,15 +8,65 @@
 <script>
 
     $(document).ready(function () {
+        $("#StartDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+        $("#EndDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+        $("#SowStartDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+        $("#SowEndDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+    })
+
+
+    $(document).ready(function () {
         if ($("#ProjectID").val() != "") {
             loadProjectDetailsForAllocationEditPage();
         }
 
-        if ($("#EmployeeID").val() != "" && $("#ProjectID").val() != "") {
-            getEmployeePercentageOfAllocation();
-            getEmployeeOtherProjectAllocations();
+        if ($("#EmployeeID").val() != "") {
             loadEmployeeDetailsForAllocationEditPage();
+
+            if ($("#ProjectID").val() != "") {
+                getEmployeePercentageOfAllocation();
+                getEmployeeOtherProjectAllocations();
+            }
         }
+
+        $("#AllocationStartDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+        $("#AllocationEndDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
     });
 
     $(function () {
@@ -29,10 +79,15 @@
 
     $(function () {
         $("#EmployeeID").change(function (evtn) {
-            if ($("#EmployeeID").val() != "" && $("#ProjectID").val() != "") {
-                getEmployeeOtherProjectAllocations();
-                getEmployeePercentageOfAllocation();
+
+            if ($("#EmployeeID").val() != "") {
+
                 loadEmployeeDetailsForAllocationEditPage();
+
+                if ($("#ProjectID").val() != "") {
+                    getEmployeeOtherProjectAllocations();
+                    getEmployeePercentageOfAllocation();
+                }
             }
         });
     });
@@ -54,14 +109,14 @@
                     <tr>
                         <td width="25%">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectID)
-                                @Html.DropDownListFor(model => model.ProjectID, (IEnumerable<SelectListItem>)ViewBag.ProjectListItems, null, new { @class = "form-control" })
+                                @Html.LabelFor(model => model.EmployeeID)
+                                @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.EmployeeListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="25%">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.EmployeeID)
-                                @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.EmployeeListItems, null, new { @class = "form-control" })
+                                @Html.LabelFor(model => model.ProjectID)
+                                @Html.DropDownListFor(model => model.ProjectID, (IEnumerable<SelectListItem>)ViewBag.ProjectListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="45%" valign="top" rowspan="3">

@@ -15,5 +15,7 @@ namespace Agilisium.TalentManager.Model.Entities
         public string ShortName { get; set; }
 
         public int PracticeID { get; set; }
+
+        public int? ManagerID { get; set; }
     }
 }

@@ -10,7 +10,21 @@
     $(document).ready(function () {
         if ($("#ProjectID").val() != "") {
             loadProjectDetailsForAllocationEditPage();
-        }
+            $("#AllocationStartDate").datepicker({
+
+                dateFormat: "mm-dd-yy",
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "fadeIn",
+            });
+            $("#AllocationEndDate").datepicker({
+
+                dateFormat: "mm-dd-yy",
+                changeMonth: true,
+                changeYear: true,
+                showAnim: "fadeIn",
+            });
+    }
 
         if ($("#EmployeeID").val() != "" && $("#ProjectID").val() != "") {
             getEmployeePercentageOfAllocation();
@@ -54,14 +68,14 @@
                     <tr>
                         <td width="25%">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectID)
-                                @Html.DropDownListFor(model => model.ProjectID, (IEnumerable<SelectListItem>)ViewBag.ProjectListItems, null, new { @class = "form-control" })
+                                @Html.LabelFor(model => model.EmployeeID)
+                                @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.EmployeeListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="25%">
                             <div class="form-group">
-                                @Html.LabelFor(model => model.EmployeeID)
-                                @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.EmployeeListItems, null, new { @class = "form-control" })
+                                @Html.LabelFor(model => model.ProjectID)
+                                @Html.DropDownListFor(model => model.ProjectID, (IEnumerable<SelectListItem>)ViewBag.ProjectListItems, null, new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="45%" valign="top" rowspan="3">

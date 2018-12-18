@@ -36,6 +36,9 @@
                     @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().EndDate)
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().IsSowAvailable)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Projects.FirstOrDefault().Remarks)
                 </th>
                 <th class="text-center">Actions</th>
@@ -59,11 +62,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.ProjectTypeName)
                 </td>
-                <td>
+                <td class="text-right">
                     @Html.DisplayFor(modelItem => item.StartDate)
                 </td>
-                <td>
+                <td class="text-right">
                     @Html.DisplayFor(modelItem => item.EndDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IsSowAvailable)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Remarks)

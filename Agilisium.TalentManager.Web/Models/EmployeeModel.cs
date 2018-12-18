@@ -29,14 +29,14 @@ namespace Agilisium.TalentManager.Web.Models
         public string EmailID { get; set; }
 
         [DisplayName("Business Unit")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Business Unit is required")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a Business Unit")]
         public int BusinessUnitID { get; set; }
 
         [DisplayName("Business Unit")]
         public string BusinessUnitName { get; set; }
 
         [DisplayName("Practice")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Practice is required")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a Practice")]
         public int PracticeID { get; set; }
 
         [DisplayName("Practice")]
@@ -50,11 +50,12 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Date of Join")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Date of Join is required")]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.Date)]
         public DateTime DateOfJoin { get; set; }
 
         [DisplayName("Last Working Day")]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        //[DataType(DataType.Date)]
         public DateTime? LastWorkingDay { get; set; }
 
         [DisplayName("Primary Skills")]
@@ -85,6 +86,7 @@ namespace Agilisium.TalentManager.Web.Models
         public string UtilizationTypeName { get; set; }
 
         [DisplayName("Employment Type")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please select an Employment Type")]
         public int EmploymentTypeID { get; set; }
 
         [DisplayName("Employment Type")]

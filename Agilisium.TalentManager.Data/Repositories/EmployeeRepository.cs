@@ -72,7 +72,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                 join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
                                                 from etd in ete.DefaultIfEmpty()
                                                 where emp.IsDeleted == false
-                                                orderby emp.FirstName, emp.LastName
+                                                orderby emp.EmployeeID
                                                 select new EmployeeDto
                                                 {
                                                     BusinessUnitName = bcd.SubCategoryName,
@@ -121,6 +121,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
             Entities.Add(employee);
             DataContext.Entry(employee).State = EntityState.Added;
             DataContext.SaveChanges();
+
+            UpdateEmployeeIDTracker(entity.EmploymentTypeID, entity.EmployeeID);
         }
 
         public void Update(EmployeeDto entity)
@@ -131,6 +133,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
             Entities.Add(buzEntity);
             DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
+
+            UpdateEmployeeIDTracker(entity.EmploymentTypeID, entity.EmployeeID);
         }
 
         public void Delete(EmployeeDto entity)
@@ -147,6 +151,20 @@ namespace Agilisium.TalentManager.Repository.Repositories
         {
             return Entities.Any(e => e.EmployeeID.ToLower() == employeeID.ToLower() &&
             e.EmployeeEntryID != employeeEntryID && e.IsDeleted == false);
+        }
+
+        public IEnumerable<EmployeeDto> GetAllManagers()
+        {
+            return (from emp in Entities
+                    where (emp.PracticeID == PM_PRACTICE_ID || emp.PracticeID == DM_PRACTICE_ID)
+                    && emp.IsDeleted == false
+                    orderby emp.EmployeeID
+                    select new EmployeeDto
+                    {
+                        EmployeeEntryID = emp.EmployeeEntryID,
+                        FirstName = emp.FirstName,
+                        LastName = emp.LastName
+                    });
         }
 
         private Employee CreateBusinessEntity(EmployeeDto employeeDto, bool isNewEntity = false)
@@ -239,18 +257,29 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.SaveChanges();
         }
 
-        public IEnumerable<EmployeeDto> GetAllManagers()
+        private bool UpdateEmployeeIDTracker(int employeeType, string employeeID)
         {
-            return (from emp in Entities
-                    where (emp.PracticeID == PM_PRACTICE_ID || emp.PracticeID == DM_PRACTICE_ID)
-                    && emp.IsDeleted == false
-                    orderby emp.FirstName, emp.LastName
-                    select new EmployeeDto
-                    {
-                        EmployeeEntryID = emp.EmployeeEntryID,
-                        FirstName = emp.FirstName,
-                        LastName = emp.LastName
-                    });
+            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeType);
+
+            if (string.IsNullOrEmpty(tracker.IDPrefix) == false)
+            {
+                employeeID = employeeID.Replace(tracker.IDPrefix, "");
+                if (employeeID[0] == '0')
+                {
+                    employeeID = "1" + employeeID;
+                }
+            }
+
+            if (int.TryParse(employeeID, out int runningID))
+            {
+                tracker.RunningID = runningID;
+                DataContext.EmployeeIDTrackers.Add(tracker);
+                DataContext.Entry(tracker).State = EntityState.Modified;
+                DataContext.SaveChanges();
+                return true;
+            }
+
+            return false;
         }
     }
 

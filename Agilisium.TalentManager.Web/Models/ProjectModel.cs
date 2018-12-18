@@ -43,10 +43,12 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Start Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "Project Start Date is required")]
+        [DataType(DataType.Date)]
         public DateTime? StartDate { get; set; }
 
         [DisplayName("End Date")]
         [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
         public DateTime? EndDate { get; set; }
 
         [DataType(DataType.MultilineText)]
@@ -64,5 +66,19 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Sub Practice")]
         public string SubPracticeName { get; set; }
+
+        [DisplayName("Is SoW Available")]
+        public bool IsSowAvailable { get; set; }
+
+        [DisplayName("SoW Started On")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
+        public DateTime? SowStartDate { get; set; }
+
+        [DisplayName("SoW Completed By")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DataType(DataType.Date)]
+        public DateTime? SowEndDate { get; set; }
+
     }
 }
