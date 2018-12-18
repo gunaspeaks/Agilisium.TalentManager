@@ -9,6 +9,7 @@ namespace Agilisium.TalentManager.Web.Controllers
     public class DefaultController : Controller
     {
         // GET: Default
+        [OutputCache(CacheProfile ="AgilisigumTalentMgrCache")]
         public ActionResult Index()
         {
             return View();

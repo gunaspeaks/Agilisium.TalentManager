@@ -281,6 +281,8 @@
     <Content Include="Content\error-styles.css" />
     <Content Include="Content\Images\agilisium.jpg" />
     <Content Include="Content\Images\Agilisium_Logo.jpg" />
+    <Content Include="Content\Images\Agilisium_Logo_Color-01.jpg" />
+    <Content Include="Content\Images\Agilisium_Logo_Color-01.png" />
     <Content Include="Content\Images\contact-manager.jpg" />
     <Content Include="Content\Images\Contractor-management-3.jpg" />
     <Content Include="Content\Images\contractor.jpg" />

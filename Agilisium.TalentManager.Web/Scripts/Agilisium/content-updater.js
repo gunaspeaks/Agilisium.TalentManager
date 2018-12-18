@@ -94,6 +94,7 @@ function loadProjectDetailsForAllocationEditPage() {
                 $("#pmName").text(data["ProjectManagerName"]);
                 $("#projectStartDate").text(sDate);
                 $("#projectEndDate").text(eDate);
+                $("#projectType").text(data["ProjectTypeName"]);
 
                 // updating fields in new/edit allocation details
                 //$("#AllocationStartDate").val(sDate);
