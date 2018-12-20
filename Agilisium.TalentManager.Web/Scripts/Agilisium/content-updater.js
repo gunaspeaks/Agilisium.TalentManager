@@ -15,7 +15,7 @@ formatJsonDateString = function (value) {
 }
 
 function getEmployeePercentageOfAllocation() {
-    if ($("#EmployeeID").val().length > 0 && $("#ProjectID").val().length > 0) {
+    if ($("#EmployeeID").val().length > 0 ) {
         var v_data = {};
         v_data.empID = $("#EmployeeID").val();
         v_data.prjID = $("#ProjectID").val();
