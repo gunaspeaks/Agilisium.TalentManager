@@ -21,42 +21,34 @@ function getEmployeePercentageOfAllocation() {
         v_data.prjID = $("#ProjectID").val();
 
         $.ajax({
-            url: "/Allocation/GetEmploymentDetails",
+            url: "/Allocation/GetPercentageOfAllocation",
             type: "POST",
             data: JSON.stringify(v_data),
             contentType: "application/json",
             success: function (data) {
                 $("#howMuchOccupied").text(data);
             },
-            error: (function () {
+            error: function () {
                 alert("Error has occured while loading employee details");
-            })
+            }
         });
     }
 }
 
 function getEmployeeOtherProjectAllocations() {
-    if ($("#EmployeeID").val().length > 0 && $("#ProjectID").val().length > 0) {
-        var v_data = {};
-        v_data.empID = $("#EmployeeID").val();
-        v_data.prjID = $("#ProjectID").val();
-
+    if ($("#EmployeeID").val().length > 0) {
         $.ajax({
-            url: "/Allocation/GetEmployeeOtherAllocations",
-            type: "POST",
-            data: JSON.stringify(v_data),
-            contentType: "application/json",
+            url: "/Allocation/EmployeeAllocations",
+            cache: false,
+            type: "GET",
+            contentType: "application/html; charset=utf-8",
+            data: { empID: $("#EmployeeID").val() },
             success: function (data) {
-                $("#otherAllocationItems").empty();
-                $.each(data, function () {
-                    var text = $("#otherAllocations").text();
-                    text = text + " " + this;
-                    $("#otherAllocations").text(text.trim());
-                });
+                $("#employeeAllocationDiv").html(data);
             },
-            error: (function () {
+            error: function (xhr, status) {
                 alert("Error has occured while loading employee allocation details");
-            })
+            }
         });
     }
 }
@@ -80,7 +72,7 @@ function loadEmployeeDetailsForAllocationEditPage() {
     }
 }
 
-function loadProjectDetailsForAllocationEditPage() {
+function updateProjectDetailsSectionOnAllocationPage() {
     if ($("#ProjectID").val().length > 0) {
         $.ajax({
             url: "/Allocation/GetProjectDetails",
@@ -95,10 +87,6 @@ function loadProjectDetailsForAllocationEditPage() {
                 $("#projectStartDate").text(sDate);
                 $("#projectEndDate").text(eDate);
                 $("#projectType").text(data["ProjectTypeName"]);
-
-                // updating fields in new/edit allocation details
-                //$("#AllocationStartDate").val(sDate);
-                //$("#AllocationEndDate").val(eDate);
             },
             error: function () {
                 alert("Error has occured while loading project details");
@@ -151,6 +139,7 @@ function loadSubPracticeDropDownForEmpPage() {
             data: { id: $("#PracticeID").val() },
             success: function (data) {
                 $('#SubPracticeID').empty();
+                $("#SubPracticeID").append($("<option></option>").val(0).text("Please Select"));
                 $.each(data, function () {
                     $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
                 });
@@ -161,8 +150,10 @@ function loadSubPracticeDropDownForEmpPage() {
     }
 }
 
-
 function getPracticeManagerNameForEmployeePage() {
+    $("#txtPracticeManager").text("");
+    $("#txtSubPracticeManager").text("");
+
     if ($("#PracticeID").val().length > 0) {
         $.ajax({
             url: "/SubPractice/GetPracticeName",
@@ -170,10 +161,10 @@ function getPracticeManagerNameForEmployeePage() {
             data: { id: $("#PracticeID").val() },
             success: function (data) {
                 if (data.length == 0) {
-                    $("#practiceManager").text("None");
+                    $("#txtPracticeManager").text("Not assigned yet");
                 }
                 else {
-                    $("#practiceManager").text(data);
+                    $("#txtPracticeManager").text(data);
                 }
             },
             error: function () {
@@ -181,24 +172,23 @@ function getPracticeManagerNameForEmployeePage() {
             }
         });
     }
-    else {
-        $("#practiceManager").text("");
-        $("#subPracticeManager").text("");
-    }
 }
 
 function getSubPracticeManagerNameForEmployeePage() {
     if ($("#SubPracticeID").val().length > 0) {
+
+        $("#txtSubPracticeManager").text("");
+
         $.ajax({
             url: "/SubPractice/GetSubPracticeManagerName",
             type: "POST",
             data: { id: $("#SubPracticeID").val() },
             success: function (data) {
                 if (data.length == 0) {
-                    $("#subPracticeManager").text("None");
+                    $("#txtSubPracticeManager").text("Not assigned yet");
                 }
                 else {
-                    $("#subPracticeManager").text(data);
+                    $("#txtSubPracticeManager").text(data);
                 }
             },
             error: function () {
@@ -206,8 +196,13 @@ function getSubPracticeManagerNameForEmployeePage() {
             }
         });
     }
-    else {
-        $("#subPracticeManager").text("");
-    }
 }
+
+//$(document).ajaxStart(function () {
+//    $("#loading").show();
+//});
+
+//$(document).ajaxComplete(function () {
+//    $("#loading").hide();
+//});
 

@@ -61,7 +61,7 @@
         <div class="panel-body">
             @Html.ValidationSummary(false, "Please correct the below Validation Errors to save the data")
             <div>
-                <table style="width:90%;">
+                <table style="width:95%;" cellpadding="5" cellspacing="5px">
                     <tr>
                         <td>
                             <div class="form-group">
@@ -78,20 +78,6 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ReportingManagerID)
-                                @Html.DropDownListFor(model => model.ReportingManagerID, (IEnumerable<SelectListItem>)ViewBag.ReportingManagerListItems, "Please Select", new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <label class="text-center">Practice Manager</label><br />
-                                <label class="text-left" id="practiceManager"></label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="form-group">
                                 @Html.LabelFor(model => model.FirstName)
                                 @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
@@ -100,38 +86,6 @@
                             <div class="form-group">
                                 @Html.LabelFor(model => model.LastName)
                                 @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.BusinessUnitID)
-                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewBag.BuListItems, "Please Select", new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <label>Sub-Practice Manager</label><br />
-                                <label id="subPracticeManager"></label>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.UtilizationTypeID)
-                                @Html.DropDownListFor(model => model.UtilizationTypeID, (IEnumerable<SelectListItem>)ViewBag.UtilizationTypeListItems, "Please Select", new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.PracticeID)
-                                @Html.DropDownListFor(model => model.PracticeID, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.SubPracticeID)
-                                @Html.DropDownListFor(model => model.SubPracticeID, (IEnumerable<SelectListItem>)ViewBag.SubPracticeListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -144,15 +98,31 @@
                         </td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.LastWorkingDay)
-                                @Html.EditorFor(model => model.LastWorkingDay, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.LabelFor(model => model.BusinessUnitID)
+                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewBag.BuListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td>
-                            &nbsp;
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ReportingManagerID)
+                                @Html.DropDownListFor(model => model.ReportingManagerID, (IEnumerable<SelectListItem>)ViewBag.ReportingManagerListItems, "Please Select", new { @class = "form-control" })
+                            </div>
                         </td>
+                        <td></td>
                     </tr>
                     <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.PracticeID)
+                                @Html.DropDownListFor(model => model.PracticeID, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.SubPracticeID)
+                                @Html.DropDownListFor(model => model.SubPracticeID, (IEnumerable<SelectListItem>)ViewBag.SubPracticeListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.PrimarySkills)
@@ -165,6 +135,21 @@
                                 @Html.EditorFor(model => model.SecondarySkills, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                <Label>Practice Manager</Label><br />
+                                <text id="txtPracticeManager"></text>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <Label>Sub-Practice Manager</Label><br />
+                                <text id="txtSubPracticeManager"></text>
+                            </div>
+                        </td>
+                        <td></td>
                         <td></td>
                     </tr>
                 </table>
@@ -173,7 +158,6 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
                 @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
             </div>
-
         </div>
     }
 </div>

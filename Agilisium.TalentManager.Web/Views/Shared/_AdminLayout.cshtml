@@ -33,13 +33,13 @@
                 </div>
             </div>
             <div class="navbar-collapse collapse" >
-                <ul class="nav navbar-nav" style="color:darkblue;">
+                <ul class="nav navbar-nav" style="color:darkblue; font-weight:bold;">
                     @*
                         <li>@Html.ImageLink("Index", "Home", null, "~/content/images/Agilisium_Logo.jpg", "Agilisium", null, null)</li>*@
                     @*<li>@Html.ActionLink("Agilisium - Talent Manager", "Index", "Home")</li>*@
                     @if (Request.Url.ToString().Contains("Employee"))
                     {
-                        <li>@Html.ActionLink("Employees", "List", "Employee", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Employees", "List", "Employee", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -48,7 +48,7 @@
 
                     @if (Request.Url.ToString().Contains("Project"))
                     {
-                        <li>@Html.ActionLink("Projects", "List", "Project", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Projects", "List", "Project", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -57,7 +57,7 @@
 
                     @if (Request.Url.ToString().Contains("Allocation"))
                     {
-                        <li>@Html.ActionLink("Project Allocations", "List", "Allocation", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Project Allocations", "List", "Allocation", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -66,7 +66,7 @@
 
                     @if (Request.Url.ToString().Contains("Category") && !Request.Url.ToString().Contains("SubCategory"))
                     {
-                        <li>@Html.ActionLink("Categories", "List", "Category", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Categories", "List", "Category", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -75,7 +75,7 @@
 
                     @if (Request.Url.ToString().Contains("SubCategory") && Request.Url.ToString().Contains("Category"))
                     {
-                        <li>@Html.ActionLink("Sub Categories", "List", "SubCategory", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Sub Categories", "List", "SubCategory", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -84,7 +84,7 @@
 
                     @if (Request.Url.ToString().Contains("Practice") && !Request.Url.ToString().Contains("SubPractice"))
                     {
-                        <li>@Html.ActionLink("Practices", "List", "Practice", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Practices", "List", "Practice", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -93,7 +93,7 @@
 
                     @if (Request.Url.ToString().Contains("SubPractice") && Request.Url.ToString().Contains("Practice"))
                     {
-                        <li>@Html.ActionLink("Sub Practices", "List", "SubPractice", new { @style = "color:darkblue; font-weight:bold;" })</li>
+                        <li>@Html.ActionLink("Sub Practices", "List", "SubPractice", new { @style = "color:darkblue" })</li>
                     }
                     else
                     {
@@ -101,7 +101,7 @@
                     }
 
                 </ul>
-                @Html.Partial("_LoginPartial")
+                @*@Html.Partial("_LoginPartial")*@
             </div>
         </div>
     </div>

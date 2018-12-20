@@ -91,7 +91,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    if (project.StartDate <= project.EndDate)
+                    if (project.EndDate <= project.StartDate)
                     {
                         DisplayWarningMessage("The End date should be greater than the Start date");
                         return View(project);
@@ -163,7 +163,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                 InitializePageData();
                 if (ModelState.IsValid)
                 {
-                    if (project.StartDate <= project.EndDate)
+                    if (project.EndDate <= project.StartDate)
                     {
                         DisplayWarningMessage("The End date should be greater than the Start date");
                         return View(project);

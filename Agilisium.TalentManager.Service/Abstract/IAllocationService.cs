@@ -27,10 +27,10 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         void Update(ProjectAllocationDto entity);
 
-        int GetPercentageOfAllocation(int employeeID, int projectID);
+        int GetPercentageOfAllocation(int employeeID);
 
         int TotalRecordsCount();
 
-        IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude);
+        IEnumerable<CustomAllocationDto> GetAllocatedProjectsByEmployeeID(int employeeID);
     }
 }

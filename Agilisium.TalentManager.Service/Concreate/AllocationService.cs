@@ -59,9 +59,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Update(entity);
         }
 
-        public int GetPercentageOfAllocation(int employeeID, int projectID)
+        public int GetPercentageOfAllocation(int employeeID)
         {
-            return repository.GetPercentageOfAllocation(employeeID, projectID);
+            return repository.GetPercentageOfAllocation(employeeID);
         }
 
         public int TotalRecordsCount()
@@ -69,9 +69,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.TotalRecordsCount();
         }
 
-        public IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude)
+        public IEnumerable<CustomAllocationDto> GetAllocatedProjectsByEmployeeID(int employeeID)
         {
-            return repository.GetAllocatedProjectsByEmployeeID(employeeID, projectToExclude);
+            return repository.GetAllocatedProjectsByEmployeeID(employeeID);
         }
     }
 }

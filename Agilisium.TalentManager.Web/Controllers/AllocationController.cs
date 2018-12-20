@@ -60,7 +60,11 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Project/Create
         public ActionResult Create()
         {
-            AllocationModel project = new AllocationModel();
+            AllocationModel project = new AllocationModel
+            {
+                AllocationStartDate = DateTime.Now,
+                AllocationEndDate = DateTime.Now
+            };
 
             try
             {
@@ -199,7 +203,6 @@ namespace Agilisium.TalentManager.Web.Controllers
             return RedirectToAction("List");
         }
 
-
         [HttpPost]
         public JsonResult GetProjectDetails(int projectID)
         {
@@ -209,18 +212,19 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         [HttpPost]
-        public JsonResult GetEmploymentDetails(int empID, int prjID)
+        public JsonResult GetPercentageOfAllocation(int empID)
         {
-            int val = allocationService.GetPercentageOfAllocation(empID, prjID);
+            int val = allocationService.GetPercentageOfAllocation(empID);
             JsonResult res = Json(val);
             return res;
         }
 
-        [HttpPost]
-        public JsonResult GetEmployeeOtherAllocations(int empID, int prjID)
+        [HttpGet]
+        public PartialViewResult EmployeeAllocations(int empID)
         {
-            IEnumerable<string> projects = allocationService.GetAllocatedProjectsByEmployeeID(empID, prjID);
-            return Json(projects);
+            IEnumerable<CustomAllocationDto> projects = allocationService.GetAllocatedProjectsByEmployeeID(empID).ToList();
+            IEnumerable<CustomAllocationModel> projectModels = Mapper.Map<IEnumerable<CustomAllocationDto>, IEnumerable<CustomAllocationModel>>(projects);
+            return PartialView("EmployeeAllocations", projectModels);
         }
 
         private IEnumerable<AllocationModel> GetAllocations(int pageNo)

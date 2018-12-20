@@ -26,13 +26,13 @@
                 <th class="text-center">
                     @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationEndDate)
                 </th>
-                <th>
+                <th class="text-center">
                     @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationTypeName)
                 </th>
-                <th>
+                <th class="text-center">
                     @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().PercentageOfAllocation)
                 </th>
-                <th>
+                <th class="text-center">
                     @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().Remarks)
                 </th>
                 <th class="text-center">Actions</th>
@@ -48,10 +48,10 @@
                         @Html.DisplayFor(modelItem => item.ProjectName)
                     </td>
                     <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.AllocationStartDate)
+                        <text>@item.AllocationStartDate.ToString("dd/MMM/yyy")</text>
                     </td>
                     <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.AllocationEndDate)
+                        <text>@item.AllocationEndDate.ToString("dd/MMM/yyy")</text>
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.AllocationTypeName)

@@ -29,8 +29,7 @@ namespace Agilisium.TalentManager.Web.Models
         public string PracticeName { get; set; }
 
         [DisplayName("Sub-Practice Manager")]
-        [Required(ErrorMessage = "Please select a Sub-Practice Manager", AllowEmptyStrings = false)]
-        public int ManagerID { get; set; }
+        public int? ManagerID { get; set; }
 
         [DisplayName("Sub-Practice Manager")]
         public string ManagerName { get; set; }

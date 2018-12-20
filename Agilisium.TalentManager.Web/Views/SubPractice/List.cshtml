@@ -55,7 +55,7 @@
                     @Html.DisplayFor(modelItem => item.PracticeName)
                 </td>
                 <td>
-                    @Html.ActionLink(item.ManagerName, "Edit", "Employee", new { id = item.ManagerID })
+                    @Html.DisplayFor(modelItem => item.ManagerName)
                 </td>
                 <td class="text-center">
                     @using (Html.BeginForm("Delete", "SubPractice"))

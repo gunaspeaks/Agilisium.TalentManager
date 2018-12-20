@@ -112,7 +112,7 @@ namespace Agilisium.TalentManager.Web.Controllers
         public ActionResult Edit(int? id)
         {
             EmployeeModel empModel = new EmployeeModel();
-            InitializePageData(empModel.PracticeID, id.HasValue ? id.Value : -1);
+            InitializePageData(empModel.PracticeID, id ?? -1);
 
             if (!id.HasValue)
             {
@@ -130,6 +130,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                 }
 
                 EmployeeDto emp = empService.GetEmployee(id.Value);
+                GetSubPracticeList(emp.PracticeID);
                 empModel = Mapper.Map<EmployeeDto, EmployeeModel>(emp);
             }
             catch (Exception exp)

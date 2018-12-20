@@ -9,8 +9,6 @@ namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
-        private const int PM_PRACTICE_ID = 12;
-        private const int DM_PRACTICE_ID = 19;
         private const string PERMANENT_EMP_NAME = "Permanent";
 
         public bool Exists(string itemName)
@@ -155,8 +153,11 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public IEnumerable<EmployeeDto> GetAllManagers()
         {
+            int? pmPracticeID = DataContext.Practices.FirstOrDefault(e => e.PracticeName == "Project Manager")?.PracticeID;
+            int? dmPracticeID = DataContext.Practices.FirstOrDefault(e => e.PracticeName == "Delivery Manager")?.PracticeID;
+
             return (from emp in Entities
-                    where (emp.PracticeID == PM_PRACTICE_ID || emp.PracticeID == DM_PRACTICE_ID)
+                    where (emp.PracticeID == pmPracticeID || emp.PracticeID == dmPracticeID)
                     && emp.IsDeleted == false
                     orderby emp.EmployeeID
                     select new EmployeeDto

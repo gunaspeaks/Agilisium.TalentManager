@@ -4,6 +4,8 @@
     ViewBag.Title = "Create New Project";
 }
 <link href="~/Content/error-styles.css" rel="stylesheet" />
+<link href="~/Content/error-styles.css" rel="stylesheet" />
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 
 <script type="text/javascript">
@@ -89,7 +91,7 @@
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.DeliveryManagerID)
-                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -97,13 +99,13 @@
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectManagerID)
-                                @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTypeID)
-                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td rowspan="2">

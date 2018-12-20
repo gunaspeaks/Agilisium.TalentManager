@@ -23,8 +23,7 @@ namespace Agilisium.TalentManager.Web.Models
 
 
         [DisplayName("Practice Manager")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a Practice Manager")]
-        public int ManagerID { get; set; }
+        public int? ManagerID { get; set; }
 
         [DisplayName("Practice Manager")]
         public string ManagerName { get; set; }

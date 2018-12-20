@@ -4,55 +4,11 @@
     ViewBag.Title = "Edit Project Details";
 }
 <link href="~/Content/error-styles.css" rel="stylesheet" />
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 <script>
 
     $(document).ready(function () {
-        $("#StartDate").datepicker({
-
-            dateFormat: "mm-dd-yy",
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-        });
-        $("#EndDate").datepicker({
-
-            dateFormat: "mm-dd-yy",
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-        });
-        $("#SowStartDate").datepicker({
-
-            dateFormat: "mm-dd-yy",
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-        });
-        $("#SowEndDate").datepicker({
-
-            dateFormat: "mm-dd-yy",
-            changeMonth: true,
-            changeYear: true,
-            showAnim: "fadeIn",
-        });
-    })
-
-
-    $(document).ready(function () {
-        if ($("#ProjectID").val() != "") {
-            loadProjectDetailsForAllocationEditPage();
-        }
-
-        if ($("#EmployeeID").val() != "") {
-            loadEmployeeDetailsForAllocationEditPage();
-
-            if ($("#ProjectID").val() != "") {
-                getEmployeePercentageOfAllocation();
-                getEmployeeOtherProjectAllocations();
-            }
-        }
-
         $("#AllocationStartDate").datepicker({
 
             dateFormat: "mm-dd-yy",
@@ -67,32 +23,37 @@
             changeYear: true,
             showAnim: "fadeIn",
         });
+
+        updateEmployeeAndProjectDetails();
     });
+
+    updateEmployeeAndProjectDetails = function () {
+        if ($("#ProjectID").val().length > 0) {
+            updateProjectDetailsSectionOnAllocationPage();
+        }
+
+        if ($("#EmployeeID").val().length > 0) {
+            loadEmployeeDetailsForAllocationEditPage();
+            getEmployeeOtherProjectAllocations();
+            getEmployeePercentageOfAllocation();
+        }
+    }
 
     $(function () {
         $("#ProjectID").change(function (evt) {
-            if ($("#ProjectID").val() != "") {
-                loadProjectDetailsForAllocationEditPage();
-            }
+            updateEmployeeAndProjectDetails();
         });
     });
 
     $(function () {
         $("#EmployeeID").change(function (evtn) {
-
-            if ($("#EmployeeID").val() != "") {
-
-                loadEmployeeDetailsForAllocationEditPage();
-
-                if ($("#ProjectID").val() != "") {
-                    getEmployeeOtherProjectAllocations();
-                    getEmployeePercentageOfAllocation();
-                }
-            }
+            updateEmployeeAndProjectDetails();
         });
     });
 
 </script>
+
+
 
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -110,13 +71,13 @@
                         <td width="25%">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.EmployeeID)
-                                @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.EmployeeListItems, null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.EmployeeID, (IEnumerable<SelectListItem>)ViewBag.EmployeeListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="25%">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectID)
-                                @Html.DropDownListFor(model => model.ProjectID, (IEnumerable<SelectListItem>)ViewBag.ProjectListItems, null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.ProjectID, (IEnumerable<SelectListItem>)ViewBag.ProjectListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="45%" valign="top" rowspan="3">
@@ -182,12 +143,6 @@
                                             <label>:&nbsp;</label>
                                             <label style=" font-size:medium" id="secondarySkills"></label>
                                         </div>
-                                        <div class="form-group-lg">
-                                            <label style="width:155px; ">&nbsp;&nbsp;Other Allocations</label>
-                                            <label>:&nbsp;</label>
-                                            <label style=" font-size:medium" id="otherAllocations">
-                                            </label>
-                                        </div>
                                     </td>
                                 </tr>
                             </table>
@@ -211,7 +166,7 @@
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.AllocationTypeID)
-                                @Html.DropDownListFor(model => model.AllocationTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, null, new { @class = "form-control" })
+                                @Html.DropDownListFor(model => model.AllocationTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
                                 <br />
                                 @Html.LabelFor(model => model.PercentageOfAllocation)
                                 @Html.EditorFor(model => model.PercentageOfAllocation, new { htmlAttributes = new { @class = "form-control" } })
@@ -232,7 +187,8 @@
                 <input type="submit" value="Save" class="btn btn-primary" />
                 @Html.ActionLink("Cancel and Go Back", "List", null, new { @class = "btn btn-default" })
             </div>
-
+            <div id="employeeAllocationDiv">
+            </div>
         </div>
     }
 </div>

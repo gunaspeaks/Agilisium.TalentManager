@@ -50,11 +50,12 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Date of Join")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Date of Join is required")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", NullDisplayText = "")]
         //[DataType(DataType.Date)]
         public DateTime DateOfJoin { get; set; }
 
         [DisplayName("Last Working Day")]
-        //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", NullDisplayText = "")]
         //[DataType(DataType.Date)]
         public DateTime? LastWorkingDay { get; set; }
 

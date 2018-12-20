@@ -93,6 +93,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
             return (from p in Entities
                     orderby p.ProjectName
                     join e in DataContext.Employees on p.ProjectManagerID equals e.EmployeeEntryID into ee
+                    join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
+                    from ptd in pte.DefaultIfEmpty()
                     from ed in ee.DefaultIfEmpty()
                     where p.ProjectID == id && p.IsDeleted == false
                     select new ProjectDto
@@ -106,6 +108,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                         ProjectManagerName = string.IsNullOrEmpty(ed.LastName) ? "" : ed.LastName + ", " + ed.FirstName,
                         ProjectName = p.ProjectName,
                         ProjectTypeID = p.ProjectTypeID,
+                        ProjectTypeName = ptd.SubCategoryName,
                         SubPracticeID = p.SubPracticeID,
                         Remarks = p.Remarks,
                         StartDate = p.StartDate,

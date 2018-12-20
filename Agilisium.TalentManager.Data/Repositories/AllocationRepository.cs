@@ -140,12 +140,12 @@ namespace Agilisium.TalentManager.Repository.Repositories
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
 
-        public int GetPercentageOfAllocation(int employeeID, int projectID)
+        public int GetPercentageOfAllocation(int employeeID)
         {
-            if (Entities.Any(a => a.ProjectID != projectID && a.EmployeeID == employeeID))
+            if (Entities.Any(a => a.EmployeeID == employeeID))
             {
-                return Entities.Where(a => a.ProjectID != projectID
-                && a.EmployeeID == employeeID).Sum(p => p.PercentageOfAllocation);
+                return Entities.Where(a => a.EmployeeID == employeeID)
+                    .Sum(p => p.PercentageOfAllocation);
             }
             else
             {
@@ -153,14 +153,26 @@ namespace Agilisium.TalentManager.Repository.Repositories
             }
         }
 
-        public IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude)
+        public IEnumerable<CustomAllocationDto> GetAllocatedProjectsByEmployeeID(int employeeID)
         {
             return (from a in Entities
                     join p in DataContext.Projects on a.ProjectID equals p.ProjectID into pe
                     from pd in pe.DefaultIfEmpty()
-                    where a.ProjectID != projectToExclude && a.EmployeeID == employeeID
-                    orderby pd.ProjectName
-                    select pd.ProjectName);
+                    join sc in DataContext.DropDownSubCategories on a.AllocationTypeID equals sc.SubCategoryID into sce
+                    from scd in sce.DefaultIfEmpty()
+                    join e in DataContext.Employees on a.EmployeeID equals e.EmployeeEntryID into ee
+                    from ed in ee.DefaultIfEmpty()
+                    where a.EmployeeID == employeeID
+                    select new CustomAllocationDto
+                    {
+                        AllocatedPercentage = a.PercentageOfAllocation,
+                        EndDate = pd.StartDate,
+                        ProjectCode = pd.ProjectCode,
+                        ProjectManager = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName,
+                        ProjectName = pd.ProjectName,
+                        StartDate = pd.StartDate,
+                        UtilizatinType = scd.SubCategoryName
+                    });
         }
     }
 
@@ -170,8 +182,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         int Exists(int allocationID, int empEntryID, int projectID);
 
-        int GetPercentageOfAllocation(int employeeID, int projectID);
+        int GetPercentageOfAllocation(int employeeID);
 
-        IEnumerable<string> GetAllocatedProjectsByEmployeeID(int employeeID, int projectToExclude);
+        IEnumerable<CustomAllocationDto> GetAllocatedProjectsByEmployeeID(int employeeID);
     }
 }

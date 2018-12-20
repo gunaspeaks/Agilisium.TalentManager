@@ -56,6 +56,7 @@
     <Compile Include="Configuration\ProjectAllocationEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectEntityConfiguration.cs" />
     <Compile Include="Configuration\SubPracticeEntityConfiguration.cs" />
+    <Compile Include="Entities\CustomAllocation.cs" />
     <Compile Include="Entities\DropDownCategory.cs" />
     <Compile Include="Entities\DropDownSubCategory.cs" />
     <Compile Include="Entities\Employee.cs" />

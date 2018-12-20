@@ -29,14 +29,14 @@
                 <th class="text-center">
                     @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().PracticeName)
                 </th>
-                <th>
+                <th class="text-center">
+                    @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().SubPracticeName)
+                </th>
+                <th class="text-center">
                     @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().DateOfJoin)
                 </th>
-                <th>
+                <th class="text-center">
                     @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().PrimarySkills)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Employees.FirstOrDefault().UtilizationTypeName)
                 </th>
                 <th class="text-center">Actions</th>
             </tr>
@@ -59,14 +59,14 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.PracticeName)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SubPracticeName)
+                </td>
                 <td class="text-right">
-                    @Html.DisplayFor(modelItem => item.DateOfJoin)
+                    <text>@item.DateOfJoin.ToString("dd/MMM/yyyy")</text>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.PrimarySkills)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.UtilizationTypeName)
                 </td>
                 <td class="text-center">
                     @using (Html.BeginForm("Delete", "Employee"))

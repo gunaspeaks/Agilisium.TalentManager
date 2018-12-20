@@ -1,0 +1,61 @@
+﻿@model IEnumerable<Agilisium.TalentManager.Web.Models.CustomAllocationModel>
+<div class="panel-heading">
+    <h3>Current Allocations  for the Selected Employee</h3>
+</div>
+<div class="panel-body">
+    <table border="1" class="table">
+        <tr>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.ProjectName)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.ProjectCode)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.ProjectManager)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.StartDate)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.EndDate)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.AllocatedPercentage)
+            </th>
+            <th class="text-center">
+                @Html.DisplayNameFor(model => model.UtilizatinType)
+            </th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProjectManager)
+                </td>
+                <td class="text-right">
+                    <text>@item.StartDate.ToString("dd/MMM/yyy")</text>
+                </td>
+                <td class="text-right">
+                    @if (@item.EndDate.HasValue)
+                    {
+                        <text>@item.EndDate.Value.ToString("dd/MMM/yyy")</text>
+                    }
+                </td>
+                <td class="text-right">
+                    @Html.DisplayFor(modelItem => item.AllocatedPercentage)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.UtilizatinType)
+                </td>
+            </tr>
+        }
+    </table>
+</div>
