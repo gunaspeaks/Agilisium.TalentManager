@@ -30,6 +30,12 @@
     })
 
     $(function () {
+        $("#BusinessUnitID").change(function (event) {
+            loadPracticeDropDownListForEmpPage();
+        });
+    });
+
+    $(function () {
         $("#PracticeID").change(function (evt) {
             getPracticeManagerNameForEmployeePage();
             loadSubPracticeDropDownForEmpPage();

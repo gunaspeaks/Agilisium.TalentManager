@@ -88,6 +88,11 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    if (IsValidAllocation(allocation) == false)
+                    {
+                        return View(allocation);
+                    }
+
                     if (allocation.AllocationEndDate <= allocation.AllocationStartDate)
                     {
                         DisplayWarningMessage("The End date should be greater than the Start date");
@@ -155,6 +160,11 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
+                    if(IsValidAllocation(allocation)==false)
+                    {
+                        return View(allocation);
+                    }
+
                     if (allocation.AllocationEndDate <= allocation.AllocationStartDate)
                     {
                         DisplayWarningMessage("The End date should be greater than the Start date");
@@ -284,6 +294,37 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                 }).ToList();
 
             ViewBag.ProjectListItems = projectList;
+        }
+
+        private bool IsValidAllocation(AllocationModel allocation)
+        {
+            ProjectDto project = projectService.GetByID(allocation.ProjectID);
+            if (allocation.AllocationStartDate < project.StartDate)
+            {
+                DisplayWarningMessage("Allocation Start Date should be equal to or above the Project Start Date");
+                return false;
+            }
+
+            if (allocation.AllocationEndDate > project.EndDate)
+            {
+                DisplayWarningMessage("Allocation End Date should be within the Project End Date");
+                return false;
+            }
+
+            if(allocation.AllocationEndDate<allocation.AllocationStartDate|| allocation.AllocationEndDate<project.StartDate)
+            {
+                DisplayWarningMessage("Allocation End Date should be within the range of Project Start & End Dates");
+                return false;
+            }
+
+            var emp = empService.GetEmployee(allocation.EmployeeID);
+            if(allocation.AllocationStartDate<emp.DateOfJoin)
+            {
+                DisplayWarningMessage($"Selected Employee's DoJ is {emp.DateOfJoin.ToString("mm/dd/yyyy")}. Allocation Start Date should be above that");
+                return false;
+            }
+
+            return true;
         }
     }
 }

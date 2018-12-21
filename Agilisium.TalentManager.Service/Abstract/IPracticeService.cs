@@ -30,5 +30,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         string GetPracticeName(int practiceID);
 
         string GetManagerName(int practiceID);
+
+        IEnumerable<PracticeDto> GetPracticesByBU(int buID);
     }
 }

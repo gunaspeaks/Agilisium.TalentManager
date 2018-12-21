@@ -68,7 +68,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                 join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
                                                 from utd in ute.DefaultIfEmpty()
                                                 join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
-                                                from etd in ete.DefaultIfEmpty()
+                                                from etd in ute.DefaultIfEmpty()
+                                                join sp in DataContext.DropDownSubCategories on emp.SubPracticeID equals sp.SubCategoryID into spe
+                                                from spd in spe.DefaultIfEmpty()
                                                 where emp.IsDeleted == false
                                                 orderby emp.EmployeeID
                                                 select new EmployeeDto
@@ -82,7 +84,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                     PracticeName = pcd.PracticeName,
                                                     PrimarySkills = emp.PrimarySkills,
                                                     UtilizationTypeName = utd.SubCategoryName,
-                                                    EmploymentTypeName = etd.SubCategoryName
+                                                    EmploymentTypeName = etd.SubCategoryName,
+                                                    SubPracticeName = spd.SubCategoryName
                                                 };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -153,11 +156,10 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public IEnumerable<EmployeeDto> GetAllManagers()
         {
-            int? pmPracticeID = DataContext.Practices.FirstOrDefault(e => e.PracticeName == "Project Manager")?.PracticeID;
-            int? dmPracticeID = DataContext.Practices.FirstOrDefault(e => e.PracticeName == "Delivery Manager")?.PracticeID;
+            int? pmPracticeID = DataContext.Practices.FirstOrDefault(e => e.PracticeName == "Project Management")?.PracticeID;
 
             return (from emp in Entities
-                    where (emp.PracticeID == pmPracticeID || emp.PracticeID == dmPracticeID)
+                    where (emp.PracticeID == pmPracticeID)
                     && emp.IsDeleted == false
                     orderby emp.EmployeeID
                     select new EmployeeDto

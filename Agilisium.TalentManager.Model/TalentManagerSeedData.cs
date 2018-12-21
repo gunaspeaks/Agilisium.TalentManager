@@ -11,7 +11,9 @@ namespace Agilisium.TalentManager.Model
         {
             GetCategories().ForEach(c => context.DropDownCategories.Add(c));
             GetSubCategories().ForEach(c => context.DropDownSubCategories.Add(c));
-            GetPractices().ForEach(p => context.Practices.Add(p));
+            context.SaveChanges();
+
+            GetPractices(context).ForEach(p => context.Practices.Add(p));
             context.SaveChanges();
 
             GetEmployeeIDTrackers(context).ForEach(e => context.EmployeeIDTrackers.Add(e));
@@ -209,148 +211,152 @@ namespace Agilisium.TalentManager.Model
             };
         }
 
-        private static List<Practice> GetPractices()
+        private static List<Practice> GetPractices(TalentManagerDataContext context)
         {
+            int bdID = context.DropDownSubCategories.FirstOrDefault(s => s.SubCategoryName == "Business Development").SubCategoryID;
+            int boID = context.DropDownSubCategories.FirstOrDefault(s => s.SubCategoryName == "Business Operations").SubCategoryID;
+            int dlID = context.DropDownSubCategories.FirstOrDefault(s => s.SubCategoryName == "Delivery").SubCategoryID;
+
             return new List<Practice>
             {
                 new Practice
                 {
-                    PracticeID = 1,
                     PracticeName = "Marketing",
                     ShortName = "MKT",
+                    BusinessUnitID = bdID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 2,
+                    PracticeName = "Sales",
+                    ShortName = "SLS",
+                    BusinessUnitID = bdID,
+                    IsReserved = true
+                },
+                 new Practice
+                {
                     PracticeName = "Pre-Sales",
                     ShortName = "PRS",
+                    BusinessUnitID = bdID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 3,
                     PracticeName = "CEO",
                     ShortName = "CEO",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 4,
                     PracticeName = "Operations",
                     ShortName = "OPT",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 5,
                     PracticeName = "Ops-PMO",
                     ShortName = "OPP",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 6,
                     PracticeName = "Admin",
                     ShortName = "ADM",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 7,
                     PracticeName = "Finance",
                     ShortName = "FIN",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 8,
                     PracticeName = "People Practice",
                     ShortName = "PPL",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 9,
                     PracticeName = "ITS",
                     ShortName = "ITS",
+                    BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 10,
                     PracticeName = "AWS",
                     ShortName = "AWS",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 11,
                     PracticeName = "Data Engineering",
                     ShortName = "DEN",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 12,
-                    PracticeName = "Project Manager",
+                    PracticeName = "Project Management",
                     ShortName = "PM",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 13,
                     PracticeName = "Testing",
                     ShortName = "TST",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 14,
                     PracticeName = "Microsoft",
                     ShortName = "Google",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 15,
                     PracticeName = "Google",
                     ShortName = "GOG",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 16,
                     PracticeName = "Prod. Support",
                     ShortName = "PSP",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 16,
                     PracticeName = "BI",
                     ShortName = "BI",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 17,
                     PracticeName = "Data Science",
                     ShortName = "DTS",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeID = 18,
                     PracticeName = "Others",
                     ShortName = "OTH",
-                    IsReserved = true
-                },
-                new Practice
-                {
-                    PracticeID = 19,
-                    PracticeName = "Delivery Manager",
-                    ShortName = "DM",
+                    BusinessUnitID = dlID,
                     IsReserved = true
                 }
             };

@@ -23,6 +23,14 @@
                     <tr>
                         <td>
                             <div class="form-group">
+                                @Html.LabelFor(model => model.BusinessUnitID)
+                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewBag.BuListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
                                 @Html.LabelFor(model => model.PracticeName)
                                 @Html.EditorFor(model => model.PracticeName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>

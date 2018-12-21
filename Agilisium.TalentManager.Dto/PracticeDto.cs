@@ -16,6 +16,10 @@ namespace Agilisium.TalentManager.Dto
 
         public int? ManagerID { get; set; }
 
+        public int BusinessUnitID { get; set; }
+
+        public string  BusinessUnitName { get; set; }
+
         public string ManagerName { get; set; }
 
         public bool IsReserved { get; set; }

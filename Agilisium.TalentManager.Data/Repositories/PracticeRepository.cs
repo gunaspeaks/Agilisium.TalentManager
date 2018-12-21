@@ -45,18 +45,22 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public IEnumerable<PracticeDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            IQueryable<PracticeDto> practices = from c in Entities
-                                                join e in DataContext.Employees on c.ManagerID equals e.EmployeeEntryID into ee
+            IQueryable<PracticeDto> practices = from p in Entities
+                                                join e in DataContext.Employees on p.ManagerID equals e.EmployeeEntryID into ee
                                                 from ed in ee.DefaultIfEmpty()
-                                                orderby c.PracticeName
-                                                where c.IsDeleted == false
+                                                join s in DataContext.DropDownSubCategories on p.BusinessUnitID equals s.SubCategoryID into se
+                                                from sd in se.DefaultIfEmpty()
+                                                orderby p.BusinessUnitID
+                                                where p.IsDeleted == false
                                                 select new PracticeDto
                                                 {
-                                                    PracticeID = c.PracticeID,
-                                                    PracticeName = c.PracticeName,
-                                                    ShortName = c.ShortName,
-                                                    IsReserved = c.IsReserved,
-                                                    ManagerID = c.ManagerID,
+                                                    BusinessUnitID = p.BusinessUnitID,
+                                                    BusinessUnitName = sd.SubCategoryName,
+                                                    PracticeID = p.PracticeID,
+                                                    PracticeName = p.PracticeName,
+                                                    ShortName = p.ShortName,
+                                                    IsReserved = p.IsReserved,
+                                                    ManagerID = p.ManagerID,
                                                     ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
                                                 };
 
@@ -69,18 +73,43 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         }
 
+        public IEnumerable<PracticeDto> GetPracticesByBU(int buID)
+        {
+            IQueryable<PracticeDto> practices = from p in Entities
+                                                join e in DataContext.Employees on p.ManagerID equals e.EmployeeEntryID into ee
+                                                from ed in ee.DefaultIfEmpty()
+                                                join s in DataContext.DropDownSubCategories on p.BusinessUnitID equals s.SubCategoryID into se
+                                                from sd in se.DefaultIfEmpty()
+                                                orderby p.BusinessUnitID
+                                                where p.IsDeleted == false && p.BusinessUnitID == buID
+                                                select new PracticeDto
+                                                {
+                                                    BusinessUnitID = p.BusinessUnitID,
+                                                    BusinessUnitName = sd.SubCategoryName,
+                                                    PracticeID = p.PracticeID,
+                                                    PracticeName = p.PracticeName,
+                                                    ShortName = p.ShortName,
+                                                    IsReserved = p.IsReserved,
+                                                    ManagerID = p.ManagerID,
+                                                    ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
+                                                };
+
+            return practices;
+        }
+
         public PracticeDto GetByID(int id)
         {
-            return (from c in Entities
-                    join e in DataContext.Employees on c.ManagerID equals e.EmployeeEntryID into ee
+            return (from p in Entities
+                    join e in DataContext.Employees on p.ManagerID equals e.EmployeeEntryID into ee
                     from ed in ee.DefaultIfEmpty()
-                    where c.PracticeID == id && c.IsDeleted == false
+                    where p.PracticeID == id && p.IsDeleted == false
                     select new PracticeDto
                     {
-                        PracticeID = c.PracticeID,
-                        PracticeName = c.PracticeName,
-                        ShortName = c.ShortName,
-                        ManagerID = c.ManagerID,
+                        BusinessUnitID = p.BusinessUnitID,
+                        PracticeID = p.PracticeID,
+                        PracticeName = p.PracticeName,
+                        ShortName = p.ShortName,
+                        ManagerID = p.ManagerID,
                         ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
                     }).FirstOrDefault();
         }
@@ -134,6 +163,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         {
             Practice practice = new Practice
             {
+                BusinessUnitID = categoryDto.BusinessUnitID,
                 PracticeName = categoryDto.PracticeName,
                 ShortName = categoryDto.ShortName,
                 PracticeID = categoryDto.PracticeID,
@@ -147,6 +177,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         private void MigrateEntity(PracticeDto sourceEntity, Practice targetEntity)
         {
+            targetEntity.BusinessUnitID = sourceEntity.BusinessUnitID;
             targetEntity.PracticeName = sourceEntity.PracticeName;
             targetEntity.ShortName = sourceEntity.ShortName;
             targetEntity.PracticeID = sourceEntity.PracticeID;
@@ -164,5 +195,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         string GetPracticeName(int practiceID);
 
         string GetManagerName(int practiceID);
+
+        IEnumerable<PracticeDto> GetPracticesByBU(int buID);
     }
 }

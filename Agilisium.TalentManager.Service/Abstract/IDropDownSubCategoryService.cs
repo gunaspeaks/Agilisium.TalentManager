@@ -13,7 +13,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         IEnumerable<DropDownSubCategoryDto> GetAll(int pageSize = -1, int pageNo = -1);
 
-        IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize, int pageNo);
+        IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize = -1, int pageNo = -1);
 
         DropDownSubCategoryDto GetSubCategory(int id);
 

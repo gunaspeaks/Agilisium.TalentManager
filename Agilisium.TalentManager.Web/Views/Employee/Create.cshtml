@@ -11,6 +11,7 @@
 <script type="text/javascript">
     $(document).ready(function () {
         generateEmployeeIDForEmpPage();
+        loadPracticeDropDownListForEmpPage();
         loadSubPracticeDropDownForEmpPage();
         getPracticeManagerNameForEmployeePage();
         getSubPracticeManagerNameForEmployeePage();
@@ -28,7 +29,13 @@
             changeYear: true,
             showAnim: "fadeIn",
         });
-    })
+    });
+
+    $(function () {
+        $("#BusinessUnitID").change(function (event) {
+            loadPracticeDropDownListForEmpPage();
+        });
+    });
 
     $(function () {
         $("#PracticeID").change(function (evt) {
@@ -48,6 +55,7 @@
             generateEmployeeIDForEmpPage();
         });
     });
+
 </script>
 
 <div class="panel panel-default">

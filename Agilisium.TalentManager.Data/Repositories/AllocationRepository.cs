@@ -162,16 +162,31 @@ namespace Agilisium.TalentManager.Repository.Repositories
                     from scd in sce.DefaultIfEmpty()
                     join e in DataContext.Employees on a.EmployeeID equals e.EmployeeEntryID into ee
                     from ed in ee.DefaultIfEmpty()
+                    join bu in DataContext.DropDownSubCategories on ed.BusinessUnitID equals bu.SubCategoryID into bue
+                    from bud in bue.DefaultIfEmpty()
+                    join pr in DataContext.Practices on ed.PracticeID equals pr.PracticeID into pre
+                    from prd in pre.DefaultIfEmpty()
+                    join sp in DataContext.SubPractices on ed.SubPracticeID equals sp.SubPracticeID into spe
+                    from spd in spe.DefaultIfEmpty()
+                    join pm in DataContext.Employees on pd.ProjectManagerID equals pm.EmployeeEntryID into pme
+                    from pmd in pme.DefaultIfEmpty()
+                    join dm in DataContext.Employees on pd.ProjectManagerID equals dm.EmployeeEntryID into dme
+                    from dmd in dme.DefaultIfEmpty()
+
                     where a.EmployeeID == employeeID
                     select new CustomAllocationDto
                     {
                         AllocatedPercentage = a.PercentageOfAllocation,
                         EndDate = pd.StartDate,
                         ProjectCode = pd.ProjectCode,
-                        ProjectManager = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName,
+                        ProjectManager = string.IsNullOrEmpty(pmd.FirstName) ? "" : pmd.LastName + ", " + pmd.FirstName,
                         ProjectName = pd.ProjectName,
                         StartDate = pd.StartDate,
-                        UtilizatinType = scd.SubCategoryName
+                        UtilizatinType = scd.SubCategoryName,
+                        BusinessUnit = bud.SubCategoryName,
+                        Practice = prd.PracticeName,
+                        SubPractice = spd.SubPracticeName,
+                        DeliveryManager = string.IsNullOrEmpty(dmd.FirstName) ? "" : dmd.LastName + ", " + dmd.FirstName,
                     });
         }
     }

@@ -190,6 +190,11 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
         }
 
+        public ActionResult ChangeReportingManager()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult GetSubPracticeList(int id)
         {

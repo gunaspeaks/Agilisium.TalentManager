@@ -82,6 +82,7 @@
     </div>
     <div class="panel-footer">
         @Html.ActionLink("Add a New Employee", "Create", null, new { @class = "btn btn-default" })
+        @Html.ActionLink("Change Reporting Manager for Multiple Employees", "ChangeReportingManager", null, new { @class = "btn btn-primary" })
         <div class="btn-group pull-right">
             @Html.AddPagination(Model.PagingInfo, x => Url.Action("List", new { page = x }))
         </div>

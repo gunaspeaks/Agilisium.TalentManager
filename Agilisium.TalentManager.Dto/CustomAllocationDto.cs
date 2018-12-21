@@ -17,5 +17,13 @@ namespace Agilisium.TalentManager.Dto
         public int AllocatedPercentage { get; set; }
 
         public string UtilizatinType { get; set; }
+
+        public string BusinessUnit { get; set; }
+
+        public string Practice { get; set; }
+
+        public string SubPractice { get; set; }
+
+        public string DeliveryManager { get; set; }
     }
 }

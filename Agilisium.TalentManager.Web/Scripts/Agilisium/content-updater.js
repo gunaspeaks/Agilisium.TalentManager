@@ -15,7 +15,7 @@ formatJsonDateString = function (value) {
 }
 
 function getEmployeePercentageOfAllocation() {
-    if ($("#EmployeeID").val().length > 0 ) {
+    if ($("#EmployeeID").val().length > 0) {
         var v_data = {};
         v_data.empID = $("#EmployeeID").val();
         v_data.prjID = $("#ProjectID").val();
@@ -143,7 +143,6 @@ function loadSubPracticeDropDownForEmpPage() {
                 $.each(data, function () {
                     $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
                 });
-                ddlSubPractice.prop('disabled', false);
             },
             error: function (xhr) { alert('Error while loading the Sub Practice list'); }
         });
@@ -196,6 +195,29 @@ function getSubPracticeManagerNameForEmployeePage() {
             }
         });
     }
+}
+
+function loadPracticeDropDownListForEmpPage() {
+    if ($("#BusinessUnitID").val().length == 0) return;
+    $("#PracticeID").empty();
+    $("#PracticeID").append($("<option></option>").val(0).text("Please Select"));
+    $("#SubPracticeID").empty();
+    $("#SubPracticeID").append($("<option></option>").val(0).text("Please Select"));
+
+    $.ajax({
+        url: "/Practice/GetPracticesByBuID",
+        type: "POST",
+        data: { buID: $("#BusinessUnitID").val() },
+        success: function (data) {
+
+            $.each(data, function () {
+                $("#PracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
+            });
+        },
+        error: function () {
+            alert("Error has occured while loading the Practices for the selected BU");
+        }
+    });
 }
 
 //$(document).ajaxStart(function () {

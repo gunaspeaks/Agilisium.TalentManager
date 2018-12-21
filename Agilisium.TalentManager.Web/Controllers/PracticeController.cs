@@ -14,11 +14,14 @@ namespace Agilisium.TalentManager.Web.Controllers
     {
         private readonly IPracticeService practiceService;
         private readonly IEmployeeService empService;
+        private readonly IDropDownSubCategoryService subCategoryService;
 
-        public PracticeController(IPracticeService practiceService, IEmployeeService empService)
+        public PracticeController(IPracticeService practiceService, IEmployeeService empService,
+            IDropDownSubCategoryService subCategoryService)
         {
             this.practiceService = practiceService;
             this.empService = empService;
+            this.subCategoryService = subCategoryService;
         }
 
         // GET: Practice
@@ -190,6 +193,20 @@ namespace Agilisium.TalentManager.Web.Controllers
             return RedirectToAction("List");
         }
 
+        [HttpPost]
+        public JsonResult GetPracticesByBuID(int buID)
+        {
+            IEnumerable<PracticeDto> practices = practiceService.GetPracticesByBU(buID).ToList();
+
+            List<SelectListItem> practiceItems = (from p in practices
+                                                  select new SelectListItem
+                                                  {
+                                                      Value = p.PracticeID.ToString(),
+                                                      Text = p.PracticeName
+                                                  }).ToList();
+            return Json(practiceItems);
+        }
+
         private IEnumerable<PracticeModel> GetPractices(int pageNo)
         {
             IEnumerable<PracticeDto> practices = practiceService.GetPractices(RecordsPerPage, pageNo);
@@ -200,7 +217,6 @@ namespace Agilisium.TalentManager.Web.Controllers
         private void InitializePageData()
         {
             List<EmployeeDto> managers = empService.GetAllManagers();
-
             List<SelectListItem> empDDList = new List<SelectListItem>();
 
             if (managers != null)
@@ -213,8 +229,24 @@ namespace Agilisium.TalentManager.Web.Controllers
                              }).ToList();
             }
 
-
             ViewBag.ManagerListItems = empDDList;
+            LoadBusinessUnitItems();
+        }
+
+        private void LoadBusinessUnitItems()
+        {
+            IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories((int)CategoryType.BusinessUnit);
+
+            List<SelectListItem> buListItems = (from c in buList
+                                                orderby c.SubCategoryName
+                                                where c.CategoryID == (int)CategoryType.BusinessUnit
+                                                select new SelectListItem
+                                                {
+                                                    Text = c.SubCategoryName,
+                                                    Value = c.SubCategoryID.ToString()
+                                                }).ToList();
+
+            ViewBag.BuListItems = buListItems;
         }
     }
 }

@@ -28,5 +28,17 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Allocation Type")]
         public string UtilizatinType { get; set; }
+
+        [DisplayName("Business Unit")]
+        public string BusinessUnit { get; set; }
+
+        [DisplayName("Practice")]
+        public string Practice { get; set; }
+
+        [DisplayName("Sub Practice")]
+        public string SubPractice { get; set; }
+
+        [DisplayName("Delivery Manager")]
+        public string DeliveryManager { get; set; }
     }
 }

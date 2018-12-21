@@ -78,7 +78,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                   ProjectTypeName = ptd.SubCategoryName,
                                                   Remarks = p.Remarks,
                                                   StartDate = p.StartDate,
-                                                  ProjectManagerName = string.IsNullOrEmpty(pmd.LastName) ? "" : pmd.LastName + ", " + pmd.FirstName
+                                                  ProjectManagerName = string.IsNullOrEmpty(pmd.LastName) ? "" : pmd.LastName + ", " + pmd.FirstName,
+                                                  IsSowAvailable = p.IsSowAvailable,
                                               };
 
             if (pageSize < 0)
