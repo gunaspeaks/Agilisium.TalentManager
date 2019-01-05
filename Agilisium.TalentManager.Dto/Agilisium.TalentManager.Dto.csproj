@@ -41,16 +41,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ContractorDto.cs" />
     <Compile Include="CustomAllocationDto.cs" />
     <Compile Include="DropDownCategoryDto.cs" />
     <Compile Include="DropDownSubCategoryDto.cs" />
     <Compile Include="DtoBase.cs" />
     <Compile Include="EmployeeDto.cs" />
     <Compile Include="PracticeDto.cs" />
+    <Compile Include="PracticeHeadCountDto.cs" />
     <Compile Include="ProjectAllocationDto.cs" />
     <Compile Include="ProjectDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceRequestDto.cs" />
     <Compile Include="SubPracticeDto.cs" />
+    <Compile Include="SubPracticeHeadCountDto.cs" />
+    <Compile Include="VendorDto.cs" />
+    <Compile Include="VendorSearchDto.cs" />
+    <Compile Include="VendorSearchResultDto.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

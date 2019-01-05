@@ -21,5 +21,7 @@ namespace Agilisium.TalentManager.Dto
         public int? ManagerID { get; set; }
 
         public string ManagerName { get; set; }
+
+        public int HeadCount { get; set; }
     }
 }

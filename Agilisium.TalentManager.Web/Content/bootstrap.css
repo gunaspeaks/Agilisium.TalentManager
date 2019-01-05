@@ -6657,7 +6657,7 @@ button.list-group-item-danger {
 }
 
 .panel {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
     background-color: #fff;
     border: 1px solid transparent;
     border-radius: 4px;
@@ -6666,14 +6666,15 @@ button.list-group-item-danger {
 }
 
 .panel-body {
-    padding: 15px;
+    padding: 5px;
 }
 
 .panel-heading {
-    padding: 10px 15px;
+    padding: 5px 5px;
     border-bottom: 1px solid transparent;
     border-top-left-radius: 3px;
     border-top-right-radius: 3px;
+    text-align:center;
 }
 
     .panel-heading > .dropdown .dropdown-toggle {
@@ -6901,7 +6902,7 @@ button.list-group-item-danger {
 }
 
 .panel-group {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
     .panel-group .panel {

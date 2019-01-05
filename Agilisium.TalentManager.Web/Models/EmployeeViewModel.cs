@@ -16,5 +16,7 @@ namespace Agilisium.TalentManager.Web.Models
         public IEnumerable<EmployeeModel> Employees { get; set; }
 
         public PagingInfo PagingInfo { get; set; }
+
+        public string SearchText { get; set; }
     }
 }

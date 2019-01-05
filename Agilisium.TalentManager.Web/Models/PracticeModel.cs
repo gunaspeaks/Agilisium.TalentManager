@@ -31,5 +31,8 @@ namespace Agilisium.TalentManager.Web.Models
         public string ManagerName { get; set; }
 
         public bool IsReserved { get; set; }
+
+        [DisplayName("Head Count")]
+        public int HeadCount { get; set; }
     }
 }

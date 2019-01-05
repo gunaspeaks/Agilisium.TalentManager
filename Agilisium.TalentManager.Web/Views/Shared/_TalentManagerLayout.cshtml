@@ -27,24 +27,38 @@
         <div>
             <div class="navbar-header">
                 <div class="navbar-header pull-left" style="vertical-align:top">
-                    <a class="navbar-brand" href="@Url.Action("Index", "Home")">
+                    <a class="navbar-brand" href="@Url.Action("Index", "Default")">
                         <img src="~/Content/Images/agilisium.jpg" alt="Agilisium-Talent Manager" style="height:25px;width:25px;" />
                     </a>
                 </div>
             </div>
-            <div class="navbar-collapse collapse" >
+            <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" style="color:darkblue; font-weight:bold;">
                     @*
                         <li>@Html.ImageLink("Index", "Home", null, "~/content/images/Agilisium_Logo.jpg", "Agilisium", null, null)</li>*@
                     @*<li>@Html.ActionLink("Agilisium - Talent Manager", "Index", "Home")</li>*@
                     @if (Request.Url.ToString().Contains("Employee"))
-                    {
-                        <li>@Html.ActionLink("Employees", "List", "Employee", new { @style = "color:darkblue" })</li>
-                    }
-                    else
-                    {
-                        <li>@Html.ActionLink("Employees", "List", "Employee")</li>
-                    }
+                        {
+                            <li>@Html.ActionLink("Employees", "List", "Employee", new { @style = "color:darkblue" })</li>
+                        }
+                        else
+                        {
+                            <li>@Html.ActionLink("Employees", "List", "Employee")</li>
+                        }
+                    @*<li class="dropdown">
+                        @if (Request.Url.ToString().Contains("Employee"))
+                        {
+                            <a href="#" data-toggle="dropdown" style="color:darkblue" class="dropdown-toggle">Employees<b class="caret"></b></a>
+                        }
+                        else
+                        {
+                            <a href="#" data-toggle="dropdown" class="dropdown-toggle">Employees<b class="caret"></b></a>
+                        }
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Active Employees", "List", "Employee")</li>
+                            <li>@Html.ActionLink("Past Employees", "PastEmployeeList", "Employee")</li>
+                        </ul>
+                    </li>*@
 
                     @if (Request.Url.ToString().Contains("Project"))
                     {
@@ -114,7 +128,7 @@
         }
         @if (TempData["WarningMessage"] != null)
         {
-            <div style="font-weight:bold;color:yellowgreen; border-bottom-width:1px; border-bottom-right-radius:40%; border-bottom-left-radius:40%; font-size:large; text-align:center" class="alert alert-warning">
+            <div style="font-weight:bold;color:darkblue; border-bottom-width:1px; border-bottom-right-radius:40%; border-bottom-left-radius:40%; font-size:large; text-align:center" class="alert alert-warning">
                 @TempData["WarningMessage"]
             </div>
         }

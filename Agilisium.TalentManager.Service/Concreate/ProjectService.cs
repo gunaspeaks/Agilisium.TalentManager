@@ -1,11 +1,8 @@
-﻿using Agilisium.TalentManager.Repository.Repositories;
-using Agilisium.TalentManager.Dto;
+﻿using Agilisium.TalentManager.Dto;
+using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Service.Abstract;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -30,7 +27,7 @@ namespace Agilisium.TalentManager.Service.Concreate
 
         public bool Exists(string projectName, int id)
         {
-            return repository.Exists( id, projectName);
+            return repository.Exists(id, projectName);
         }
 
         public bool Exists(string projectName)
@@ -45,7 +42,7 @@ namespace Agilisium.TalentManager.Service.Concreate
 
         public IEnumerable<ProjectDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
-            return repository.GetAll();
+            return repository.GetAll(pageSize, pageNo).ToList();
         }
 
         public ProjectDto GetByID(int id)

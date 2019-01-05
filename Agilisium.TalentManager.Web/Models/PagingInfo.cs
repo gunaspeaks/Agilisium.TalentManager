@@ -10,6 +10,6 @@ namespace Agilisium.TalentManager.Web.Models
 
         public int CurentPageNo { get; set; }
 
-        public int TotalPageCount => (int)Math.Ceiling((decimal)(TotalRecordsCount / RecordsPerPage));
+        public int TotalPageCount => RecordsPerPage == 0 ? 0 : (int)Math.Ceiling((decimal)(TotalRecordsCount / RecordsPerPage));
     }
 }

@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Configuration\ContractorTypeConfiguration.cs" />
     <Compile Include="Configuration\DropDownCategoryConfiguration.cs" />
     <Compile Include="Configuration\DropDownSubCategoryConfiguration.cs" />
     <Compile Include="Configuration\EmployeeEntityConfiguration.cs" />
@@ -55,12 +56,17 @@
     <Compile Include="Configuration\PracticeEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectAllocationEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectEntityConfiguration.cs" />
+    <Compile Include="Configuration\ServiceRequestEntityConfiguration.cs" />
     <Compile Include="Configuration\SubPracticeEntityConfiguration.cs" />
+    <Compile Include="Configuration\VendorEntityConfiguration.cs" />
+    <Compile Include="Entities\Contractor.cs" />
     <Compile Include="Entities\CustomAllocation.cs" />
     <Compile Include="Entities\DropDownCategory.cs" />
     <Compile Include="Entities\DropDownSubCategory.cs" />
     <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\EmployeeIDTracker.cs" />
+    <Compile Include="Entities\ServiceRequest.cs" />
+    <Compile Include="Entities\Vendor.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="Entities\Practice.cs" />
     <Compile Include="Entities\ProjectAllocation.cs" />

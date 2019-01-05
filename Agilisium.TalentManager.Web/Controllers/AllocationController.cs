@@ -160,7 +160,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    if(IsValidAllocation(allocation)==false)
+                    if (IsValidAllocation(allocation) == false)
                     {
                         return View(allocation);
                     }
@@ -254,7 +254,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private void GetOtherDropDownItems()
         {
-            IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetAll();
+            IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories((int)CategoryType.UtilizationCode);
 
             List<SelectListItem> projectTypeItems = (from c in buList
                                                      orderby c.SubCategoryName
@@ -270,7 +270,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
         private void GetEmployeesList()
         {
-            List<EmployeeDto> employees = empService.GetAllEmployees();
+            List<EmployeeDto> employees = empService.GetAllEmployees("");
 
             List<SelectListItem> pmList = (from e in employees
                                            select new SelectListItem
@@ -311,14 +311,14 @@ namespace Agilisium.TalentManager.Web.Controllers
                 return false;
             }
 
-            if(allocation.AllocationEndDate<allocation.AllocationStartDate|| allocation.AllocationEndDate<project.StartDate)
+            if (allocation.AllocationEndDate < allocation.AllocationStartDate || allocation.AllocationEndDate < project.StartDate)
             {
                 DisplayWarningMessage("Allocation End Date should be within the range of Project Start & End Dates");
                 return false;
             }
 
-            var emp = empService.GetEmployee(allocation.EmployeeID);
-            if(allocation.AllocationStartDate<emp.DateOfJoin)
+            EmployeeDto emp = empService.GetEmployee(allocation.EmployeeID);
+            if (allocation.AllocationStartDate < emp.DateOfJoin)
             {
                 DisplayWarningMessage($"Selected Employee's DoJ is {emp.DateOfJoin.ToString("mm/dd/yyyy")}. Allocation Start Date should be above that");
                 return false;

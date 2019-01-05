@@ -50,7 +50,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                 from ed in ee.DefaultIfEmpty()
                                                 join s in DataContext.DropDownSubCategories on p.BusinessUnitID equals s.SubCategoryID into se
                                                 from sd in se.DefaultIfEmpty()
-                                                orderby p.BusinessUnitID
+                                                orderby sd.SubCategoryName, p.PracticeName
                                                 where p.IsDeleted == false
                                                 select new PracticeDto
                                                 {
@@ -61,7 +61,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                     ShortName = p.ShortName,
                                                     IsReserved = p.IsReserved,
                                                     ManagerID = p.ManagerID,
-                                                    ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
+                                                    ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName,
+                                                    HeadCount = DataContext.Employees.Count(h => h.PracticeID == p.PracticeID)
                                                 };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -80,7 +81,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                 from ed in ee.DefaultIfEmpty()
                                                 join s in DataContext.DropDownSubCategories on p.BusinessUnitID equals s.SubCategoryID into se
                                                 from sd in se.DefaultIfEmpty()
-                                                orderby p.BusinessUnitID
+                                                orderby p.PracticeName
                                                 where p.IsDeleted == false && p.BusinessUnitID == buID
                                                 select new PracticeDto
                                                 {

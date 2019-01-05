@@ -33,5 +33,8 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Sub-Practice Manager")]
         public string ManagerName { get; set; }
+
+        [DisplayName("Head Count")]
+        public int HeadCount { get; set; }
     }
 }

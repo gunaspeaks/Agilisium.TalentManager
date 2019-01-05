@@ -1,17 +1,12 @@
 ﻿using Agilisium.TalentManager.Model.Configuration;
 using Agilisium.TalentManager.Model.Entities;
-using System;
-using System.Collections.Generic;
 using System.Data.Entity;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Model
 {
-    public class TalentManagerDataContext:DbContext
+    public class TalentManagerDataContext : DbContext
     {
-        public TalentManagerDataContext():base("TalentDataContext")
+        public TalentManagerDataContext() : base("TalentDataContext")
         {
         }
 
@@ -31,6 +26,12 @@ namespace Agilisium.TalentManager.Model
 
         public DbSet<EmployeeIDTracker> EmployeeIDTrackers { get; set; }
 
+        public DbSet<Vendor> Vendors { get; set; }
+
+        public DbSet<Contractor> Contractors { get; set; }
+
+        public DbSet<ServiceRequest> ServiceRequests { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new PracticeEntityConfiguration());
@@ -41,6 +42,9 @@ namespace Agilisium.TalentManager.Model
             modelBuilder.Configurations.Add(new ProjectEntityConfiguration());
             modelBuilder.Configurations.Add(new ProjectAllocationEntityConfiguration());
             modelBuilder.Configurations.Add(new EmployeeIDTrackerEntityConfiguration());
+            modelBuilder.Configurations.Add(new VendorEntityConfiguration());
+            modelBuilder.Configurations.Add(new ContractorTypeConfiguration());
+            modelBuilder.Configurations.Add(new ServiceRequestEntityConfiguration());
         }
     }
 }

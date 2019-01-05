@@ -59,7 +59,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                        SubPracticeName = c.SubPracticeName,
                                                        ShortName = c.ShortName,
                                                        ManagerID = c.ManagerID,
-                                                       ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
+                                                       ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName,
+                                                       HeadCount = DataContext.Employees.Count(h => h.SubPracticeID == c.SubPracticeID)
                                                    };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -87,7 +88,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                        SubPracticeName = c.SubPracticeName,
                                                        ShortName = c.ShortName,
                                                        ManagerID = c.ManagerID,
-                                                       ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
+                                                       ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName,
+                                                       HeadCount = DataContext.Employees.Count(h => h.SubPracticeID == c.SubPracticeID)
                                                    };
 
             if (pageSize <= 0 || pageNo < 1)

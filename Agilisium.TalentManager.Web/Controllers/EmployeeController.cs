@@ -29,7 +29,41 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Employee
-        public ActionResult List(int page = 1)
+        public ActionResult List(string searchText, int page = 1)
+        {
+            EmployeeViewModel viewModel = new EmployeeViewModel
+            {
+                SearchText = searchText
+            };
+
+            try
+            {
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = empService.TotalRecordsCount(searchText),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Employees = GetEmployees(searchText, page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Employees to display");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(viewModel);
+        }
+
+        // GET: Employee
+        public ActionResult PastEmployeeList(int page = 1)
         {
             EmployeeViewModel viewModel = new EmployeeViewModel();
 
@@ -37,14 +71,78 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 viewModel.PagingInfo = new PagingInfo
                 {
-                    TotalRecordsCount = empService.TotalRecordsCount(),
+                    TotalRecordsCount = empService.GetPastEmployeesCount(),
                     RecordsPerPage = RecordsPerPage,
                     CurentPageNo = page
                 };
 
                 if (viewModel.PagingInfo.TotalRecordsCount > 0)
                 {
-                    viewModel.Employees = GetEmployees(page);
+                    viewModel.Employees = GetPastEmployees(page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Employees to display");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(viewModel);
+        }
+
+        // GET: Employee
+        public ActionResult PracticeWiseList(int pid, int page = 1)
+        {
+            EmployeeViewModel viewModel = new EmployeeViewModel();
+            viewModel.SearchText = "";
+
+            try
+            {
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = empService.PracticeWiseRecordsCount(pid),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Employees = GetPracticeWiseEmployees(pid, page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Employees to display");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(viewModel);
+        }
+
+        // GET: Employee
+        public ActionResult SubPracticeWiseList(int sid, int page = 1)
+        {
+            EmployeeViewModel viewModel = new EmployeeViewModel();
+            viewModel.SearchText = "";
+
+            try
+            {
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = empService.SubPracticeWiseRecordsCount(sid),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Employees = GetSubPracticeWiseEmployees(sid, page);
                 }
                 else
                 {
@@ -214,9 +312,33 @@ namespace Agilisium.TalentManager.Web.Controllers
             return Json(emp);
         }
 
-        private IEnumerable<EmployeeModel> GetEmployees(int pageNo)
+        private IEnumerable<EmployeeModel> GetEmployees(string searchText, int pageNo=1)
         {
-            IEnumerable<EmployeeDto> employees = empService.GetAllEmployees(RecordsPerPage, pageNo);
+            IEnumerable<EmployeeDto> employees = empService.GetAllEmployees(searchText, RecordsPerPage, pageNo);
+            IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
+
+            return employeeModels;
+        }
+
+        private IEnumerable<EmployeeModel> GetPastEmployees(int pageNo)
+        {
+            IEnumerable<EmployeeDto> employees = empService.GetAllPastEmployees(RecordsPerPage, pageNo);
+            IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
+
+            return employeeModels;
+        }
+
+        private IEnumerable<EmployeeModel> GetSubPracticeWiseEmployees(int subPracticeID, int pageNo=1)
+        {
+            IEnumerable<EmployeeDto> employees = empService.GetAllBySubPractice(subPracticeID, RecordsPerPage, pageNo);
+            IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
+
+            return employeeModels;
+        }
+
+        private IEnumerable<EmployeeModel> GetPracticeWiseEmployees(int practiceID, int pageNo=1)
+        {
+            IEnumerable<EmployeeDto> employees = empService.GetAllByPractice(practiceID, RecordsPerPage, pageNo);
             IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
 
             return employeeModels;

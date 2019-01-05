@@ -4,7 +4,6 @@
     ViewBag.Title = "Create New Project";
 }
 <link href="~/Content/error-styles.css" rel="stylesheet" />
-<link href="~/Content/error-styles.css" rel="stylesheet" />
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 
@@ -76,21 +75,24 @@
             <div>
                 <table style="width:80%">
                     <tr>
-                        <td>
+                        <td width="25%">
                             <div class="form-group">
+                                @Html.HiddenFor(model => model.ProjectID)
                                 @Html.LabelFor(model => model.ProjectCode)
                                 @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
-                        <td>
+                        <td width="5%"></td>
+                        <td width="25%">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectName)
                                 @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.DeliveryManagerID)
+                                @Html.LabelFor(model => model.ProjectManagerID)
                                 @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
@@ -102,12 +104,14 @@
                                 @Html.DropDownListFor(model => model.ProjectManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectTypeID)
                                 @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td rowspan="2">
                             <div class="form-group">
                                 @Html.Label("Remarks")
@@ -122,12 +126,14 @@
                                 @Html.EditorFor(model => model.StartDate, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.EndDate)
                                 @Html.EditorFor(model => model.EndDate, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td></td>
                     </tr>
                     <tr>
@@ -137,12 +143,14 @@
                                 @Html.CheckBoxFor(model => model.IsSowAvailable, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.SowStartDate)
                                 @Html.EditorFor(model => model.SowStartDate, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                        <td width="5%"></td>
                         <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.SowEndDate)

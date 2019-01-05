@@ -10,7 +10,10 @@ namespace Agilisium.TalentManager.Web.Helpers
         BusinessUnit = 1,
         UtilizationCode,
         ProjectType,
-        EmploymentType
+        EmploymentType,
+        SpecializedPartner,
+        ContractPeriod,
+        ServiceRequestType,
     }
 
     public enum PracticeType

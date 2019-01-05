@@ -30,9 +30,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Delete(employee);
         }
 
-        public List<EmployeeDto> GetAllEmployees(int pageSize = 0, int pageNo = -1)
+        public List<EmployeeDto> GetAllEmployees(string searchText, int pageSize = 0, int pageNo = -1)
         {
-            return repository.GetAll(pageSize, pageNo).ToList();
+            return repository.GetAll(searchText, pageSize, pageNo).ToList();
         }
 
         public EmployeeDto GetEmployee(int id)
@@ -75,9 +75,49 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.GetAllManagers().ToList();
         }
 
-        public int TotalRecordsCount()
+        public int TotalRecordsCount(string searchText)
         {
-            return repository.TotalRecordsCount();
+            return repository.TotalRecordsCount(searchText);
+        }
+
+        public IEnumerable<EmployeeDto> GetAllPastEmployees(int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetAllPastEmployees(pageSize, pageNo);
+        }
+
+        public int GetPastEmployeesCount()
+        {
+            return repository.GetPastEmployeesCount();
+        }
+
+        public List<PracticeHeadCountDto> GetPracticeWiseHeadCount()
+        {
+            return repository.GetPracticeWiseHeadCount().ToList();
+        }
+
+        public List<SubPracticeHeadCountDto> GetSubPracticeWiseHeadCount()
+        {
+            return repository.GetSubPracticeWiseHeadCount().ToList();
+        }
+
+        public List<EmployeeDto> GetAllByPractice(int practiceID, int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetAllByPractice(practiceID, pageSize, pageNo).ToList();
+        }
+
+        public List<EmployeeDto> GetAllBySubPractice(int subPracticeID, int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetAllBySubPractice(subPracticeID, pageSize, pageNo).ToList();
+        }
+
+        public int PracticeWiseRecordsCount(int practiceID)
+        {
+            return repository.PracticeWiseRecordsCount(practiceID);
+        }
+
+        public int SubPracticeWiseRecordsCount(int subPracticeID)
+        {
+            return repository.SubPracticeWiseRecordsCount(subPracticeID);
         }
     }
 }

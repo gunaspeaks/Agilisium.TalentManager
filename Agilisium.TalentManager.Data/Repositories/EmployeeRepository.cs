@@ -2,7 +2,11 @@
 using Agilisium.TalentManager.Model.Entities;
 using Agilisium.TalentManager.Repository.Abstract;
 using System.Collections.Generic;
+using System.Data;
+using System.Data.Common;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace Agilisium.TalentManager.Repository.Repositories
@@ -58,35 +62,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
                     }).FirstOrDefault();
         }
 
-        public IEnumerable<EmployeeDto> GetAll(int pageSize = -1, int pageNo = -1)
+        public IEnumerable<EmployeeDto> GetAll(string searchText, int pageSize = -1, int pageNo = -1)
         {
-            IQueryable<EmployeeDto> employees = from emp in Entities
-                                                join bc in DataContext.DropDownSubCategories on emp.BusinessUnitID equals bc.SubCategoryID into bue
-                                                from bcd in bue.DefaultIfEmpty()
-                                                join pc in DataContext.Practices on emp.PracticeID equals pc.PracticeID into pce
-                                                from pcd in pce.DefaultIfEmpty()
-                                                join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
-                                                from utd in ute.DefaultIfEmpty()
-                                                join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
-                                                from etd in ute.DefaultIfEmpty()
-                                                join sp in DataContext.DropDownSubCategories on emp.SubPracticeID equals sp.SubCategoryID into spe
-                                                from spd in spe.DefaultIfEmpty()
-                                                where emp.IsDeleted == false
-                                                orderby emp.EmployeeID
-                                                select new EmployeeDto
-                                                {
-                                                    BusinessUnitName = bcd.SubCategoryName,
-                                                    DateOfJoin = emp.DateOfJoin,
-                                                    EmployeeEntryID = emp.EmployeeEntryID,
-                                                    EmployeeID = emp.EmployeeID,
-                                                    FirstName = emp.FirstName,
-                                                    LastName = emp.LastName,
-                                                    PracticeName = pcd.PracticeName,
-                                                    PrimarySkills = emp.PrimarySkills,
-                                                    UtilizationTypeName = utd.SubCategoryName,
-                                                    EmploymentTypeName = etd.SubCategoryName,
-                                                    SubPracticeName = spd.SubCategoryName
-                                                };
+            IEnumerable<EmployeeDto> employees = GetAllActiveEmployees(searchText);
 
             if (pageSize <= 0 || pageNo < 1)
             {
@@ -94,6 +72,60 @@ namespace Agilisium.TalentManager.Repository.Repositories
             }
 
             return employees.Skip((pageNo - 1) * pageSize).Take(pageSize);
+        }
+
+        public IEnumerable<EmployeeDto> GetAll(int pageSize = -1, int pageNo = -1)
+        {
+            IEnumerable<EmployeeDto> employees = GetAllActiveEmployees("");
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return employees;
+            }
+
+            return employees.Skip((pageNo - 1) * pageSize).Take(pageSize);
+        }
+
+        public IEnumerable<EmployeeDto> GetAllPastEmployees(int pageSize = -1, int pageNo = -1)
+        {
+            List<EmployeeDto> employees = new List<EmployeeDto>();
+
+            List<Employee> pastEmployees = (from emp in Entities
+                                            where emp.LastWorkingDay.HasValue == true
+                                            || emp.IsDeleted == true
+                                            select emp).ToList();
+
+            foreach (Employee emp in pastEmployees)
+            {
+                employees.Add(new EmployeeDto
+                {
+                    BusinessUnitName = DataContext.DropDownSubCategories.FirstOrDefault(b => b.SubCategoryID == emp.BusinessUnitID)?.SubCategoryName,
+                    DateOfJoin = emp.DateOfJoin,
+                    EmployeeEntryID = emp.EmployeeEntryID,
+                    EmployeeID = emp.EmployeeID,
+                    FirstName = emp.FirstName,
+                    LastName = emp.LastName,
+                    PracticeName = DataContext.Practices.FirstOrDefault(b => b.PracticeID == emp.PracticeID)?.PracticeName,
+                    PrimarySkills = emp.PrimarySkills,
+                    UtilizationTypeName = DataContext.DropDownSubCategories.FirstOrDefault(b => b.SubCategoryID == emp.UtilizationTypeID)?.SubCategoryName,
+                    EmploymentTypeName = DataContext.DropDownSubCategories.FirstOrDefault(b => b.SubCategoryID == emp.EmploymentTypeID)?.SubCategoryName,
+                    SubPracticeName = DataContext.SubPractices.FirstOrDefault(b => b.SubPracticeID == emp.SubPracticeID)?.SubPracticeName,
+                    LastWorkingDay = emp.LastWorkingDay,
+                    ReportingManagerName = Entities.FirstOrDefault(e => e.ReportingManagerID == emp.ReportingManagerID)?.FirstName
+                });
+            }
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return employees;
+            }
+
+            return employees.Skip((pageNo - 1) * pageSize).Take(pageSize);
+        }
+
+        public int GetPastEmployeesCount()
+        {
+            return Entities.Count(emp => emp.LastWorkingDay.HasValue == true || emp.IsDeleted == true);
         }
 
         public bool IsDuplicateName(string firstName, string lastName)
@@ -170,6 +202,196 @@ namespace Agilisium.TalentManager.Repository.Repositories
                     });
         }
 
+        public string GenerateNewEmployeeID(int employeeTypeID)
+        {
+            string employeeID = string.Empty;
+
+            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeTypeID);
+            string empType = DataContext.DropDownSubCategories.FirstOrDefault(s => s.SubCategoryID == employeeTypeID)?.SubCategoryName;
+
+            bool isDuplicate = true;
+
+            int runningID = tracker.RunningID;
+            int newRunningID = tracker.RunningID;
+            string idPrefix = tracker.IDPrefix.ToLower();
+            while (isDuplicate)
+            {
+                string runningNumber = empType == PERMANENT_EMP_NAME ? newRunningID.ToString() : newRunningID.ToString().Substring(1);
+                employeeID = $"{tracker.IDPrefix}{runningNumber}";
+
+                if (!Entities.Any(e => e.EmployeeID.ToLower() == employeeID))
+                {
+                    isDuplicate = false;
+                }
+                else
+                {
+                    newRunningID += 1;
+                }
+            }
+
+            if (runningID != newRunningID)
+            {
+                UpdateEmployeeIDTracker(employeeTypeID, runningID);
+            }
+
+            return employeeID;
+        }
+
+        public int TotalRecordsCount(string searchText)
+        {
+            if (string.IsNullOrEmpty(searchText))
+            {
+                return TotalRecordsCount();
+            }
+            else
+            {
+                return Entities.Count(e => e.IsDeleted == false
+                && (e.FirstName.ToLower().StartsWith(searchText.ToLower())
+                || e.LastName.ToLower().StartsWith(searchText.ToLower())));
+            }
+        }
+
+        public IEnumerable<PracticeHeadCountDto> GetPracticeWiseHeadCount()
+        {
+            return (from e in Entities
+                    group e by e.PracticeID into eg
+                    where eg.Count() > 10
+                    orderby eg.Count() descending
+                    select new PracticeHeadCountDto
+                    {
+                        HeadCount = eg.Count(emp => emp.IsDeleted == false),
+                        PracticeID = eg.Key,
+                        Practice = DataContext.Practices.FirstOrDefault(p => p.PracticeID == eg.Key).PracticeName
+                    }).Take(5);
+        }
+
+        public IEnumerable<SubPracticeHeadCountDto> GetSubPracticeWiseHeadCount()
+        {
+            DbCommand cmd = DataContext.Database.Connection.CreateCommand();
+            cmd.CommandText = "dbo.GetSubPracticeWiseHeadCount";
+            cmd.CommandType = CommandType.StoredProcedure;
+            DataContext.Database.Connection.Open();
+            DbDataReader reader = cmd.ExecuteReader();
+            ObjectResult<SubPracticeHeadCountDto> items = ((IObjectContextAdapter)DataContext).ObjectContext.Translate<SubPracticeHeadCountDto>(reader);
+
+            List<SubPracticeHeadCountDto> records = items.ToList();
+            DataContext.Database.Connection.Close();
+            return records;
+        }
+
+        public IEnumerable<EmployeeDto> GetAllByPractice(int practiceID, int pageSize = -1, int pageNo = -1)
+        {
+            IEnumerable<EmployeeDto> employees = GetAllActiveEmployees("").Where(e => e.PracticeID == practiceID);
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return employees;
+            }
+
+            return employees.Skip((pageNo - 1) * pageSize).Take(pageSize);
+        }
+
+        public IEnumerable<EmployeeDto> GetAllBySubPractice(int subPracticeID, int pageSize = -1, int pageNo = -1)
+        {
+            IEnumerable<EmployeeDto> employees = GetAllActiveEmployees("")
+                                                .Where(e => e.SubPracticeID == subPracticeID);
+
+            if (pageSize <= 0 || pageNo < 1)
+            {
+                return employees;
+            }
+
+            return employees.Skip((pageNo - 1) * pageSize).Take(pageSize);
+        }
+
+        public int PracticeWiseRecordsCount(int practiceID)
+        {
+            return Entities.Count(e => e.IsDeleted == false && e.PracticeID == practiceID);
+        }
+
+        public int SubPracticeWiseRecordsCount(int subPracticeID)
+        {
+            return Entities.Count(e => e.IsDeleted == false && e.SubPracticeID == subPracticeID);
+        }
+
+        private void UpdateEmployeeIDTracker(int trackerID, int runningID)
+        {
+            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == trackerID);
+            tracker.RunningID = runningID;
+            DataContext.EmployeeIDTrackers.Add(tracker);
+            DataContext.Entry(tracker).State = EntityState.Modified;
+            DataContext.SaveChanges();
+        }
+
+        private bool UpdateEmployeeIDTracker(int employeeType, string employeeID)
+        {
+            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeType);
+
+            if (string.IsNullOrEmpty(tracker.IDPrefix) == false)
+            {
+                employeeID = employeeID.Replace(tracker.IDPrefix, "");
+                if (employeeID[0] == '0')
+                {
+                    employeeID = "1" + employeeID;
+                }
+            }
+
+            if (int.TryParse(employeeID, out int runningID))
+            {
+                tracker.RunningID = runningID;
+                DataContext.EmployeeIDTrackers.Add(tracker);
+                DataContext.Entry(tracker).State = EntityState.Modified;
+                DataContext.SaveChanges();
+                return true;
+            }
+
+            return false;
+        }
+
+        private IEnumerable<EmployeeDto> GetAllActiveEmployees(string searchText)
+        {
+            IQueryable<EmployeeDto> employees = from emp in Entities
+                                                join bc in DataContext.DropDownSubCategories on emp.BusinessUnitID equals bc.SubCategoryID into bue
+                                                from bcd in bue.DefaultIfEmpty()
+                                                join pc in DataContext.Practices on emp.PracticeID equals pc.PracticeID into pce
+                                                from pcd in pce.DefaultIfEmpty()
+                                                join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
+                                                from utd in ute.DefaultIfEmpty()
+                                                join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
+                                                from etd in ete.DefaultIfEmpty()
+                                                join sp in DataContext.SubPractices on emp.SubPracticeID equals sp.SubPracticeID into spe
+                                                from spd in spe.DefaultIfEmpty()
+                                                join rm in Entities on emp.ReportingManagerID equals rm.EmployeeEntryID into rme
+                                                from rmd in rme.DefaultIfEmpty()
+
+                                                where emp.IsDeleted == false
+                                                orderby emp.EmployeeID
+                                                select new EmployeeDto
+                                                {
+                                                    BusinessUnitName = bcd.SubCategoryName,
+                                                    DateOfJoin = emp.DateOfJoin,
+                                                    EmployeeEntryID = emp.EmployeeEntryID,
+                                                    EmployeeID = emp.EmployeeID,
+                                                    FirstName = emp.FirstName,
+                                                    LastName = emp.LastName,
+                                                    PracticeID = emp.PracticeID,
+                                                    PracticeName = pcd.PracticeName,
+                                                    PrimarySkills = emp.PrimarySkills,
+                                                    UtilizationTypeName = utd.SubCategoryName,
+                                                    EmploymentTypeName = etd.SubCategoryName,
+                                                    SubPracticeID = emp.SubPracticeID,
+                                                    SubPracticeName = spd.SubPracticeName,
+                                                    ReportingManagerName = string.IsNullOrEmpty(rmd.FirstName) ? "" : rmd.LastName + ", " + rmd.FirstName,
+                                                };
+
+            if (string.IsNullOrEmpty(searchText) == false)
+            {
+                employees = employees.Where(e => e.FirstName.ToLower().StartsWith(searchText) || e.LastName.ToLower().StartsWith(searchText));
+            }
+
+            return employees;
+        }
+
         private Employee CreateBusinessEntity(EmployeeDto employeeDto, bool isNewEntity = false)
         {
             Employee employee = new Employee
@@ -215,75 +437,6 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
-
-        public string GenerateNewEmployeeID(int employeeTypeID)
-        {
-            string employeeID = string.Empty;
-
-            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeTypeID);
-            string empType = DataContext.DropDownSubCategories.FirstOrDefault(s => s.SubCategoryID == employeeTypeID)?.SubCategoryName;
-
-            bool isDuplicate = true;
-
-            int runningID = tracker.RunningID;
-            int newRunningID = tracker.RunningID;
-            string idPrefix = tracker.IDPrefix.ToLower();
-            while (isDuplicate)
-            {
-                string runningNumber = empType == PERMANENT_EMP_NAME ? newRunningID.ToString() : newRunningID.ToString().Substring(1);
-                employeeID = $"{tracker.IDPrefix}{runningNumber}";
-
-                if (!Entities.Any(e => e.EmployeeID.ToLower() == employeeID))
-                {
-                    isDuplicate = false;
-                }
-                else
-                {
-                    newRunningID += 1;
-                }
-            }
-
-            if (runningID != newRunningID)
-            {
-                UpdateEmployeeIDTracker(employeeTypeID, runningID);
-            }
-
-            return employeeID;
-        }
-
-        private void UpdateEmployeeIDTracker(int trackerID, int runningID)
-        {
-            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == trackerID);
-            tracker.RunningID = runningID;
-            DataContext.EmployeeIDTrackers.Add(tracker);
-            DataContext.Entry(tracker).State = EntityState.Modified;
-            DataContext.SaveChanges();
-        }
-
-        private bool UpdateEmployeeIDTracker(int employeeType, string employeeID)
-        {
-            EmployeeIDTracker tracker = DataContext.EmployeeIDTrackers.FirstOrDefault(e => e.EmploymentTypeID == employeeType);
-
-            if (string.IsNullOrEmpty(tracker.IDPrefix) == false)
-            {
-                employeeID = employeeID.Replace(tracker.IDPrefix, "");
-                if (employeeID[0] == '0')
-                {
-                    employeeID = "1" + employeeID;
-                }
-            }
-
-            if (int.TryParse(employeeID, out int runningID))
-            {
-                tracker.RunningID = runningID;
-                DataContext.EmployeeIDTrackers.Add(tracker);
-                DataContext.Entry(tracker).State = EntityState.Modified;
-                DataContext.SaveChanges();
-                return true;
-            }
-
-            return false;
-        }
     }
 
     public interface IEmployeeRepository : IRepository<EmployeeDto>
@@ -299,5 +452,25 @@ namespace Agilisium.TalentManager.Repository.Repositories
         string GenerateNewEmployeeID(int employeeTypeID);
 
         IEnumerable<EmployeeDto> GetAllManagers();
+
+        IEnumerable<EmployeeDto> GetAllPastEmployees(int pageSize = -1, int pageNo = -1);
+
+        int GetPastEmployeesCount();
+
+        int TotalRecordsCount(string searchText);
+
+        IEnumerable<EmployeeDto> GetAll(string searchText, int pageSize = -1, int pageNo = -1);
+
+        IEnumerable<PracticeHeadCountDto> GetPracticeWiseHeadCount();
+
+        IEnumerable<SubPracticeHeadCountDto> GetSubPracticeWiseHeadCount();
+
+        IEnumerable<EmployeeDto> GetAllByPractice(int practiceID, int pageSize = -1, int pageNo = -1);
+
+        IEnumerable<EmployeeDto> GetAllBySubPractice(int subPracticeID, int pageSize = -1, int pageNo = -1);
+
+        int PracticeWiseRecordsCount(int practiceID);
+
+        int SubPracticeWiseRecordsCount(int subPracticeID);
     }
 }

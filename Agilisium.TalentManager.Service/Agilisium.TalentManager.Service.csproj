@@ -42,19 +42,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Abstract\IAllocationService.cs" />
+    <Compile Include="Abstract\IContractorService.cs" />
     <Compile Include="Abstract\IDropDownCategoryService.cs" />
     <Compile Include="Abstract\IDropDownSubCategoryService.cs" />
+    <Compile Include="Abstract\IServiceRequestService.cs" />
+    <Compile Include="Abstract\IVendorService.cs" />
     <Compile Include="Abstract\IProjectService.cs" />
     <Compile Include="Abstract\IEmployeeService.cs" />
     <Compile Include="Abstract\IPracticeService.cs" />
     <Compile Include="Abstract\ISubPracticeService.cs" />
     <Compile Include="Concreate\AllocationService.cs" />
+    <Compile Include="Concreate\ContractorService.cs" />
     <Compile Include="Concreate\DropDownCategoryService.cs" />
     <Compile Include="Concreate\DropDownSubCategoryService.cs" />
     <Compile Include="Concreate\EmployeeService.cs" />
     <Compile Include="Concreate\PracticeService.cs" />
     <Compile Include="Concreate\ProjectService.cs" />
+    <Compile Include="Concreate\ServiceRequestService.cs" />
     <Compile Include="Concreate\SubPracticeService.cs" />
+    <Compile Include="Concreate\VendorService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

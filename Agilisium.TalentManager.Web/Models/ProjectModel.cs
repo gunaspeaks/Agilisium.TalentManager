@@ -70,12 +70,12 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Is SoW Available")]
         public bool IsSowAvailable { get; set; }
 
-        [DisplayName("SoW Started On")]
+        [DisplayName("SoW Start Date")]
         //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         //[DataType(DataType.Date)]
         public DateTime? SowStartDate { get; set; }
 
-        [DisplayName("SoW Completed By")]
+        [DisplayName("SoW End Date")]
         //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         //[DataType(DataType.Date)]
         public DateTime? SowEndDate { get; set; }

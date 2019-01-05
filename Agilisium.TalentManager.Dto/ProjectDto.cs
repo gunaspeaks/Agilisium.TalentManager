@@ -32,11 +32,11 @@ namespace Agilisium.TalentManager.Dto
 
         public string Remarks { get; set; }
 
-        public int PracticeID { get; set; }
+        public int? PracticeID { get; set; }
 
         public string PracticeName { get; set; }
 
-        public int SubPracticeID { get; set; }
+        public int? SubPracticeID { get; set; }
 
         public string SubPracticeName { get; set; }
 

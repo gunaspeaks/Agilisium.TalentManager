@@ -5,7 +5,7 @@ namespace Agilisium.TalentManager.Service.Abstract
 {
     public interface IEmployeeService
     {
-        List<EmployeeDto> GetAllEmployees(int pageSize = 0, int pageNo = -1);
+        List<EmployeeDto> GetAllEmployees(string searchText, int pageSize = 0, int pageNo = -1);
 
         EmployeeDto GetEmployee(int id);
 
@@ -29,6 +29,22 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         List<EmployeeDto> GetAllManagers();
 
-        int TotalRecordsCount();
+        int TotalRecordsCount(string searchText);
+
+        IEnumerable<EmployeeDto> GetAllPastEmployees(int pageSize = -1, int pageNo = -1);
+
+        int GetPastEmployeesCount();
+
+        List<PracticeHeadCountDto> GetPracticeWiseHeadCount();
+
+        List<SubPracticeHeadCountDto> GetSubPracticeWiseHeadCount();
+
+        List<EmployeeDto> GetAllByPractice(int practiceID, int pageSize = -1, int pageNo = -1);
+
+        List<EmployeeDto> GetAllBySubPractice(int subPracticeID, int pageSize = -1, int pageNo = -1);
+
+        int PracticeWiseRecordsCount(int practiceID);
+
+        int SubPracticeWiseRecordsCount(int subPracticeID);
     }
 }

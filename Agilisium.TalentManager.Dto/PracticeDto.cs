@@ -23,5 +23,7 @@ namespace Agilisium.TalentManager.Dto
         public string ManagerName { get; set; }
 
         public bool IsReserved { get; set; }
+
+        public int HeadCount { get; set; }
     }
 }

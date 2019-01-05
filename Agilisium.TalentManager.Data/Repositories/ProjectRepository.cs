@@ -67,6 +67,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                               from prd in pre.DefaultIfEmpty()
                                               join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
                                               from ptd in pte.DefaultIfEmpty()
+                                              orderby p.ProjectCode
                                               select new ProjectDto
                                               {
                                                   ProjectID = p.ProjectID,

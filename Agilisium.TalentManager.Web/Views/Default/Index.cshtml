@@ -1,4 +1,4 @@
-﻿@{ 
+﻿@{
     Layout = null;
 }
 <!DOCTYPE html>
@@ -50,6 +50,7 @@
         .container:hover .overlay-from-bottom {
             height: 100%;
         }
+
         .text {
             white-space: nowrap;
             color: white;
@@ -81,18 +82,22 @@
             <td></td>
             <td>
                 <div class="container">
-                    <img style="height:250px; width:400px; border-top-left-radius:50%" src="~/Content/Images/vendor-management.jpg" alt="Manage Vendor Partners" class="image" />
-                    <div class="overlay-from-top">
-                        <div class="text">Manage Vendor Partners</div>
-                    </div>
+                    <a href="/vendor/list">
+                        <img style="height:250px; width:400px; border-top-left-radius:50%" src="~/Content/Images/vendor-management.jpg" alt="Manage Vendor Partners" class="image" />
+                        <div class="overlay-from-top">
+                            <div class="text">Manage Vendor Partners</div>
+                        </div>
+                    </a>
                 </div>
             </td>
             <td>
                 <div class="container">
-                    <img style="height:250px; width:400px; border-top-right-radius:50%" src="~/Content/Images/Contractor-management-3.jpg" alt="Contractor Management" class="image" />
-                    <div class="overlay-from-top">
-                        <div class="text">Contractor Management</div>
-                    </div>
+                    <a href="/contractor/list">
+                        <img style="height:250px; width:400px; border-top-right-radius:50%" src="~/Content/Images/Contractor-management-3.jpg" alt="Contractor Management" class="image" />
+                        <div class="overlay-from-top">
+                            <div class="text">Contractor Management</div>
+                        </div>
+                    </a>
                 </div>
             </td>
             <td></td>

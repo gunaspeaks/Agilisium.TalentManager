@@ -1,5 +1,4 @@
 ﻿@{
-    Layout = "../shared/_AdminLayout.cshtml";
     ViewBag.Title = "Home Page";
 }
 
@@ -11,5 +10,6 @@
         @Html.Action("AllocationsDashboard")
     </div>
     <div class="dashboardCol">
+        @Html.Action("PracticeHeadCount")
     </div>
 </div>
