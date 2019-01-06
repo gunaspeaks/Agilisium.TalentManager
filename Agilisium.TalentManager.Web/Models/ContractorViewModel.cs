@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Agilisium.TalentManager.Web.Models
 {
@@ -20,13 +21,15 @@ namespace Agilisium.TalentManager.Web.Models
     {
         public int ContractorID { get; set; }
 
-        [DisplayName("Project Name")]
+        [DisplayName("Project")]
+        [Required(ErrorMessage ="Please select a Project")]
         public int ProjectID { get; set; }
 
         [DisplayName("Project Name")]
         public string ProjectName { get; set; }
 
         [DisplayName("Contractor Name")]
+        [Required(ErrorMessage ="Contractor Name is required")]
         public string ContractorName { get; set; }
 
         public int AgilisiumManagerID { get; set; }
@@ -40,24 +43,29 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Vendor")]
         public string VendorName { get; set; }
 
+        [Required(ErrorMessage ="Skillset is required")]
         public string SkillSet { get; set; }
 
         [DisplayName("Start Date")]
+        [Required(ErrorMessage ="Start Date is required")]
         public DateTime StartDate { get; set; }
 
         [DisplayName("End Date")]
+        [Required(ErrorMessage = "End Date is required")]
         public DateTime EndDate { get; set; }
 
-        [DisplayName("Billing Rate")]
+        [DisplayName("Billing Rate ($)")]
+        [Required(ErrorMessage = "Billing Rate is required")]
         public double BillingRate { get; set; }
 
-        [DisplayName("Client Rate")]
+        [DisplayName("Client Rate ($)")]
         public double ClientRate { get; set; }
 
-        [DisplayName("Onshore Rate")]
+        [DisplayName("Onshore Rate ($)")]
         public double OnshoreRate { get; set; }
 
         [DisplayName("Contract Period")]
+        [Required(ErrorMessage = "Please select a Contract Period")]
         public int ContractPeriodID { get; set; }
 
         [DisplayName("Contract Period")]

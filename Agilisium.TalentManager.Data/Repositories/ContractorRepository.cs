@@ -48,22 +48,34 @@ namespace Agilisium.TalentManager.Repository.Repositories
         public IEnumerable<ContractorDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
             IQueryable<ContractorDto> allContractors = from c in Entities
+                                                       join v in DataContext.Vendors on c.VendorID equals v.VendorID into ve
+                                                       from vd in ve.DefaultIfEmpty()
+                                                       join p in DataContext.Projects on c.ProjectID equals p.ProjectID into pe
+                                                       from pd in pe.DefaultIfEmpty()
+                                                       join e in DataContext.Employees on pd.ProjectManagerID equals e.EmployeeEntryID into ee
+                                                       from ed in ee.DefaultIfEmpty()
+                                                       join d in DataContext.DropDownSubCategories on c.ContractPeriodID equals d.SubCategoryID into de
+                                                       from dd in de.DefaultIfEmpty()
                                                        where c.IsDeleted == false
                                                        orderby c.ContractorName
                                                        select new ContractorDto
                                                        {
                                                            AgilisiumManagerID = c.AgilisiumManagerID,
+                                                           AgilisiumManagerName = ed.LastName + ", " + ed.FirstName,
                                                            BillingRate = c.BillingRate,
                                                            ClientRate = c.ClientRate,
                                                            ContractorID = c.ContractorID,
                                                            ContractorName = c.ContractorName,
                                                            ContractPeriodID = c.ContractPeriodID,
+                                                           ContractPeriod = dd.SubCategoryName,
                                                            EndDate = c.EndDate,
                                                            OnshoreRate = c.OnshoreRate,
                                                            ProjectID = c.ProjectID,
+                                                           ProjectName = pd.ProjectName,
                                                            SkillSet = c.SkillSet,
                                                            StartDate = c.StartDate,
-                                                           VendorID = c.VendorID
+                                                           VendorID = c.VendorID,
+                                                           VendorName = vd.VendorName
                                                        };
 
             if (pageSize <= 0 || pageNo < 1)

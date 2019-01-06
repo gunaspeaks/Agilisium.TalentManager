@@ -291,6 +291,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\dashboard.css" />
+    <Content Include="Content\EmailTemplates\ContractorRequestEmailTemplate.html" />
     <Content Include="Content\error-styles.css" />
     <Content Include="Content\Images\agilisium.jpg" />
     <Content Include="Content\Images\Agilisium_Logo.jpg" />
@@ -449,6 +450,7 @@
     <Content Include="Views\Vendor\Prepare.cshtml" />
     <Content Include="Views\ServiceRequest\Edit.cshtml" />
     <Content Include="Views\ServiceRequest\List.cshtml" />
+    <Content Include="Views\Contractor\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -479,6 +481,10 @@
     <ProjectReference Include="..\Agilisium.TalentManager.Model\Agilisium.TalentManager.Model.csproj">
       <Project>{dd86b3ba-80c3-43be-ad22-10aa29a1c7b2}</Project>
       <Name>Agilisium.TalentManager.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Agilisium.TalentManager.ReportingService\Agilisium.TalentManager.ReportingService.csproj">
+      <Project>{bf5ce7aa-78f3-4d62-b200-82cc38cfbab2}</Project>
+      <Name>Agilisium.TalentManager.ReportingService</Name>
     </ProjectReference>
     <ProjectReference Include="..\Agilisium.TalentManager.Service\Agilisium.TalentManager.Service.csproj">
       <Project>{e93e7895-5291-4d88-a402-8e0e3b49ad12}</Project>

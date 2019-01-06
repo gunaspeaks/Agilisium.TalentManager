@@ -80,6 +80,116 @@ namespace Agilisium.TalentManager.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public ActionResult Create(ContractorModel contractor)
+        {
+            try
+            {
+                InitializePageData();
+
+                if (ModelState.IsValid)
+                {
+                    if (contractService.IsDuplicateContractorName(contractor.ContractorName))
+                    {
+                        DisplayWarningMessage("There is already a Contractor with the same Name");
+                        return View(contractor);
+                    }
+
+                    ContractorDto contractorDto = Mapper.Map<ContractorModel, ContractorDto>(contractor);
+                    contractService.CreateNewContractor(contractorDto);
+                    DisplaySuccessMessage("New Contractor details have been stored successfully");
+                    return RedirectToAction("List");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayUpdateErrorMessage(exp);
+            }
+            return View(contractor);
+        }
+
+
+        // GET: Employe/Edit/5
+        public ActionResult Edit(int? id)
+        {
+            ContractorModel contractorModel = new ContractorModel();
+            InitializePageData();
+
+            if (!id.HasValue)
+            {
+                DisplayWarningMessage("Looks like, the Contractor ID is missing in your request");
+                return View(contractorModel);
+            }
+
+            try
+            {
+
+                if (!contractService.Exists(id.Value))
+                {
+                    DisplayWarningMessage($"Sorry, we couldn't find the Employee with ID: {id.Value}");
+                    return View(contractorModel);
+                }
+
+                ContractorDto contractor = contractService.GetByID(id.Value);
+                contractorModel = Mapper.Map<ContractorDto, ContractorModel>(contractor);
+            }
+            catch (Exception exp)
+            {
+                DisplayReadErrorMessage(exp);
+            }
+            return View(contractorModel);
+        }
+
+        // POST: Employe/Edit/5
+        [HttpPost]
+        public ActionResult Edit(ContractorModel contractor)
+        {
+            try
+            {
+                InitializePageData();
+                if (ModelState.IsValid)
+                {
+                    if (contractService.IsDuplicateContractorName(contractor.ContractorID, contractor.ContractorName))
+                    {
+                        DisplayWarningMessage("There is already a Contractor with the same Name");
+                        return View(contractor);
+                    }
+
+                    ContractorDto contractorDto = Mapper.Map<ContractorModel, ContractorDto>(contractor);
+                    contractService.UpdateContractor(contractorDto);
+                    DisplaySuccessMessage("Contractor details have been Updated successfully");
+                    return RedirectToAction("List");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayUpdateErrorMessage(exp);
+            }
+            return View(contractor);
+        }
+
+        // GET: Employe/Delete/5
+        public ActionResult Delete(int? id)
+        {
+            if (!id.HasValue)
+            {
+                DisplayWarningMessage("Looks like, the ID is missing in your request");
+                return RedirectToAction("List");
+            }
+
+            try
+            {
+                contractService.Delete(new ContractorDto { ContractorID = id.Value });
+                DisplaySuccessMessage("Contractor details have been deleted successfully");
+                return RedirectToAction("List");
+            }
+            catch (Exception exp)
+            {
+                DisplayDeleteErrorMessage(exp);
+                return RedirectToAction("List");
+            }
+        }
+
         private List<ContractorModel> GetAllContractors(int pageNo = 1)
         {
             List<ContractorDto> contracts = contractService.GetAll(RecordsPerPage, pageNo);
@@ -114,11 +224,11 @@ namespace Agilisium.TalentManager.Web.Controllers
             List<VendorDto> vendors = vendorService.GetAllVendors().ToList();
 
             List<SelectListItem> vendorList = (from p in vendors
-                                                select new SelectListItem
-                                                {
-                                                    Text = p.VendorName,
-                                                    Value = p.VendorID.ToString()
-                                                }).ToList();
+                                               select new SelectListItem
+                                               {
+                                                   Text = p.VendorName,
+                                                   Value = p.VendorID.ToString()
+                                               }).ToList();
 
             ViewBag.VendorListItems = vendorList;
         }
@@ -128,12 +238,12 @@ namespace Agilisium.TalentManager.Web.Controllers
             List<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories((int)CategoryType.ContractPeriod).ToList();
 
             List<SelectListItem> contractPeriodItems = (from c in buList
-                                                     orderby c.SubCategoryName
-                                                     select new SelectListItem
-                                                     {
-                                                         Text = c.SubCategoryName,
-                                                         Value = c.SubCategoryID.ToString()
-                                                     }).ToList();
+                                                        orderby c.SubCategoryName
+                                                        select new SelectListItem
+                                                        {
+                                                            Text = c.SubCategoryName,
+                                                            Value = c.SubCategoryID.ToString()
+                                                        }).ToList();
 
             ViewBag.ContractPeriodListItems = contractPeriodItems;
         }
@@ -143,11 +253,11 @@ namespace Agilisium.TalentManager.Web.Controllers
             List<EmployeeDto> employees = empService.GetAllManagers().ToList();
 
             List<SelectListItem> employeeList = (from p in employees
-                                                select new SelectListItem
-                                                {
-                                                    Text = p.LastName+", "+p.FirstName,
-                                                    Value = p.EmployeeEntryID.ToString()
-                                                }).ToList();
+                                                 select new SelectListItem
+                                                 {
+                                                     Text = p.LastName + ", " + p.FirstName,
+                                                     Value = p.EmployeeEntryID.ToString()
+                                                 }).ToList();
 
             ViewBag.ManagerListItems = employeeList;
         }

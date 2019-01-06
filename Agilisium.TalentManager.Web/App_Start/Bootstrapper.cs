@@ -1,4 +1,5 @@
-﻿using Agilisium.TalentManager.Repository.Repositories;
+﻿using Agilisium.TalentManager.ReportingService;
+using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Service.Concreate;
 using Autofac;
 using Autofac.Integration.Mvc;
@@ -30,6 +31,16 @@ namespace Agilisium.TalentManager.Web.App_Start
             builder.RegisterAssemblyTypes(typeof(DropDownCategoryService).Assembly)
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces().InstancePerRequest();
+
+            // Reporting Services
+            builder.RegisterAssemblyTypes(typeof(ContractorRequestProcessor).Assembly)
+                .Where(t => t.Name.EndsWith("Processor"))
+                .AsImplementedInterfaces().InstancePerRequest();
+
+            // Server Utilities
+            //builder.RegisterAssemblyTypes(typeof(EmailHandler).Assembly)
+            //    .Where(t => t.Name.EndsWith("Handler"))
+            //    .AsImplementedInterfaces().InstancePerRequest();
 
             IContainer container = builder.Build();
             DependencyResolver.SetResolver(new AutofacDependencyResolver(container));

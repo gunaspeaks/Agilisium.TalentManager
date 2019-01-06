@@ -14,6 +14,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
             int statusID = DataContext.DropDownSubCategories.Where(c => c.SubCategoryName == "Email Sent").FirstOrDefault().SubCategoryID;
             ServiceRequest request = CreateBusinessEntity(entity, true);
             request.RequestStatusID = statusID;
+            request.IsEmailSent = false;
+
             Entities.Add(request);
             DataContext.Entry(request).State = EntityState.Added;
             DataContext.SaveChanges();
@@ -21,7 +23,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public void Add(IEnumerable<ServiceRequestDto> serviceRequests)
         {
-            foreach(var request in serviceRequests)
+            foreach (ServiceRequestDto request in serviceRequests)
             {
                 Add(request);
             }
@@ -50,23 +52,24 @@ namespace Agilisium.TalentManager.Repository.Repositories
         public IEnumerable<ServiceRequestDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
             IQueryable<ServiceRequestDto> requests = from p in Entities
-                                                join v in DataContext.Vendors on p.VendorID equals v.VendorID into ve
-                                                from vd in ve.DefaultIfEmpty()
-                                                join s in DataContext.DropDownSubCategories on p.RequestStatusID equals s.SubCategoryID into se
-                                                from sd in se.DefaultIfEmpty()
-                                                orderby p.ServiceRequestID
-                                                where p.IsDeleted == false
-                                                select new ServiceRequestDto
-                                                {
-                                                    CompletedDate = p.CompletedDate,
-                                                    RequestedDate = p.RequestedDate,
-                                                    RequestedSkill = p.RequestedSkill,
-                                                    RequestStatus = sd.SubCategoryName,
-                                                    RequestStatusID = p.RequestStatusID,
-                                                    ServiceRequestID = p.ServiceRequestID,
-                                                    VendorID = p.VendorID,
-                                                    VendorName = vd.VendorName
-                                                };
+                                                     join v in DataContext.Vendors on p.VendorID equals v.VendorID into ve
+                                                     from vd in ve.DefaultIfEmpty()
+                                                     join s in DataContext.DropDownSubCategories on p.RequestStatusID equals s.SubCategoryID into se
+                                                     from sd in se.DefaultIfEmpty()
+                                                     orderby p.ServiceRequestID
+                                                     where p.IsDeleted == false
+                                                     select new ServiceRequestDto
+                                                     {
+                                                         CompletedDate = p.CompletedDate,
+                                                         RequestedDate = p.RequestedDate,
+                                                         RequestedSkill = p.RequestedSkill,
+                                                         RequestStatus = sd.SubCategoryName,
+                                                         RequestStatusID = p.RequestStatusID,
+                                                         ServiceRequestID = p.ServiceRequestID,
+                                                         VendorID = p.VendorID,
+                                                         VendorName = vd.VendorName,
+                                                         IsEmailSent = p.IsEmailSent
+                                                     };
 
             if (pageSize <= 0 || pageNo < 1)
             {
@@ -75,6 +78,30 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
             return requests.Skip((pageNo - 1) * pageSize).Take(pageSize);
 
+        }
+
+        public IEnumerable<ServiceRequestDto> GetAllEmailPendingRequests()
+        {
+            return from p in Entities
+                   join v in DataContext.Vendors on p.VendorID equals v.VendorID into ve
+                   from vd in ve.DefaultIfEmpty()
+                   join s in DataContext.DropDownSubCategories on p.RequestStatusID equals s.SubCategoryID into se
+                   from sd in se.DefaultIfEmpty()
+                   orderby p.ServiceRequestID
+                   where p.IsDeleted == false && p.IsEmailSent == false
+                   select new ServiceRequestDto
+                   {
+                       CompletedDate = p.CompletedDate,
+                       RequestedDate = p.RequestedDate,
+                       RequestedSkill = p.RequestedSkill,
+                       RequestStatus = sd.SubCategoryName,
+                       RequestStatusID = p.RequestStatusID,
+                       ServiceRequestID = p.ServiceRequestID,
+                       VendorID = p.VendorID,
+                       VendorName = vd.VendorName,
+                       VendorEmailID = vd.PoCEmail1 + (string.IsNullOrEmpty(vd.PoCEmail2) ? "" : ";" + vd.PoCEmail2),
+                       IsEmailSent = p.IsEmailSent
+                   };
         }
 
         public ServiceRequestDto GetByID(int id)
@@ -91,7 +118,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                         RequestStatusID = p.RequestStatusID,
                         ServiceRequestID = p.ServiceRequestID,
                         VendorID = p.VendorID,
-                        VendorName = vd.VendorName
+                        VendorName = vd.VendorName,
                     }).FirstOrDefault();
         }
 
@@ -105,19 +132,20 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.SaveChanges();
         }
 
-        private ServiceRequest CreateBusinessEntity(ServiceRequestDto categoryDto, bool isNewEntity = false)
+        private ServiceRequest CreateBusinessEntity(ServiceRequestDto serviceRequestDto, bool isNewEntity = false)
         {
             ServiceRequest request = new ServiceRequest
             {
-                CompletedDate = categoryDto.CompletedDate,
-                RequestedDate = categoryDto.RequestedDate,
-                RequestedSkill = categoryDto.RequestedSkill,
-                RequestStatusID = categoryDto.RequestStatusID,
-                ServiceRequestID = categoryDto.ServiceRequestID,
-                VendorID = categoryDto.VendorID,
+                CompletedDate = serviceRequestDto.CompletedDate,
+                RequestedDate = serviceRequestDto.RequestedDate,
+                RequestedSkill = serviceRequestDto.RequestedSkill,
+                RequestStatusID = serviceRequestDto.RequestStatusID,
+                ServiceRequestID = serviceRequestDto.ServiceRequestID,
+                VendorID = serviceRequestDto.VendorID,
+                IsEmailSent = serviceRequestDto.IsEmailSent,
             };
 
-            request.UpdateTimeStamp(categoryDto.LoggedInUserName, true);
+            request.UpdateTimeStamp(serviceRequestDto.LoggedInUserName, true);
 
             return request;
         }
@@ -130,6 +158,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
             targetEntity.ServiceRequestID = sourceEntity.ServiceRequestID;
             targetEntity.RequestStatusID = sourceEntity.RequestStatusID;
             targetEntity.VendorID = sourceEntity.VendorID;
+            targetEntity.IsEmailSent = sourceEntity.IsEmailSent;
 
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
@@ -138,5 +167,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
     public interface IServiceRequestRepository : IRepository<ServiceRequestDto>
     {
         void Add(IEnumerable<ServiceRequestDto> serviceRequests);
+
+        IEnumerable<ServiceRequestDto> GetAllEmailPendingRequests();
     }
 }

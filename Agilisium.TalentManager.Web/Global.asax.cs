@@ -23,6 +23,7 @@ namespace Agilisium.TalentManager.Web
 
             Application[UIConstants.CONFIG_ENABLE_PAGINATION] = ConfigurationManager.AppSettings[UIConstants.CONFIG_ENABLE_PAGINATION];
             Application[UIConstants.CONFIG_RECORDS_PER_PAGE] = ConfigurationManager.AppSettings[UIConstants.CONFIG_RECORDS_PER_PAGE];
+            Application[UIConstants.CONFIG_EMAIL_TEMPLATES_FOLDER_PATH] = ConfigurationManager.AppSettings[UIConstants.CONFIG_EMAIL_TEMPLATES_FOLDER_PATH];
         }
     }
 }

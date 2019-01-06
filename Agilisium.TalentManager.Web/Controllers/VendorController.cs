@@ -1,4 +1,5 @@
 ﻿using Agilisium.TalentManager.Dto;
+using Agilisium.TalentManager.ReportingService;
 using Agilisium.TalentManager.Service.Abstract;
 using Agilisium.TalentManager.Web.Helpers;
 using Agilisium.TalentManager.Web.Models;
@@ -15,14 +16,16 @@ namespace Agilisium.TalentManager.Web.Controllers
         private readonly IVendorService vendorService;
         private readonly IDropDownSubCategoryService subCategoryService;
         private readonly IServiceRequestService requestService;
+        private readonly ISystemSettingsService settingsService;
 
         public VendorController(IVendorService vendorService,
             IDropDownSubCategoryService subCategoryService,
-            IServiceRequestService requestService)
+            IServiceRequestService requestService, ISystemSettingsService settingsService)
         {
             this.vendorService = vendorService;
             this.subCategoryService = subCategoryService;
             this.requestService = requestService;
+            this.settingsService = settingsService;
         }
 
         // GET: Vendor
@@ -131,13 +134,18 @@ namespace Agilisium.TalentManager.Web.Controllers
             if (serviceRequests == null || (serviceRequests != null && serviceRequests.Count() == 0))
             {
                 DisplayWarningMessage("There are no requests to process.");
-                return View(serviceRequests);
+                return View();
             }
 
             try
             {
                 List<ServiceRequestDto> requests = Mapper.Map<IEnumerable<ServiceRequestModel>, List<ServiceRequestDto>>(serviceRequests);
                 requestService.Add(requests);
+
+                string templatePath = EmailTemplatesFolderPath + "ContractorRequestEmailTemplate.html";
+                ContractorRequestProcessor emailProcessor = new ContractorRequestProcessor(requestService, settingsService);
+                emailProcessor.ProcessPendingServiceRequests(templatePath);
+
                 return RedirectToAction("List", "ServiceRequest");
             }
             catch (Exception exp)
@@ -145,7 +153,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                 DisplayUpdateErrorMessage(exp);
             }
 
-            return View(serviceRequests);
+            return View();
         }
 
         // GET: Employe/Create

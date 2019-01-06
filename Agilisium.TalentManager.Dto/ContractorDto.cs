@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agilisium.TalentManager.Dto
 {
@@ -38,6 +34,6 @@ namespace Agilisium.TalentManager.Dto
 
         public int ContractPeriodID { get; set; }
 
-        public string   ContractPeriod { get; set; }
+        public string ContractPeriod { get; set; }
     }
 }

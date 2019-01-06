@@ -9,6 +9,7 @@ namespace Agilisium.TalentManager.Web.Helpers
     {
         public const string CONFIG_ENABLE_PAGINATION = "enablePagination";
         public const string CONFIG_RECORDS_PER_PAGE = "recordsCountPerPage";
+        public const string CONFIG_EMAIL_TEMPLATES_FOLDER_PATH = "emailTemplatesFolderPath";
 
         public const string EMPLOYEE_MODELS_LIST = "EmployeeModelsList";
         public const string EMPLOYEE_DD_LIST = "EmployeesDDList";

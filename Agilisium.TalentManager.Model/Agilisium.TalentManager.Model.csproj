@@ -58,6 +58,7 @@
     <Compile Include="Configuration\ProjectEntityConfiguration.cs" />
     <Compile Include="Configuration\ServiceRequestEntityConfiguration.cs" />
     <Compile Include="Configuration\SubPracticeEntityConfiguration.cs" />
+    <Compile Include="Configuration\SystemSettingTypeConfiguration.cs" />
     <Compile Include="Configuration\VendorEntityConfiguration.cs" />
     <Compile Include="Entities\Contractor.cs" />
     <Compile Include="Entities\CustomAllocation.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\EmployeeIDTracker.cs" />
     <Compile Include="Entities\ServiceRequest.cs" />
+    <Compile Include="Entities\SystemSetting.cs" />
     <Compile Include="Entities\Vendor.cs" />
     <Compile Include="EntityBase.cs" />
     <Compile Include="Entities\Practice.cs" />

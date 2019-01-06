@@ -17,5 +17,7 @@ namespace Agilisium.TalentManager.Model.Entities
         public int RequestStatusID { get; set; }
 
         public string EmailMessage { get; set; }
+
+        public bool IsEmailSent { get; set; }
     }
 }

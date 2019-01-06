@@ -9,6 +9,8 @@ namespace Agilisium.TalentManager.Model
     {
         protected override void Seed(TalentManagerDataContext context)
         {
+            GetSystemSettings().ForEach(s => context.SystemSettings.Add(s));
+
             GetCategories().ForEach(c => context.DropDownCategories.Add(c));
             context.SaveChanges();
 
@@ -20,6 +22,33 @@ namespace Agilisium.TalentManager.Model
 
             GetEmployeeIDTrackers(context).ForEach(e => context.EmployeeIDTrackers.Add(e));
             context.SaveChanges();
+        }
+
+        private static List<SystemSetting> GetSystemSettings()
+        {
+            return new List<SystemSetting>
+            {
+                new SystemSetting
+                {
+                    SettingName = "Email Proxy Server",
+                    SettingValue = "smtp.office365.com"
+                },
+                new SystemSetting
+                {
+                    SettingName = "Email Proxy Port",
+                    SettingValue = "587"
+                },
+                new SystemSetting
+                {
+                    SettingName = "Contractor Request Email Owner",
+                    SettingValue = "Sriram.Balakrishnan@agilisium.com"
+                },
+                new SystemSetting
+                {
+                    SettingName = "Contractor Request Email BCC Email IDs",
+                    SettingValue = "Gunasekaran.R@agilisium.com; Sriram.Balakrishnan@agilisium.com; satish.srinivasan@agilisium.com"
+                }
+            };
         }
 
         private static List<DropDownCategory> GetCategories()
@@ -390,6 +419,14 @@ namespace Agilisium.TalentManager.Model
                 },
 
                 // Service Request Status - Sub Categories
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "Email to be Sent",
+                    ShortName = "ES",
+                    CategoryID = srCID,
+                    Description = "Email to be Sent",
+                    IsReserved = true
+                },
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Email Sent",

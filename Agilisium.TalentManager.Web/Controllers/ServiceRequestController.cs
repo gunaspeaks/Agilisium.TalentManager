@@ -14,10 +14,11 @@ namespace Agilisium.TalentManager.Web.Controllers
     {
         private readonly IServiceRequestService requestService;
         private readonly IDropDownSubCategoryService subCategoryService;
+
         public ServiceRequestController(IServiceRequestService requestRequest,
             IDropDownSubCategoryService subCategoryService)
         {
-            requestService = requestRequest;
+            this.requestService = requestRequest;
             this.subCategoryService = subCategoryService;
         }
 

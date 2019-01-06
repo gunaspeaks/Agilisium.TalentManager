@@ -62,5 +62,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.TotalRecordsCount();
         }
+
+        public List<ServiceRequestDto> GetAllEmailPendingRequests()
+        {
+            return repository.GetAllEmailPendingRequests().ToList();
+        }
     }
 }

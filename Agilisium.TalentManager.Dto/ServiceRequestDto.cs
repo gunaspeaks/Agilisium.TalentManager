@@ -25,5 +25,9 @@ namespace Agilisium.TalentManager.Dto
         public string RequestStatus { get; set; }
 
         public string EmailMessage { get; set; }
+
+        public string VendorEmailID { get; set; }
+
+        public bool IsEmailSent { get; set; }
     }
 }

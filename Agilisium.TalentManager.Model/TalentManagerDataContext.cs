@@ -32,6 +32,8 @@ namespace Agilisium.TalentManager.Model
 
         public DbSet<ServiceRequest> ServiceRequests { get; set; }
 
+        public DbSet<SystemSetting> SystemSettings { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new PracticeEntityConfiguration());
@@ -45,6 +47,7 @@ namespace Agilisium.TalentManager.Model
             modelBuilder.Configurations.Add(new VendorEntityConfiguration());
             modelBuilder.Configurations.Add(new ContractorTypeConfiguration());
             modelBuilder.Configurations.Add(new ServiceRequestEntityConfiguration());
+            modelBuilder.Configurations.Add(new SystemSettingTypeConfiguration());
         }
     }
 }

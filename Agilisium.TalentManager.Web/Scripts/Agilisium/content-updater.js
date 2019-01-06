@@ -14,6 +14,22 @@ formatJsonDateString = function (value) {
     return value;
 }
 
+getProjectManagerByProjectID = function () {
+    if ($("#ProjectID").val().length > 0) {
+        $.ajax({
+            url: "/Project/GetProjectManagerName",
+            type: "POST",
+            data: { projectID: $("#ProjectID").val() },
+            success: function (data) {
+                $("#projectManagerLabel").text(data);
+            },
+            error: function (xhr, status) {
+                alert("Error has occured while getting the project manager name");
+            }
+        });
+    }
+}
+
 function getEmployeePercentageOfAllocation() {
     if ($("#EmployeeID").val().length > 0) {
         var v_data = {};

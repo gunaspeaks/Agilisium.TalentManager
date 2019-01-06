@@ -235,6 +235,21 @@ namespace Agilisium.TalentManager.Web.Controllers
             return Json(ddList);
         }
 
+        [HttpPost]
+        public JsonResult GetProjectManagerName(int projectID)
+        {
+            ProjectDto project = projectService.GetByID(projectID);
+            int managerID = project.ProjectManagerID;
+            EmployeeDto emp = empService.GetEmployee(managerID);
+            string managerName = "Not found";
+            if (emp != null)
+            {
+                managerName = $"{emp.LastName}, {emp.FirstName}";
+            }
+            JsonResult res = Json(managerName);
+            return res;
+        }
+
         private IEnumerable<ProjectModel> GetProjects(int pageNo)
         {
             IEnumerable<ProjectDto> projects = projectService.GetAll(RecordsPerPage, pageNo);

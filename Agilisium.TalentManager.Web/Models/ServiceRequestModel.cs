@@ -31,5 +31,9 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Email Message")]
         public string EmailMessage { get; set; }
+
+        public string VendorEmailID { get; set; }
+
+        public bool IsEmailSent { get; set; }
     }
 }

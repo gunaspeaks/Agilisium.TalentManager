@@ -1,7 +1,7 @@
 ﻿@model Agilisium.TalentManager.Web.Models.ContractorModel
 
 @{
-    ViewBag.Title = "Create New Contractor";
+    ViewBag.Title = "Modify Contractor";
     Layout = "~/Views/Shared/_ContractorManagerLayout.cshtml";
 }
 <link href="~/Content/error-styles.css" rel="stylesheet" />
@@ -24,7 +24,15 @@
             changeYear: true,
             showAnim: "fadeIn",
         });
+
+        updateProjectManagerName();
     });
+
+    updateProjectManagerName = function () {
+        if ($("#ProjectID").val().length > 0) {
+            getProjectManagerByProjectID();
+        }
+    }
 
     $(function () {
         $("#ProjectID").change(function (evt) {
@@ -36,7 +44,7 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>Create a New Contractor</h3>
+        <h3>Update Contractor Details</h3>
     </div>
 
     @using (Html.BeginForm())

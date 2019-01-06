@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Helpers
@@ -77,6 +76,14 @@ namespace Agilisium.TalentManager.Web.Helpers
                 }
 
                 return configValue.ToString().ToLower() == "true";
+            }
+        }
+
+        public string EmailTemplatesFolderPath
+        {
+            get
+            {
+                return HttpContext.Application[UIConstants.CONFIG_EMAIL_TEMPLATES_FOLDER_PATH]?.ToString();
             }
         }
 
