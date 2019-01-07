@@ -80,6 +80,17 @@ namespace Agilisium.TalentManager.Web.Controllers
             return View(model);
         }
 
+        public ActionResult CIndex()
+        {
+            return View();
+        }
+
+        [ChildActionOnly]
+        public ActionResult ContractorsDashboard()
+        {
+            return PartialView(new ContractorWidgetModel());
+        }
+
         [HttpPost]
         public ActionResult Create(ContractorModel contractor)
         {

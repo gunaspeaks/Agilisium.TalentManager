@@ -23,7 +23,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body style="background-color:lightcoral">
-    <div class="navbar navbar-fixed-top" style="background-color:#bbbbd4; height:50px">
+    <div class="navbar navbar-fixed-top" style="background-color:black; height:50px">
         <div>
             <div class="navbar-header">
                 <div class="navbar-header pull-left" style="vertical-align:top">
@@ -34,9 +34,17 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" style="color:darkblue; font-weight:bold;">
-                    @if (Request.Url.ToString().Contains("Contractors"))
+                    @if (Request.Url.ToString().ToLower().Contains("cindex") && Request.Url.ToString().ToLower().Contains("contractor"))
                     {
-                        <li>@Html.ActionLink("Contractors", "List", "Contractor", new { @style = "color:darkblue" })</li>
+                        <li>@Html.ActionLink("Home", "CIndex", "Contractor", new { @style = "color:GreenYellow" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Home", "CIndex", "Contractor")</li>
+                    }
+                    @if (Request.Url.ToString().ToLower().Contains("contractor") && Request.Url.ToString().ToLower().Contains("cindex") == false)
+                    {
+                        <li>@Html.ActionLink("Contractors", "List", "Contractor", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {

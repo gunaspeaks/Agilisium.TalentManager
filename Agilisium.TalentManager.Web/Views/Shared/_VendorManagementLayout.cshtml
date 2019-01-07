@@ -23,7 +23,7 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body style="background-color:lightskyblue">
-    <div class="navbar navbar-fixed-top" style="background-color:#bbbbd4; height:50px">
+    <div class="navbar navbar-fixed-top" style="background-color:black; height:50px">
         <div>
             <div class="navbar-header">
                 <div class="navbar-header pull-left" style="vertical-align:top">
@@ -34,9 +34,17 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav" style="color:darkblue; font-weight:bold;">
-                    @if (Request.Url.ToString().Contains("Vendor") && Request.Url.ToString().Contains("Search") == false)
+                    @if (Request.Url.ToString().ToLower().Contains("vindex"))
                     {
-                        <li>@Html.ActionLink("Vendors", "List", "Vendor", new { @style = "color:darkblue" })</li>
+                        <li>@Html.ActionLink("Home", "VIndex", "Vendor", new { @style = "color:GreenYellow" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Home", "VIndex", "Vendor")</li>
+                    }
+                    @if (Request.Url.ToString().ToLower().Contains("vendor") && Request.Url.ToString().ToLower().Contains("search") == false && Request.Url.ToString().ToLower().Contains("vindex") == false)
+                    {
+                        <li>@Html.ActionLink("Vendors", "List", "Vendor", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {
@@ -44,9 +52,9 @@
                     }
                 </ul>
                 <ul class="nav navbar-nav" style="color:darkblue; font-weight:bold;">
-                    @if (Request.Url.ToString().Contains("Find Vendors"))
+                    @if (Request.Url.ToString().ToLower().Contains("search"))
                     {
-                        <li>@Html.ActionLink("Find Vendors", "Search", "Vendor", new { @style = "color:darkblue" })</li>
+                        <li>@Html.ActionLink("Find Vendors", "Search", "Vendor", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {
@@ -54,9 +62,9 @@
                     }
                 </ul>
                 <ul class="nav navbar-nav" style="color:darkblue; font-weight:bold;">
-                    @if (Request.Url.ToString().Contains("Contractor Requests"))
+                    @if (Request.Url.ToString().ToLower().Contains("servicerequest"))
                     {
-                        <li>@Html.ActionLink("Contractor Requests", "List", "ServiceRequest", new { @style = "color:darkblue" })</li>
+                        <li>@Html.ActionLink("Contractor Requests", "List", "ServiceRequest", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {

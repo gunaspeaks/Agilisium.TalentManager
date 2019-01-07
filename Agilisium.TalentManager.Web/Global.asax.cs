@@ -12,7 +12,7 @@ namespace Agilisium.TalentManager.Web
     {
         protected void Application_Start()
         {
-            System.Data.Entity.Database.SetInitializer(new TalentManagerSeedData());
+            //System.Data.Entity.Database.SetInitializer(new TalentManagerSeedData());
 
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);

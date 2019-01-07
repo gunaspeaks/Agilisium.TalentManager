@@ -18,7 +18,7 @@
 
 .dashboardItem {
     margin: 10px 10px 10px 10px;
-    border: solid 2px Highlight;
+    border: solid 2px gray;
     border-radius: 25px;
 }
 
@@ -26,7 +26,7 @@
     font-size: 1.5em;
     font-weight: bold;
     padding: 10px 15px;
-    background-color: Highlight;
+    background-color: gray;
     border-radius: 22px;
     text-align: center;
 }
@@ -50,7 +50,7 @@
 }
 
     .tbl thead th {
-        border-bottom: solid 1px #ededed;
+        border-bottom: solid 1px gray;
         background-color: #ededed;
         padding: 5px;
         text-align: left;
@@ -60,9 +60,9 @@
     }
 
     .tbl tbody td {
-        border-bottom: solid 1px #ededed;
+        border-bottom: solid 1px gray;
         padding: 5px;
-        color: #686868;
+        color: black;
         font-size: 1.1em
     }
 

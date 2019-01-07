@@ -59,6 +59,17 @@ namespace Agilisium.TalentManager.Web.Controllers
             return View(viewModel);
         }
 
+        public ActionResult VIndex()
+        {
+            return View();
+        }
+
+        [ChildActionOnly]
+        public ActionResult VendorsDashboard()
+        {
+            return PartialView(new VendorWidgetModel());
+        }
+
         public ActionResult Search(string by)
         {
             VendorSearchResultViewModel viewModel = new VendorSearchResultViewModel();
