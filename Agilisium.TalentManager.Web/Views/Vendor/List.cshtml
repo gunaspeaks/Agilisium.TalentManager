@@ -41,49 +41,59 @@
                 <th>
                     EMail
                 </th>
+                <th>
+                    Actions
+                </th>
             </tr>
             @foreach (var item in Model.Vendors)
             {
-                <tr>
-                    <td>
-                        @Html.ActionLink(item.VendorName, "Edit", new { id = item.VendorID })
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Location)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.SpecializedPartner)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.CEO)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PrimarySkills)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PoC1)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PoC2)
-                    </td>
-                    <td>
-                        @Html.DisplayNameFor(modelItem => item.PoCPhone1)
-                    </td>
-                    <td>
-                        @{
-                            string emailID = "";
-                            if (string.IsNullOrEmpty(item.PoCEmail1) == false)
-                            {
-                                emailID += item.PoCEmail1;
-                            }
-                            if (string.IsNullOrEmpty(item.PoCEmail1) == false && string.IsNullOrEmpty(item.PoCEmail2))
-                            {
-                                emailID += "; " + item.PoCEmail2;
-                            }
-                            Html.ActionLink(emailID, "ComposeEmail", new { id = item.VendorID });
+            <tr>
+                <td>
+                    @Html.ActionLink(item.VendorName, "Edit", new { id = item.VendorID })
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Location)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SpecializedPartner)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CEO)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrimarySkills)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PoC1)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PoC2)
+                </td>
+                <td>
+                    @Html.DisplayNameFor(modelItem => item.PoCPhone1)
+                </td>
+                <td>
+                    @{
+                        string emailID = "";
+                        if (string.IsNullOrEmpty(item.PoCEmail1) == false)
+                        {
+                            emailID += item.PoCEmail1;
                         }
-                    </td>
-                </tr>
+                        if (string.IsNullOrEmpty(item.PoCEmail1) == false && string.IsNullOrEmpty(item.PoCEmail2))
+                        {
+                            emailID += "; " + item.PoCEmail2;
+                        }
+                        Html.ActionLink(emailID, "ComposeEmail", new { id = item.VendorID });
+                    }
+                </td>
+                <td class="text-center">
+                    @using (Html.BeginForm("Delete", "Vendor"))
+                    {
+                        @Html.Hidden("id", item.VendorID)
+                        <input type="submit" onclick="return confirm('Are you sure you about deleting this Vendor?');" class="btn btn-default btn-xs" value="Delete" />
+                    }
+                </td>
+            </tr>
             }
 
         </table>

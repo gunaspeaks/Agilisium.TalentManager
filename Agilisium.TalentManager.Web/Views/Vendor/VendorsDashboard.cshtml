@@ -1,26 +1,31 @@
-﻿@model Agilisium.TalentManager.Web.Models.VendorWidgetModel
+﻿@model IEnumerable<Agilisium.TalentManager.Web.Models.VendorSpecializedPartnerModel>
 
 <div class="dashboardItem">
-    <div class="dashboardItemHeader">Vendor Strength</div>
+    <div class="dashboardItemHeader">Our Vendors Summary</div>
     <div class="dashboardItemBody">
         <table class="tbl">
             <tr>
-                <td>
-                    @Html.DisplayNameFor(model => model.TotalVendors)
-                </td>
-                <td>:</td>
-                <td>@Html.DisplayFor(model => model.TotalVendors)</td>
+                <th>@Html.DisplayNameFor(model => model.SpecializedPartner)</th>
+                <th class="text-right">@Html.DisplayNameFor(model => model.VendorsCount)</th>
             </tr>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(model => item.SpecializedPartner)
+                    </td>
+                    <td class="text-right">@Html.DisplayFor(model => item.VendorsCount)</td>
+                </tr>
+            }
             <tr>
-
                 <td>
-                    @*@Html.DisplayNameFor(model => model.TotalBillableEmployees)*@
+                    Total
                 </td>
-                <td>:</td>
-                <td>
-                    @*@Html.DisplayFor(model => model.TotalBillableEmployees)*@
-                </td>
+                <td class="text-right">@Model.Sum(v => v.VendorsCount)</td>
             </tr>
         </table>
+        <div class="pull-right">
+            @Html.ActionLink("+Create a New Vendor", "Create")
+        </div>
     </div>
 </div>

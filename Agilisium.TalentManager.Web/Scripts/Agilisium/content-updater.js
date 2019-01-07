@@ -15,6 +15,7 @@ formatJsonDateString = function (value) {
 }
 
 getProjectManagerByProjectID = function () {
+    $("#projectManagerLabel").empty();
     if ($("#ProjectID").val().length > 0) {
         $.ajax({
             url: "/Project/GetProjectManagerName",

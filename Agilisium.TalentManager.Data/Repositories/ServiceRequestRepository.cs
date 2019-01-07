@@ -68,7 +68,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                          ServiceRequestID = p.ServiceRequestID,
                                                          VendorID = p.VendorID,
                                                          VendorName = vd.VendorName,
-                                                         IsEmailSent = p.IsEmailSent
+                                                         IsEmailSent = p.IsEmailSent,
+                                                         EmailMessage = p.EmailMessage
                                                      };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -98,9 +99,11 @@ namespace Agilisium.TalentManager.Repository.Repositories
                        RequestStatusID = p.RequestStatusID,
                        ServiceRequestID = p.ServiceRequestID,
                        VendorID = p.VendorID,
-                       VendorName = vd.VendorName,
+                       VendorName = vd.PoC1 + (string.IsNullOrEmpty(vd.PoC2) == false ? "/" + vd.PoC2 : ""),
                        VendorEmailID = vd.PoCEmail1 + (string.IsNullOrEmpty(vd.PoCEmail2) ? "" : ";" + vd.PoCEmail2),
-                       IsEmailSent = p.IsEmailSent
+                       IsEmailSent = p.IsEmailSent,
+                       EmailMessage = p.EmailMessage,
+
                    };
         }
 
@@ -132,6 +135,18 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.SaveChanges();
         }
 
+        public void UpdateEmailSentStatus(int requestID)
+        {
+            ServiceRequest entity = Entities.FirstOrDefault(e => e.ServiceRequestID == requestID);
+            if (entity != null)
+            {
+                entity.IsEmailSent = true;
+                Entities.Add(entity);
+                DataContext.Entry(entity).State = EntityState.Modified;
+                DataContext.SaveChanges();
+            }
+        }
+
         private ServiceRequest CreateBusinessEntity(ServiceRequestDto serviceRequestDto, bool isNewEntity = false)
         {
             ServiceRequest request = new ServiceRequest
@@ -143,6 +158,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                 ServiceRequestID = serviceRequestDto.ServiceRequestID,
                 VendorID = serviceRequestDto.VendorID,
                 IsEmailSent = serviceRequestDto.IsEmailSent,
+                EmailMessage = serviceRequestDto.EmailMessage
             };
 
             request.UpdateTimeStamp(serviceRequestDto.LoggedInUserName, true);
@@ -159,6 +175,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
             targetEntity.RequestStatusID = sourceEntity.RequestStatusID;
             targetEntity.VendorID = sourceEntity.VendorID;
             targetEntity.IsEmailSent = sourceEntity.IsEmailSent;
+            targetEntity.EmailMessage = sourceEntity.EmailMessage;
 
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
@@ -169,5 +186,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         void Add(IEnumerable<ServiceRequestDto> serviceRequests);
 
         IEnumerable<ServiceRequestDto> GetAllEmailPendingRequests();
+
+        void UpdateEmailSentStatus(int requestID);
     }
 }

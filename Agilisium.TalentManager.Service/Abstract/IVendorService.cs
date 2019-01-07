@@ -24,5 +24,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         int TotalRecordsCount();
 
         List<VendorDto> GetAllVendors(int pageSize = -1, int pageNo = -1);
+
+        List<VendorSpecializedPartnerWto> GetVendorSpecialityPartnersList();
     }
 }

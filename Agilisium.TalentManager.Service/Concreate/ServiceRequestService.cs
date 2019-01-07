@@ -67,5 +67,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.GetAllEmailPendingRequests().ToList();
         }
+
+        public void UpdateEmailSentStatus(int requestID)
+        {
+            repository.UpdateEmailSentStatus(requestID);
+        }
     }
 }

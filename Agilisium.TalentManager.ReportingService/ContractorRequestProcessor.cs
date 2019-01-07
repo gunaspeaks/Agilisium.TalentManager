@@ -26,21 +26,22 @@ namespace Agilisium.TalentManager.ReportingService
                 List<ServiceRequestDto> requests = requestService.GetAllEmailPendingRequests();
 
                 string emailClientIP = settingsService.GetSystemSettingValue("Email Proxy Server");
-                string fromEmailID = settingsService.GetSystemSettingValue("Contractor Request Email Owner");
+                string ownerEmailID = settingsService.GetSystemSettingValue("Contractor Request Email Owner");
                 string bccEmailID = settingsService.GetSystemSettingValue("Contractor Request Email BCC Email IDs");
+                string outlookPwd = settingsService.GetSystemSettingValue("Owner's Outlook EMAIL Password");
                 string emailSubject = "New Contractor Request for Agilisium";
+                EmailHandler emailHandler = new EmailHandler(ownerEmailID, outlookPwd);
 
                 foreach (var request in requests)
                 {
                     try
                     {
                         StringBuilder vendorEmail = new StringBuilder(emailTemplateContent);
-                        vendorEmail.Replace("__VENDOR_POC_NAME__", request.VendorName);
-                        vendorEmail.Replace("__TECHNOLOGY_NAME__", request.RequestedSkill);
                         vendorEmail.Replace("__EMAIL_BODY__", request.EmailMessage);
-                        EmailHandler.SendEmail(emailClientIP, fromEmailID,request.VendorEmailID, emailSubject, vendorEmail.ToString(), bccEmailID);
+                        emailHandler.SendEmail(emailClientIP, request.VendorEmailID, emailSubject, vendorEmail.ToString(), bccEmailID);
+                        requestService.UpdateEmailSentStatus(request.ServiceRequestID);
                     }
-                    catch (Exception exp)
+                    catch (Exception)
                     {}
                 }
             }

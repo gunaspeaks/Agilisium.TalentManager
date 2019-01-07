@@ -3,15 +3,16 @@ using Agilisium.TalentManager.Model.Entities;
 using Agilisium.TalentManager.Repository.Abstract;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.Common;
 using System.Data.Entity;
+using System.Data.Entity.Core.Objects;
+using System.Data.Entity.Infrastructure;
 using System.Linq;
 
 namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class VendorRepository : RepositoryBase<Vendor>, IVendorRepository
     {
-        private readonly VendorSearchResultDto searchResult;
-
         public bool Exists(string itemName)
         {
             return Entities.Any(e => e.VendorName.ToLower() == itemName.ToLower() && e.IsDeleted == false);
@@ -135,6 +136,20 @@ namespace Agilisium.TalentManager.Repository.Repositories
             }
         }
 
+        public IEnumerable<VendorSpecializedPartnerWto> GetVendorSpecialityPartnersList()
+        {
+            DbCommand cmd = DataContext.Database.Connection.CreateCommand();
+            cmd.CommandText = "dbo.GetVendorsCountBasedOnSpcializedPartner";
+            cmd.CommandType = CommandType.StoredProcedure;
+            DataContext.Database.Connection.Open();
+            DbDataReader reader = cmd.ExecuteReader();
+            ObjectResult<VendorSpecializedPartnerWto> items = ((IObjectContextAdapter)DataContext).ObjectContext.Translate<VendorSpecializedPartnerWto>(reader);
+            List<VendorSpecializedPartnerWto> listItems = items.ToList();
+            DataContext.Database.Connection.Close();
+
+            return listItems;
+        }
+
         private IEnumerable<VendorDto> GetAllActiveVendors(string searchText)
         {
             IQueryable<VendorDto> vendors = from v in Entities
@@ -217,5 +232,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         int TotalRecordsCount(string searchText);
 
         VendorSearchResultDto SearchVendors(string searchText);
+
+        IEnumerable<VendorSpecializedPartnerWto> GetVendorSpecialityPartnersList();
     }
 }

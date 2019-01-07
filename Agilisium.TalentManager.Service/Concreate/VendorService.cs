@@ -65,5 +65,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             repository.Update(vendor);
         }
+
+        public List<VendorSpecializedPartnerWto> GetVendorSpecialityPartnersList()
+        {
+            return repository.GetVendorSpecialityPartnersList().ToList();
+        }
     }
 }

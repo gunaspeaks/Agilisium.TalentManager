@@ -249,7 +249,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             List<DropDownSubCategoryDto> buList = subCategoryService.GetSubCategories((int)CategoryType.ContractPeriod).ToList();
 
             List<SelectListItem> contractPeriodItems = (from c in buList
-                                                        orderby c.SubCategoryName
+                                                        orderby c.SubCategoryID
                                                         select new SelectListItem
                                                         {
                                                             Text = c.SubCategoryName,

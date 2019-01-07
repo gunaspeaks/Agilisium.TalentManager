@@ -28,5 +28,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         int TotalRecordsCount();
 
         List<ServiceRequestDto> GetAllEmailPendingRequests();
+
+        void UpdateEmailSentStatus(int requestID);
     }
 }

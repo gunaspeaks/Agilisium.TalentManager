@@ -42,7 +42,10 @@
                     {
                         <li>@Html.ActionLink("Home", "VIndex", "Vendor")</li>
                     }
-                    @if (Request.Url.ToString().ToLower().Contains("vendor") && Request.Url.ToString().ToLower().Contains("search") == false && Request.Url.ToString().ToLower().Contains("vindex") == false)
+                    @if (Request.Url.ToString().ToLower().Contains("vendor")
+                        && Request.Url.ToString().ToLower().Contains("search") == false
+                        && Request.Url.ToString().ToLower().Contains("vindex") == false
+                        && Request.Url.ToString().ToLower().Contains("servicerequest") == false)
                     {
                         <li>@Html.ActionLink("Vendors", "List", "Vendor", new { @style = "color:GreenYellow" })</li>
                     }

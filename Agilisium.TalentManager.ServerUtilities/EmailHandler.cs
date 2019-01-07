@@ -6,13 +6,22 @@ namespace Agilisium.TalentManager.ServerUtilities
 {
     public class EmailHandler
     {
-        public static void SendEmail(string emailClientIp, string fromEmailID,
-            string toEmailID, string emailSubject, string emailBody, string bccEmailId = "")
+        private readonly string outlookPassword;
+        private readonly string ownerEmailID;
+
+        public EmailHandler(string ownerEmailID, string outlookPassword)
+        {
+            this.outlookPassword = outlookPassword;
+            this.ownerEmailID = ownerEmailID;
+        }
+
+        public void SendEmail(string emailClientIp, string toEmailID, string emailSubject, 
+            string emailBody, string bccEmailId = "")
         {
             SmtpClient smtpClient = null;
             MailMessage mailMessage = new MailMessage()
             {
-                From = new MailAddress(fromEmailID),
+                From = new MailAddress(ownerEmailID),
                 Subject = emailSubject,
                 IsBodyHtml = true,
                 Body = emailBody
@@ -20,22 +29,22 @@ namespace Agilisium.TalentManager.ServerUtilities
 
             try
             {
-                fromEmailID = "gunasekaran.r@agilisium.com";
                 mailMessage.To.Add(toEmailID);
                 if (string.IsNullOrWhiteSpace(bccEmailId) == false)
                 {
                     string[] mailIDs = bccEmailId.Split(';');
                     foreach (string str in mailIDs)
                     {
-                        mailMessage.Bcc.Add(new MailAddress(str));
+                        mailMessage.CC.Add(new MailAddress(str));
                     }
                 }
-                smtpClient = new SmtpClient(emailClientIp);
-                smtpClient.Host = emailClientIp;
-                smtpClient.Port = 587;
-                smtpClient.UseDefaultCredentials = false;
-                smtpClient.EnableSsl = true;
-                smtpClient.Credentials = new NetworkCredential(@"agileiss\Gunasekaran", "Welcome2018*");
+                smtpClient = new SmtpClient(emailClientIp, 587)
+                {
+                    UseDefaultCredentials = false,
+                    EnableSsl = true,
+                    DeliveryMethod = SmtpDeliveryMethod.Network
+                };
+                smtpClient.Credentials = new NetworkCredential(ownerEmailID, outlookPassword);
                 smtpClient.Send(mailMessage);
             }
             catch (Exception exp) { throw exp; }

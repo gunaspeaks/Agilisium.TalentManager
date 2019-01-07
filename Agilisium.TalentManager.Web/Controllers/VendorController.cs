@@ -67,7 +67,14 @@ namespace Agilisium.TalentManager.Web.Controllers
         [ChildActionOnly]
         public ActionResult VendorsDashboard()
         {
-            return PartialView(new VendorWidgetModel());
+            List<VendorSpecializedPartnerModel> result = new List<VendorSpecializedPartnerModel>();
+            try
+            {
+                List<VendorSpecializedPartnerWto> wtoResult = vendorService.GetVendorSpecialityPartnersList();
+                result = Mapper.Map< List<VendorSpecializedPartnerWto>, List<VendorSpecializedPartnerModel>>(wtoResult);
+            }
+            catch (Exception exp) { }
+            return PartialView(result);
         }
 
         public ActionResult Search(string by)

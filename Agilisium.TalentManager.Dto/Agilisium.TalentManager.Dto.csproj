@@ -59,6 +59,7 @@
     <Compile Include="VendorDto.cs" />
     <Compile Include="VendorSearchDto.cs" />
     <Compile Include="VendorSearchResultDto.cs" />
+    <Compile Include="VendorSpecializedPartnerWto.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -41,13 +41,18 @@ namespace Agilisium.TalentManager.Model
                 new SystemSetting
                 {
                     SettingName = "Contractor Request Email Owner",
-                    SettingValue = "Sriram.Balakrishnan@agilisium.com"
+                    SettingValue = "Gunasekaran.R@agilisium.com"
                 },
                 new SystemSetting
                 {
                     SettingName = "Contractor Request Email BCC Email IDs",
-                    SettingValue = "Gunasekaran.R@agilisium.com; Sriram.Balakrishnan@agilisium.com; satish.srinivasan@agilisium.com"
-                }
+                    SettingValue = "Sriram.Balakrishnan@agilisium.com; satish.srinivasan@agilisium.com"
+                },
+                new SystemSetting
+                {
+                    SettingName = "Owner's Outlook EMAIL Password",
+                    SettingValue = "Saba@dec2018"
+                },
             };
         }
 
