@@ -47,6 +47,7 @@
     <Compile Include="DropDownSubCategoryDto.cs" />
     <Compile Include="DtoBase.cs" />
     <Compile Include="EmployeeDto.cs" />
+    <Compile Include="EmployeeWidgetDto.cs" />
     <Compile Include="PracticeDto.cs" />
     <Compile Include="PracticeHeadCountDto.cs" />
     <Compile Include="ProjectAllocationDto.cs" />

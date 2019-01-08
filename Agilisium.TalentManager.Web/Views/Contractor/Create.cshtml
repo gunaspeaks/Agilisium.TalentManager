@@ -32,6 +32,23 @@
         });
     });
 
+    $(function () {
+        $("#ContractPeriodID").change(function () {
+            if ($("#ContractPeriodID").val().length > 0) {
+                try {
+                    var eDate = Date.parse($("#StartDate").val());
+                    var dt = new Date(eDate);
+                    var selectedPeriod = $("#ContractPeriodID").val();
+                    selectedPeriod = parseInt(selectedPeriod) - 24;
+                    dt.setDate(dt.getDate()+( selectedPeriod * 30));
+                    $("#EndDate").val(dt.toLocaleString());
+                }
+                catch (exp) {
+                }
+            }
+        });
+    });
+
 </script>
 
 <div class="panel panel-default">

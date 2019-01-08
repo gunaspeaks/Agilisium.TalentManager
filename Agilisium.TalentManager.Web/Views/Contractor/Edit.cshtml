@@ -25,6 +25,23 @@
             showAnim: "fadeIn",
         });
 
+        $(function () {
+            $("#ContractPeriodID").change(function () {
+                if ($("#ContractPeriodID").val().length > 0) {
+                    try {
+                        var eDate = Date.parse($("#StartDate").val());
+                        var dt = new Date(eDate);
+                        var selectedPeriod = $("#ContractPeriodID").val();
+                        selectedPeriod = parseInt(selectedPeriod) - 24;
+                        dt.setDate(dt.getDate() + (selectedPeriod * 30));
+                        $("#EndDate").val(dt.toLocaleString());
+                    }
+                    catch (exp) {
+                    }
+                }
+            });
+        });
+
         updateProjectManagerName();
     });
 
@@ -57,6 +74,7 @@
                     <tr>
                         <td width="25%">
                             <div class="form-group">
+                                @Html.HiddenFor(model => model.ContractorID)
                                 @Html.LabelFor(model => model.ContractorName)
                                 @Html.EditorFor(model => model.ContractorName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>

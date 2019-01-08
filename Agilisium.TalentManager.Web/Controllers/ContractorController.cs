@@ -88,7 +88,15 @@ namespace Agilisium.TalentManager.Web.Controllers
         [ChildActionOnly]
         public ActionResult ContractorsDashboard()
         {
-            return PartialView(new ContractorWidgetModel());
+            var model = new ContractorWidgetModel();
+
+            try
+            {
+                model.ActiveContractors = contractService.GetActiveContractorsCount();
+            }
+            catch (Exception exp) { }
+
+            return PartialView(model);
         }
 
         [HttpPost]
@@ -225,7 +233,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                 {
                                                     Text = p.ProjectName,
                                                     Value = p.ProjectID.ToString()
-                                                }).ToList();
+                                                }).OrderBy(p=>p.Text).ToList();
 
             ViewBag.ProjectListItems = projectList;
         }

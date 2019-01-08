@@ -8,7 +8,7 @@ namespace Agilisium.TalentManager.Web.Models
 {
     public class ContractorWidgetModel
     {
-        [DisplayName("Total Contractors")]
-        public int TotalContractors { get; set; }
+        [DisplayName("Active Contractors")]
+        public int ActiveContractors { get; set; }
     }
 }

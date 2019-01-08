@@ -24,8 +24,11 @@
                 <td class="text-right">@Model.Sum(v => v.VendorsCount)</td>
             </tr>
         </table>
-        <div class="pull-right">
-            @Html.ActionLink("+Create a New Vendor", "Create")
+        <div>
+            @Html.ActionLink("View All", "List")
+            <div class="pull-right">
+                @Html.ActionLink("+Add New Vendor", "Create")
+            </div>
         </div>
     </div>
 </div>

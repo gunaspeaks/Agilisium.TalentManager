@@ -1,6 +1,7 @@
 ﻿using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Model.Entities;
 using Agilisium.TalentManager.Repository.Abstract;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -117,6 +118,11 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.SaveChanges();
         }
 
+        public int GetActiveContractorsCount()
+        {
+            return Entities.Where(p => p.IsDeleted == false && p.EndDate >= DateTime.Now).Count();
+        }
+
         private Contractor CreateBusinessEntity(ContractorDto contractorDto, bool isNewEntity = false)
         {
             Contractor contractor = new Contractor
@@ -161,5 +167,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
     public interface IContractorRepository : IRepository<ContractorDto>
     {
         bool Exists(string contractorName, int contractorID);
+
+        int GetActiveContractorsCount();
     }
 }

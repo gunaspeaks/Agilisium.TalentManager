@@ -33,7 +33,15 @@ namespace Agilisium.TalentManager.Web.Controllers
         [ChildActionOnly]
         public ActionResult EmployeesDashboard()
         {
-            return PartialView(new EmployeeWidgetModel());
+            EmployeeWidgetModel model = new EmployeeWidgetModel();
+
+            try
+            {
+                EmployeeWidgetDto dto = empService.GetEmployeesCountSummary();
+                model = Mapper.Map<EmployeeWidgetDto, EmployeeWidgetModel>(dto);
+            }
+            catch (Exception) { }
+            return PartialView(model);
         }
 
         [ChildActionOnly]

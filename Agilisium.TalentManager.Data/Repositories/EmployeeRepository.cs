@@ -437,6 +437,22 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
             targetEntity.UpdateTimeStamp(sourceEntity.LoggedInUserName);
         }
+
+        public EmployeeWidgetDto GetEmployeesCountSummary()
+        {
+            EmployeeWidgetDto dto = new EmployeeWidgetDto
+            {
+                TotalEmployees = Entities.Where(e => e.IsDeleted == false).Count(),
+                TotalBillableEmployees = DataContext.ProjectAllocations.Where(p => p.AllocationTypeID == 4 && p.IsDeleted == false).Count(),
+                ShadowResources = DataContext.ProjectAllocations.Where(p => p.AllocationTypeID == 5 && p.IsDeleted == false).Count(),
+                BenchStrength = DataContext.ProjectAllocations.Where(p => p.AllocationTypeID == 6 && p.IsDeleted == false).Count(),
+                EmployeesOnInternalProjects = DataContext.ProjectAllocations.Where(p => p.AllocationTypeID == 7 && p.IsDeleted == false).Count(),
+                EmployeesOnLabProjects = DataContext.ProjectAllocations.Where(p => p.AllocationTypeID == 8 && p.IsDeleted == false).Count(),
+                AwaitingProposal = DataContext.ProjectAllocations.Where(p => p.AllocationTypeID == 9 && p.IsDeleted == false).Count(),
+            };
+
+            return dto;
+        }
     }
 
     public interface IEmployeeRepository : IRepository<EmployeeDto>
@@ -472,5 +488,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         int PracticeWiseRecordsCount(int practiceID);
 
         int SubPracticeWiseRecordsCount(int subPracticeID);
+
+        EmployeeWidgetDto GetEmployeesCountSummary();
     }
 }

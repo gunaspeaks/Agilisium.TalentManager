@@ -26,5 +26,7 @@ namespace Agilisium.TalentManager.Service.Abstract
         bool Exists(int contractorID);
 
         ContractorDto GetByID(int contractorID);
+
+        int GetActiveContractorsCount();
     }
 }

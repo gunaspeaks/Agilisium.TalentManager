@@ -57,7 +57,6 @@ namespace Agilisium.TalentManager.Repository.Repositories
         public IEnumerable<ProjectDto> GetAll(int pageSize = -1, int pageNo = -1)
         {
             IQueryable<ProjectDto> projects = from p in Entities
-                                              orderby p.ProjectName
                                               where p.IsDeleted == false
                                               join dm in DataContext.Employees on p.DeliveryManagerID equals dm.EmployeeEntryID into dme
                                               from dmd in dme.DefaultIfEmpty()

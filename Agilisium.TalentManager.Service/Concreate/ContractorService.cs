@@ -59,5 +59,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.GetByID(contractorID);
         }
+
+        public int GetActiveContractorsCount()
+        {
+            return repository.GetActiveContractorsCount();
+        }
     }
 }

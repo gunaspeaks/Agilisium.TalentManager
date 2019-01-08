@@ -119,5 +119,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.SubPracticeWiseRecordsCount(subPracticeID);
         }
+
+        public EmployeeWidgetDto GetEmployeesCountSummary()
+        {
+            return repository.GetEmployeesCountSummary();
+        }
     }
 }

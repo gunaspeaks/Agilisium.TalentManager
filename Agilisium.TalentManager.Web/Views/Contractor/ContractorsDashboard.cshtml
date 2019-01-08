@@ -6,21 +6,17 @@
         <table class="tbl">
             <tr>
                 <td>
-                    @Html.DisplayNameFor(model => model.TotalContractors)
+                    @Html.DisplayNameFor(model => model.ActiveContractors)
                 </td>
                 <td>:</td>
-                <td>@Html.DisplayFor(model => model.TotalContractors)</td>
-            </tr>
-            <tr>
-
-                <td>
-                    @*@Html.DisplayNameFor(model => model.TotalBillableEmployees)*@
-                </td>
-                <td>:</td>
-                <td>
-                    @*@Html.DisplayFor(model => model.TotalBillableEmployees)*@
-                </td>
+                <td>@Html.DisplayFor(model => model.ActiveContractors)</td>
             </tr>
         </table>
+        <div>
+            @Html.ActionLink("View All", "List", null, new { @style = "color:darkblue" })
+            <div style="co" class="pull-right">
+                @Html.ActionLink("+Add New", "Create", null, new { @style = "color:darkblue" })
+            </div>
+        </div>
     </div>
 </div>
