@@ -364,7 +364,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                 join rm in Entities on emp.ReportingManagerID equals rm.EmployeeEntryID into rme
                                                 from rmd in rme.DefaultIfEmpty()
 
-                                                where emp.IsDeleted == false
+                                                where emp.IsDeleted == false && emp.LastWorkingDay.HasValue == false
                                                 orderby emp.EmployeeID
                                                 select new EmployeeDto
                                                 {

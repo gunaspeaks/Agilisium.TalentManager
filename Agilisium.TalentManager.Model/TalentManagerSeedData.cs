@@ -22,6 +22,10 @@ namespace Agilisium.TalentManager.Model
 
             GetEmployeeIDTrackers(context).ForEach(e => context.EmployeeIDTrackers.Add(e));
             context.SaveChanges();
+
+            GetSubCategories_New01(context).ForEach(c => context.DropDownSubCategories.Add(c));
+            context.SaveChanges();
+
         }
 
         private static List<SystemSetting> GetSystemSettings()
@@ -111,6 +115,23 @@ namespace Agilisium.TalentManager.Model
             };
         }
 
+        private static List<DropDownSubCategory> GetSubCategories_New01(TalentManagerDataContext context)
+        {
+            int etCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Employment Type").CategoryID;
+
+            return new List<DropDownSubCategory>
+            {
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "Yet to Join",
+                    ShortName = "YTJ",
+                    CategoryID = etCID,
+                    Description = "Yet to Join",
+                    IsReserved = true
+                },
+            };
+        }
+
         private static List<DropDownSubCategory> GetSubCategories(TalentManagerDataContext context)
         {
             int buCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Business Unit").CategoryID;
@@ -192,10 +213,10 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Proposed-Awaiting Start",
+                    SubCategoryName = "Proposed/Awaiting Start",
                     ShortName = "PAS",
                     CategoryID = utCID,
-                    Description = "Proposed-Awaiting Start",
+                    Description = "Proposed/Awaiting Start",
                     IsReserved = true
                 },
                 new DropDownSubCategory
@@ -210,10 +231,10 @@ namespace Agilisium.TalentManager.Model
                 // Project Type
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Client Billable",
+                    SubCategoryName = "Client Billable Project",
                     ShortName = "CBL",
                     CategoryID = ptCID,
-                    Description = "Client Billable",
+                    Description = "Client Billable Project",
                     IsReserved = true
                 },
                 new DropDownSubCategory
@@ -274,7 +295,7 @@ namespace Agilisium.TalentManager.Model
                     Description = "Contract employee",
                     IsReserved = true
                 },
-      
+    
                 // Specialized Partner
                 new DropDownSubCategory
                 {
@@ -642,6 +663,7 @@ namespace Agilisium.TalentManager.Model
             int? contracEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Contract")?.SubCategoryID;
             int? permanentEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Permanent")?.SubCategoryID;
             int? internshipEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Internship")?.SubCategoryID;
+            int? ytjEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Yet to Join")?.SubCategoryID;
 
             return new List<EmployeeIDTracker>
             {
@@ -662,6 +684,12 @@ namespace Agilisium.TalentManager.Model
                     EmploymentTypeID = contracEmpTypeID.Value,
                     IDPrefix = "CE",
                     RunningID = 1000
+                },
+                new EmployeeIDTracker
+                {
+                    EmploymentTypeID = ytjEmpTypeID.Value,
+                    IDPrefix = "YTJ",
+                    RunningID = 18000
                 }
             };
         }
