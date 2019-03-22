@@ -13,7 +13,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class EmployeeRepository : RepositoryBase<Employee>, IEmployeeRepository
     {
-        private const string PERMANENT_EMP_NAME = "Permanent";
+        private const string YET_TO_JOIN_EMP_TYPE_NAME = "Yet to Join";
+        private const string PERMANENT_EMP_TYPE_NAME = "Permanent";
 
         public bool Exists(string itemName)
         {
@@ -188,11 +189,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public IEnumerable<EmployeeDto> GetAllManagers()
         {
-            int? pmPracticeID = DataContext.Practices.FirstOrDefault(e => e.PracticeName == "Project Management")?.PracticeID;
-
             return (from emp in Entities
-                    where (emp.PracticeID == pmPracticeID)
-                    && emp.IsDeleted == false
+                    join sp in DataContext.SubPractices on emp.SubPracticeID equals sp.SubPracticeID
+                    where emp.IsDeleted == false && sp.SubPracticeName == "Project Management"
                     orderby emp.EmployeeID
                     select new EmployeeDto
                     {
@@ -200,6 +199,11 @@ namespace Agilisium.TalentManager.Repository.Repositories
                         FirstName = emp.FirstName,
                         LastName = emp.LastName
                     });
+        }
+
+        public IEnumerable<EmployeeDto> GetAllAccountManagers()
+        {
+            return GetAllManagers();
         }
 
         public string GenerateNewEmployeeID(int employeeTypeID)
@@ -212,14 +216,20 @@ namespace Agilisium.TalentManager.Repository.Repositories
             bool isDuplicate = true;
 
             int runningID = tracker.RunningID;
-            int newRunningID = tracker.RunningID;
-            string idPrefix = tracker.IDPrefix.ToLower();
+            int newRunningID = tracker.RunningID + 1;
+            string idPrefix = tracker.IDPrefix;
             while (isDuplicate)
             {
-                string runningNumber = empType == PERMANENT_EMP_NAME ? newRunningID.ToString() : newRunningID.ToString().Substring(1);
-                employeeID = $"{tracker.IDPrefix}{runningNumber}";
+                if (empType == PERMANENT_EMP_TYPE_NAME)
+                {
+                    employeeID = newRunningID.ToString();
+                }
+                else
+                {
+                    employeeID = $"{tracker.IDPrefix}{newRunningID.ToString().PadLeft(3, '0')}";
+                }
 
-                if (!Entities.Any(e => e.EmployeeID.ToLower() == employeeID))
+                if (!Entities.Any(e => e.EmployeeID.ToLower() == employeeID.ToLower()))
                 {
                     isDuplicate = false;
                 }
@@ -229,12 +239,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
                 }
             }
 
-            if (runningID != newRunningID)
-            {
-                UpdateEmployeeIDTracker(employeeTypeID, runningID);
-            }
+            UpdateEmployeeIDTracker(employeeTypeID, runningID);
 
-            return employeeID;
+            return employeeID.ToUpper();
         }
 
         public int TotalRecordsCount(string searchText)
@@ -330,10 +337,6 @@ namespace Agilisium.TalentManager.Repository.Repositories
             if (string.IsNullOrEmpty(tracker.IDPrefix) == false)
             {
                 employeeID = employeeID.Replace(tracker.IDPrefix, "");
-                if (employeeID[0] == '0')
-                {
-                    employeeID = "1" + employeeID;
-                }
             }
 
             if (int.TryParse(employeeID, out int runningID))
@@ -490,5 +493,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         int SubPracticeWiseRecordsCount(int subPracticeID);
 
         EmployeeWidgetDto GetEmployeesCountSummary();
+
+        IEnumerable<EmployeeDto> GetAllAccountManagers();
     }
 }

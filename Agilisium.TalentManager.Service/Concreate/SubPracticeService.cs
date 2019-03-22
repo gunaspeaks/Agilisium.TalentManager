@@ -1,8 +1,7 @@
-﻿using Agilisium.TalentManager.Repository.Repositories;
-using Agilisium.TalentManager.Dto;
+﻿using Agilisium.TalentManager.Dto;
+using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Service.Abstract;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -25,9 +24,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             repository.Delete(subPractice);
         }
 
-        public bool Exists(string subPracticeName)
+        public bool Exists(string subPracticeName, int practiceID)
         {
-            return repository.Exists(subPracticeName);
+            return repository.Exists(subPracticeName, practiceID);
         }
 
         public bool Exists(int id)
@@ -35,9 +34,9 @@ namespace Agilisium.TalentManager.Service.Concreate
             return repository.Exists(id);
         }
 
-        public bool Exists(string subPracticeName, int id)
+        public bool Exists(string subPracticeName, int id, int practiceID)
         {
-            return repository.Exists(subPracticeName, id);
+            return repository.Exists(subPracticeName, id, practiceID);
         }
 
         public SubPracticeDto GetByID(int subPracticeID)

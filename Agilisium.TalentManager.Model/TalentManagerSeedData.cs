@@ -15,15 +15,15 @@ namespace Agilisium.TalentManager.Model
             context.SaveChanges();
 
             GetSubCategories(context).ForEach(c => context.DropDownSubCategories.Add(c));
+            GetSubCategories_New01(context).ForEach(c => context.DropDownSubCategories.Add(c));
             context.SaveChanges();
 
             GetPractices(context).ForEach(p => context.Practices.Add(p));
             context.SaveChanges();
 
             GetEmployeeIDTrackers(context).ForEach(e => context.EmployeeIDTrackers.Add(e));
-            context.SaveChanges();
 
-            GetSubCategories_New01(context).ForEach(c => context.DropDownSubCategories.Add(c));
+            GetSubPractices(context).ForEach(e => context.SubPractices.Add(e));
             context.SaveChanges();
 
         }
@@ -112,12 +112,20 @@ namespace Agilisium.TalentManager.Model
                      ShortName = "SR",
                      IsReserved = true
                 },
+                new DropDownCategory
+                {
+                     CategoryName = "Country",
+                     Description = "Country",
+                     ShortName = "CN",
+                     IsReserved = true
+                }
             };
         }
 
         private static List<DropDownSubCategory> GetSubCategories_New01(TalentManagerDataContext context)
         {
             int etCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Employment Type").CategoryID;
+            int cnCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Country").CategoryID;
 
             return new List<DropDownSubCategory>
             {
@@ -129,6 +137,42 @@ namespace Agilisium.TalentManager.Model
                     Description = "Yet to Join",
                     IsReserved = true
                 },
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "United States",
+                    ShortName = "US",
+                    CategoryID = cnCID,
+                    Description = "United States",
+                },
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "United Kingdom",
+                    ShortName = "UK",
+                    CategoryID = cnCID,
+                    Description = "United Kingdom",
+                },
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "France",
+                    ShortName = "FR",
+                    CategoryID = cnCID,
+                    Description = "France",
+                }
+                ,
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "India",
+                    ShortName = "IN",
+                    CategoryID = cnCID,
+                    Description = "India",
+                },
+                new DropDownSubCategory
+                {
+                    SubCategoryName = "China",
+                    ShortName = "CH",
+                    CategoryID = cnCID,
+                    Description = "China",
+                }
             };
         }
 
@@ -141,6 +185,7 @@ namespace Agilisium.TalentManager.Model
             int spCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Specialized Partner").CategoryID;
             int cpCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Contract Period").CategoryID;
             int srCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Service Request Status").CategoryID;
+            int cnCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Country").CategoryID;
 
             return new List<DropDownSubCategory>
             {
@@ -512,6 +557,8 @@ namespace Agilisium.TalentManager.Model
 
             return new List<Practice>
             {
+                #region Business Development - Practices
+
                 new Practice
                 {
                     PracticeName = "Marketing",
@@ -526,13 +573,25 @@ namespace Agilisium.TalentManager.Model
                     BusinessUnitID = bdID,
                     IsReserved = true
                 },
-                 new Practice
+                new Practice
                 {
                     PracticeName = "Pre-Sales",
                     ShortName = "PRS",
                     BusinessUnitID = bdID,
                     IsReserved = true
                 },
+                new Practice
+                {
+                    PracticeName = "AWS",
+                    ShortName = "AWS",
+                    BusinessUnitID = bdID,
+                    IsReserved = true
+                },
+
+                #endregion
+
+                #region Operations - Practices
+
                 new Practice
                 {
                     PracticeName = "CEO",
@@ -570,6 +629,13 @@ namespace Agilisium.TalentManager.Model
                 },
                 new Practice
                 {
+                    PracticeName = "HR",
+                    ShortName = "HR",
+                    BusinessUnitID = boID,
+                    IsReserved = true
+                },
+                new Practice
+                {
                     PracticeName = "People Practice",
                     ShortName = "PPL",
                     BusinessUnitID = boID,
@@ -577,81 +643,79 @@ namespace Agilisium.TalentManager.Model
                 },
                 new Practice
                 {
-                    PracticeName = "ITS",
-                    ShortName = "ITS",
+                    PracticeName = "IT",
+                    ShortName = "IT",
                     BusinessUnitID = boID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "AWS",
-                    ShortName = "AWS",
+                    PracticeName = "IT Support",
+                    ShortName = "ITS",
+                    BusinessUnitID = boID,
+                    IsReserved = true
+                },
+                #endregion
+
+                #region Delivery - Practices
+
+                new Practice
+                {
+                    PracticeName = "Amgen",
+                    ShortName = "AMGN",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "Data Engineering",
-                    ShortName = "DEN",
+                    PracticeName = "AWS DI",
+                    ShortName = "AWSI",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "Project Management",
-                    ShortName = "PM",
+                    PracticeName = "AWS DA",
+                    ShortName = "AWSA",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "Testing",
-                    ShortName = "TST",
+                    PracticeName = "CDI",
+                    ShortName = "CDI",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "Microsoft",
-                    ShortName = "Google",
+                    PracticeName = "Product",
+                    ShortName = "PROD",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
                     PracticeName = "Google",
-                    ShortName = "GOG",
+                    ShortName = "GOGL",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "Prod. Support",
-                    ShortName = "PSP",
+                    PracticeName = "Non Core",
+                    ShortName = "NONC",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "BI",
-                    ShortName = "BI",
+                    PracticeName = "Not Mapped",
+                    ShortName = "NOTM",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
-                new Practice
-                {
-                    PracticeName = "Data Science",
-                    ShortName = "DTS",
-                    BusinessUnitID = dlID,
-                    IsReserved = true
-                },
-                new Practice
-                {
-                    PracticeName = "Others",
-                    ShortName = "OTH",
-                    BusinessUnitID = dlID,
-                    IsReserved = true
-                }
+                #endregion
             };
         }
 
@@ -671,26 +735,423 @@ namespace Agilisium.TalentManager.Model
                 {
                     EmploymentTypeID = permanentEmpTypeID.Value,
                     IDPrefix = string.Empty,
-                    RunningID = 10000
+                    RunningID = 10001
                 },
                 new EmployeeIDTracker
                 {
                     EmploymentTypeID = internshipEmpTypeID.Value,
                     IDPrefix = "CI",
-                    RunningID = 1000
+                    RunningID = 1
                 },
                 new EmployeeIDTracker
                 {
                     EmploymentTypeID = contracEmpTypeID.Value,
                     IDPrefix = "CE",
-                    RunningID = 1000
+                    RunningID = 1
                 },
                 new EmployeeIDTracker
                 {
                     EmploymentTypeID = ytjEmpTypeID.Value,
                     IDPrefix = "YTJ",
-                    RunningID = 18000
+                    RunningID = 1
                 }
+            };
+        }
+
+        private static List<SubPractice> GetSubPractices(TalentManagerDataContext  context)
+        {
+            int awsPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS").PracticeID;
+            int hrPID = context.Practices.FirstOrDefault(p => p.PracticeName == "HR").PracticeID;
+            int amgenPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Amgen").PracticeID;
+            int awsDAPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS DA").PracticeID;
+            int awsDIPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS DI").PracticeID;
+            int cdiPID = context.Practices.FirstOrDefault(p => p.PracticeName == "CDI").PracticeID;
+            int gglPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Google").PracticeID;
+            int nonPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Non Core").PracticeID;
+            int prdPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Product").PracticeID;
+            int nopPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Not Mapped").PracticeID;
+
+            return new List<SubPractice>
+            {
+                #region AWS - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = awsPID,
+                    SubPracticeName = "Presales",
+                    ShortName = "PRES",
+                },
+
+                #endregion
+
+                #region HR - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = hrPID,
+                    SubPracticeName = "People Practices",
+                    ShortName = "PPL",
+                },
+
+                #endregion
+
+                #region Amgen - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = amgenPID,
+                    SubPracticeName = "Business Analyst",
+                    ShortName = "BA",
+                },
+
+                #endregion
+
+                #region AWS DA - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = awsDAPID,
+                    SubPracticeName = "Machine Learning",
+                    ShortName = "ML",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDAPID,
+                    SubPracticeName = "Project Management",
+                    ShortName = "ML",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDAPID,
+                    SubPracticeName = "Quick Sight",
+                    ShortName = "QS",
+                },
+
+                #endregion
+
+                #region AWS DI - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = ".NET",
+                    ShortName = "NET",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Analytics",
+                    ShortName = "ANL",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Business Objects",
+                    ShortName = "BOB",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Database",
+                    ShortName = "DB",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Database Administrator",
+                    ShortName = "DBA",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Developer",
+                    ShortName = "DEV",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "DevOps",
+                    ShortName = "DOP",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Java",
+                    ShortName = "JVA",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Machine Learning",
+                    ShortName = "ML",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Redshift",
+                    ShortName = "RDS",
+                },
+                new SubPractice
+                {
+                    PracticeID = awsDIPID,
+                    SubPracticeName = "Project Management",
+                    ShortName = "PM",
+                },
+
+                #endregion
+
+                #region CDI - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Databricks",
+                    ShortName = "DBK",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "SnapLogic",
+                    ShortName = "SNP",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Informatica",
+                    ShortName = "INF",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Big Query",
+                    ShortName = "BQ",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Tableau",
+                    ShortName = "TAB",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "SQL",
+                    ShortName = "SQL",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Project Management",
+                    ShortName = "PM",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Manual",
+                    ShortName = "MAN",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Manual Testing",
+                    ShortName = "MAT",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Developer",
+                    ShortName = "DEV",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Fresher",
+                    ShortName = "FRS",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Project Management",
+                    ShortName = "PM",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "MuleSoft",
+                    ShortName = "MS",
+                },
+                new SubPractice
+                {
+                    PracticeID = cdiPID,
+                    SubPracticeName = "Presales",
+                    ShortName = "PRS",
+                },
+
+                #endregion
+
+                #region Google - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = gglPID,
+                    SubPracticeName = "Analytics",
+                    ShortName = "ANL",
+                },
+                new SubPractice
+                {
+                    PracticeID = gglPID,
+                    SubPracticeName = "Big Query",
+                    ShortName = "BQ",
+                },
+                new SubPractice
+                {
+                    PracticeID = gglPID,
+                    SubPracticeName = "Google",
+                    ShortName = "GOG",
+                },
+                new SubPractice
+                {
+                    PracticeID = gglPID,
+                    SubPracticeName = "Mean",
+                    ShortName = "MEA",
+                },
+                new SubPractice
+                {
+                    PracticeID = gglPID,
+                    SubPracticeName = "Others",
+                    ShortName = "OTH",
+                },
+                new SubPractice
+                {
+                    PracticeID = gglPID,
+                    SubPracticeName = "Project Management",
+                    ShortName = "PM",
+                },
+
+                #endregion
+
+                #region Non Core - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = ".NET",
+                    ShortName = "NET",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Automation",
+                    ShortName = "AUT",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Business Objects",
+                    ShortName = "BOB",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "iOS",
+                    ShortName = "IOS",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "L1/L2 Support",
+                    ShortName = "L1S",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "L2/L3 Support",
+                    ShortName = "L2S",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Manual",
+                    ShortName = "MAN",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Manual Testing",
+                    ShortName = "MAT",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "MSTR",
+                    ShortName = "MST",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "PHP",
+                    ShortName = "PHP",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Project Management",
+                    ShortName = "PM",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "SharePoint",
+                    ShortName = "SHP",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "SQL",
+                    ShortName = "SQL",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Strategic Staffing",
+                    ShortName = "STF",
+                },
+                new SubPractice
+                {
+                    PracticeID = nonPID,
+                    SubPracticeName = "Tableau/Looker",
+                    ShortName = "TAL",
+                },
+
+                #endregion
+
+                #region Product - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = prdPID,
+                    SubPracticeName = "BI Bot",
+                    ShortName = "BIB",
+                },
+
+                #endregion
+
+                #region Not Mapped - Sup Practices
+
+                new SubPractice
+                {
+                    PracticeID = nopPID,
+                    SubPracticeName = "Informatica",
+                    ShortName = "INF",
+                },
+                new SubPractice
+                {
+                    PracticeID = nopPID,
+                    SubPracticeName = "Developer",
+                    ShortName = "DEV",
+                },
+
+                #endregion
             };
         }
     }

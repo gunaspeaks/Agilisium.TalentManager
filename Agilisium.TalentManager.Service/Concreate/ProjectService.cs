@@ -69,5 +69,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.TotalRecordsCount();
         }
+
+        public string GenerateProjectCode(int accountID)
+        {
+            return repository.GenerateProjectCode(accountID);
+        }
     }
 }

@@ -54,6 +54,7 @@
     <Compile Include="Configuration\EmployeeEntityConfiguration.cs" />
     <Compile Include="Configuration\EmployeeIDTrackerEntityConfiguration.cs" />
     <Compile Include="Configuration\PracticeEntityConfiguration.cs" />
+    <Compile Include="Configuration\ProjectAccountEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectAllocationEntityConfiguration.cs" />
     <Compile Include="Configuration\ProjectEntityConfiguration.cs" />
     <Compile Include="Configuration\ServiceRequestEntityConfiguration.cs" />
@@ -66,6 +67,7 @@
     <Compile Include="Entities\DropDownSubCategory.cs" />
     <Compile Include="Entities\Employee.cs" />
     <Compile Include="Entities\EmployeeIDTracker.cs" />
+    <Compile Include="Entities\ProjectAccount.cs" />
     <Compile Include="Entities\ServiceRequest.cs" />
     <Compile Include="Entities\SystemSetting.cs" />
     <Compile Include="Entities\Vendor.cs" />

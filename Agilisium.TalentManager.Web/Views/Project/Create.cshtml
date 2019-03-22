@@ -5,6 +5,7 @@
 }
 <link href="~/Content/error-styles.css" rel="stylesheet" />
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="~/Scripts/Agilisium/content-updater.js"></script>
 
 
 <script type="text/javascript">
@@ -30,6 +31,7 @@
             changeYear: true,
             showAnim: "fadeIn",
         });
+
         $("#SowEndDate").datepicker({
 
             dateFormat: "mm-dd-yy",
@@ -37,7 +39,24 @@
             changeYear: true,
             showAnim: "fadeIn",
         });
+
+        generateProjectCode();
     })
+
+    generateProjectCode = function () {
+        $("#ProjectAccountID").change(function (evt1) {
+            if ($("#ProjectAccountID").text() != "Please Select") {
+                $.ajax({
+                    url: "/Project/GenerateProjectCode",
+                    type: 'POST',
+                    data: { accountID: $("#ProjectAccountID").val() },
+                    success: function (data) {
+                        $('#ProjectCode').val(data);
+                    },
+                    error: function (xhr) { alert('Error while generating the project code'); }
+                });            }
+        });
+    }
 
     $(function () {
         $("#PracticeID").change(function (evt) {
@@ -77,23 +96,23 @@
                     <tr>
                         <td width="25%">
                             <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectAccountID)
+                                @Html.DropDownListFor(model => model.ProjectAccountID, (IEnumerable<SelectListItem>)ViewBag.AccountsListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
+                        <td width="25%">
+                            <div class="form-group">
                                 @Html.HiddenFor(model => model.ProjectID)
                                 @Html.LabelFor(model => model.ProjectCode)
                                 @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
                         <td width="5%"></td>
-                        <td width="25%">
+                        <td>
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectName)
                                 @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                        </td>
-                        <td width="5%"></td>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectManagerID)
-                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -157,6 +176,18 @@
                                 @Html.EditorFor(model => model.SowEndDate, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DeliveryManagerID)
+                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
+                        <td></td>
+                        <td width="5%"></td>
+                        <td></td>
                     </tr>
                 </table>
             </div>

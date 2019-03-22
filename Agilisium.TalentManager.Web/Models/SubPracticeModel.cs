@@ -9,15 +9,15 @@ namespace Agilisium.TalentManager.Web.Models
 {
     public class SubPracticeModel : ViewModelBase
     {
-        [Required(ErrorMessage = "Please select a Practice")]
-        [DisplayName("Practice Name")]
+        [Required(ErrorMessage = "Please select a POD")]
+        [DisplayName("POD Name")]
         public int PracticeID { get; set; }
 
         public int SubPracticeID { get; set; }
 
-        [DisplayName("Sub Practice Name")]
-        [Required(ErrorMessage ="Sub Practice Name is required", AllowEmptyStrings =false)]
-        [MaxLength(100, ErrorMessage = "Sub Practice Name should not exceed 100 characters")]
+        [DisplayName("Competency")]
+        [Required(ErrorMessage ="Competency is required", AllowEmptyStrings =false)]
+        [MaxLength(100, ErrorMessage = "Competency should not exceed 100 characters")]
         public string SubPracticeName { get; set; }
 
         [DisplayName("Short Name")]
@@ -25,13 +25,13 @@ namespace Agilisium.TalentManager.Web.Models
         [MaxLength(100, ErrorMessage = "Short Name should not exceed 10 characters")]
         public string ShortName { get; set; }
 
-        [DisplayName("Practice Name")]
+        [DisplayName("POD Name")]
         public string PracticeName { get; set; }
 
-        [DisplayName("Sub-Practice Manager")]
+        [DisplayName("Competency Manager")]
         public int? ManagerID { get; set; }
 
-        [DisplayName("Sub-Practice Manager")]
+        [DisplayName("Competency Manager")]
         public string ManagerName { get; set; }
 
         [DisplayName("Head Count")]

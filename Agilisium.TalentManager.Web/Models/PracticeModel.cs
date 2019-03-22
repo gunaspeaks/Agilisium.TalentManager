@@ -14,9 +14,9 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Business Unit")]
         public string BusinessUnitName { get; set; }
 
-        [DisplayName("Practice Name")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Practice Name is required")]
-        [MaxLength(100, ErrorMessage = "Practice Name should not exceed 100 characters")]
+        [DisplayName("POD Name")]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "POD Name is required")]
+        [MaxLength(100, ErrorMessage = "POD Name should not exceed 100 characters")]
         public string PracticeName { get; set; }
 
         [DisplayName("Short Name")]
@@ -24,10 +24,10 @@ namespace Agilisium.TalentManager.Web.Models
         [MaxLength(10, ErrorMessage = "Short Name should not should not exceed 10 characters")]
         public string ShortName { get; set; }
 
-        [DisplayName("Practice Manager")]
+        [DisplayName("POD Manager")]
         public int? ManagerID { get; set; }
 
-        [DisplayName("Practice Manager")]
+        [DisplayName("POD Manager")]
         public string ManagerName { get; set; }
 
         public bool IsReserved { get; set; }

@@ -67,11 +67,11 @@ namespace Agilisium.TalentManager.Web.Controllers
                     string practiceName = practiceService.GetPracticeName(model.SelectedPracticeID);
                     if (string.IsNullOrEmpty(practiceName))
                     {
-                        DisplayWarningMessage("Hey, please check whether you are trying to access the correct Practice.");
+                        DisplayWarningMessage("Hey, please check whether you are trying to access the correct POD.");
                     }
                     else
                     {
-                        DisplayWarningMessage($"There are no Sub-Practices found for Practice '{practiceName}'");
+                        DisplayWarningMessage($"There are no Competencies found for POD '{practiceName}'");
                     }
                 }
             }
@@ -109,15 +109,15 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    if (subPracticeService.Exists(subPractice.SubPracticeName))
+                    if (subPracticeService.Exists(subPractice.SubPracticeName, subPractice.PracticeID))
                     {
-                        DisplayWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
+                        DisplayWarningMessage($"The Competency Name '{subPractice.SubPracticeName}' is duplicate");
                         return View(subPractice);
                     }
 
                     SubPracticeDto subPracticeModel = Mapper.Map<SubPracticeModel, SubPracticeDto>(subPractice);
                     subPracticeService.CreateSubPractice(subPracticeModel);
-                    DisplaySuccessMessage($"New Sub-Practice '{subPractice.SubPracticeName}' has been stored successfully");
+                    DisplaySuccessMessage($"New Competency '{subPractice.SubPracticeName}' has been stored successfully");
                     Session["SelectedPracticeID"] = subPractice.PracticeID.ToString();
                     return RedirectToAction("List");
                 }
@@ -145,7 +145,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (!subPracticeService.Exists(id.Value))
                 {
-                    DisplayWarningMessage($"Sorry, We couldn't find the Sub-Practice with ID: {id.Value}");
+                    DisplayWarningMessage($"Sorry, We couldn't find the Competency with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
@@ -174,15 +174,15 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    if (subPracticeService.Exists(subPractice.SubPracticeName, subPractice.SubPracticeID))
+                    if (subPracticeService.Exists(subPractice.SubPracticeName, subPractice.SubPracticeID, subPractice.PracticeID))
                     {
-                        DisplayWarningMessage($"The Sub-Practice Name '{subPractice.SubPracticeName}' is duplicate");
+                        DisplayWarningMessage($"The Competency Name '{subPractice.SubPracticeName}' is duplicate");
                         return View(subPractice);
                     }
 
                     SubPracticeDto subPracticeDto = Mapper.Map<SubPracticeModel, SubPracticeDto>(subPractice);
                     subPracticeService.UpdateSubPractice(subPracticeDto);
-                    DisplaySuccessMessage("Sub-Practice has been updated successfully");
+                    DisplaySuccessMessage("Competency has been updated successfully");
                     Session["SelectedPracticeID"] = subPractice.PracticeID.ToString();
                     return RedirectToAction("List");
                 }
@@ -208,12 +208,12 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (subPracticeService.CanBeDeleted(id.Value) == false)
                 {
-                    DisplayWarningMessage("There are some dependencies with this Sub-Practice. So, you can't delete this for now.");
+                    DisplayWarningMessage("There are some dependencies with this Competency. So, you can't delete this for now.");
                     return RedirectToAction("List");
                 }
 
                 subPracticeService.DeleteSubPractice(new SubPracticeDto { SubPracticeID = id.Value });
-                DisplaySuccessMessage("Sub-Practice has been deleted successfully");
+                DisplaySuccessMessage("Competency has been deleted successfully");
                 return RedirectToAction("List");
             }
             catch (Exception exp)

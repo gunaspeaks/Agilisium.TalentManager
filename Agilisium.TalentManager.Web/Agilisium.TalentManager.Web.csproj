@@ -228,6 +228,7 @@
     <Compile Include="Controllers\AllocationController.cs" />
     <Compile Include="Controllers\ContractorController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
     <Compile Include="Controllers\ServiceRequestController.cs" />
     <Compile Include="Controllers\VendorController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
@@ -252,6 +253,8 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AllocationViewModel.cs" />
     <Compile Include="Models\ContractorViewModel.cs" />
+    <Compile Include="Models\ProjectAccountViewModel.cs" />
+    <Compile Include="Models\ProjectAccountModel.cs" />
     <Compile Include="Models\VendorSpecializedPartnerModel.cs" />
     <Compile Include="Models\ContractorWidgetModel.cs" />
     <Compile Include="Models\CustomAllocationModel.cs" />
@@ -457,6 +460,9 @@
     <Content Include="Views\Vendor\VIndex.cshtml" />
     <Content Include="Views\Contractor\ContractorsDashboard.cshtml" />
     <Content Include="Views\Vendor\VendorsDashboard.cshtml" />
+    <Content Include="Views\Accounts\Create.cshtml" />
+    <Content Include="Views\Accounts\Edit.cshtml" />
+    <Content Include="Views\Accounts\List.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

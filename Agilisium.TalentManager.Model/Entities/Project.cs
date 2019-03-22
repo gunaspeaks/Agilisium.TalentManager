@@ -36,5 +36,7 @@ namespace Agilisium.TalentManager.Model.Entities
         public DateTime? SowStartDate { get; set; }
 
         public DateTime? SowEndDate { get; set; }
+
+        public int? ProjectAccountID { get; set; }
     }
 }

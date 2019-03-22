@@ -96,8 +96,10 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Employee
         public ActionResult PracticeWiseList(int pid, int page = 1)
         {
-            EmployeeViewModel viewModel = new EmployeeViewModel();
-            viewModel.SearchText = "";
+            EmployeeViewModel viewModel = new EmployeeViewModel
+            {
+                SearchText = ""
+            };
 
             try
             {
@@ -128,8 +130,10 @@ namespace Agilisium.TalentManager.Web.Controllers
         // GET: Employee
         public ActionResult SubPracticeWiseList(int sid, int page = 1)
         {
-            EmployeeViewModel viewModel = new EmployeeViewModel();
-            viewModel.SearchText = "";
+            EmployeeViewModel viewModel = new EmployeeViewModel
+            {
+                SearchText = ""
+            };
 
             try
             {
@@ -193,6 +197,12 @@ namespace Agilisium.TalentManager.Web.Controllers
                         return View(employee);
                     }
 
+                    if (empService.IsDuplicateEmployeeID(employee.EmployeeID))
+                    {
+                        DisplayWarningMessage("This Employee ID is already exists");
+                        return View(employee);
+                    }
+
                     EmployeeDto employeeDto = Mapper.Map<EmployeeModel, EmployeeDto>(employee);
                     empService.Create(employeeDto);
                     DisplaySuccessMessage("New Employee details have been stored successfully");
@@ -250,6 +260,12 @@ namespace Agilisium.TalentManager.Web.Controllers
                     if (empService.IsDuplicateName(employee.EmployeeEntryID, employee.FirstName, employee.LastName))
                     {
                         DisplayWarningMessage("There is already an Employee with the same First and Last Name");
+                        return View(employee);
+                    }
+
+                    if (empService.IsDuplicateEmployeeID(employee.EmployeeEntryID, employee.EmployeeID))
+                    {
+                        DisplayWarningMessage("This Employee ID is already exists");
                         return View(employee);
                     }
 
@@ -312,7 +328,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             return Json(emp);
         }
 
-        private IEnumerable<EmployeeModel> GetEmployees(string searchText, int pageNo=1)
+        private IEnumerable<EmployeeModel> GetEmployees(string searchText, int pageNo = 1)
         {
             IEnumerable<EmployeeDto> employees = empService.GetAllEmployees(searchText, RecordsPerPage, pageNo);
             IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
@@ -328,7 +344,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             return employeeModels;
         }
 
-        private IEnumerable<EmployeeModel> GetSubPracticeWiseEmployees(int subPracticeID, int pageNo=1)
+        private IEnumerable<EmployeeModel> GetSubPracticeWiseEmployees(int subPracticeID, int pageNo = 1)
         {
             IEnumerable<EmployeeDto> employees = empService.GetAllBySubPractice(subPracticeID, RecordsPerPage, pageNo);
             IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);
@@ -336,7 +352,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             return employeeModels;
         }
 
-        private IEnumerable<EmployeeModel> GetPracticeWiseEmployees(int practiceID, int pageNo=1)
+        private IEnumerable<EmployeeModel> GetPracticeWiseEmployees(int practiceID, int pageNo = 1)
         {
             IEnumerable<EmployeeDto> employees = empService.GetAllByPractice(practiceID, RecordsPerPage, pageNo);
             IEnumerable<EmployeeModel> employeeModels = Mapper.Map<IEnumerable<EmployeeDto>, IEnumerable<EmployeeModel>>(employees);

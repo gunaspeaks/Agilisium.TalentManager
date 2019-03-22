@@ -34,6 +34,8 @@ namespace Agilisium.TalentManager.Model
 
         public DbSet<SystemSetting> SystemSettings { get; set; }
 
+        public DbSet<ProjectAccount> ProjectAccounts { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new PracticeEntityConfiguration());
@@ -48,6 +50,7 @@ namespace Agilisium.TalentManager.Model
             modelBuilder.Configurations.Add(new ContractorTypeConfiguration());
             modelBuilder.Configurations.Add(new ServiceRequestEntityConfiguration());
             modelBuilder.Configurations.Add(new SystemSettingTypeConfiguration());
+            modelBuilder.Configurations.Add(new ProjectAccountEntityConfiguration());
         }
     }
 }

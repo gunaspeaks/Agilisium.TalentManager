@@ -66,6 +66,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                               from prd in pre.DefaultIfEmpty()
                                               join pt in DataContext.DropDownSubCategories on p.ProjectTypeID equals pt.SubCategoryID into pte
                                               from ptd in pte.DefaultIfEmpty()
+                                              join pa in DataContext.ProjectAccounts on p.ProjectAccountID equals pa.AccountID into pae
+                                              from pad in pae.DefaultIfEmpty()
                                               orderby p.ProjectCode
                                               select new ProjectDto
                                               {
@@ -80,6 +82,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                   StartDate = p.StartDate,
                                                   ProjectManagerName = string.IsNullOrEmpty(pmd.LastName) ? "" : pmd.LastName + ", " + pmd.FirstName,
                                                   IsSowAvailable = p.IsSowAvailable,
+                                                  ProjectAccountID = p.ProjectAccountID,
+                                                  AccountName = pad.AccountName,
                                               };
 
             if (pageSize < 0)
@@ -115,7 +119,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                         StartDate = p.StartDate,
                         IsSowAvailable = p.IsSowAvailable,
                         SowEndDate = p.SowEndDate,
-                        SowStartDate = p.SowStartDate
+                        SowStartDate = p.SowStartDate,
+                        ProjectAccountID  = p.ProjectAccountID
                     }).FirstOrDefault();
         }
 
@@ -128,6 +133,34 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.Entry(buzEntity).State = EntityState.Modified;
             DataContext.SaveChanges();
 
+        }
+
+        public string GenerateProjectCode(int accountID)
+        {
+            string newProjectCode = string.Empty;
+
+            string shortName = DataContext.ProjectAccounts.FirstOrDefault(e => e.AccountID == accountID)?.ShortName;
+            int projCount = DataContext.ProjectAccounts.Count(e => e.AccountID == accountID);
+
+            bool isDuplicate = true;
+
+            int newRunningID = projCount + 1;
+
+            while (isDuplicate)
+            {
+                newProjectCode = $"{shortName}{newRunningID.ToString().PadLeft(3, '0')}";
+
+                if (!Entities.Any(e => e.ProjectCode.ToLower() == newProjectCode.ToLower()))
+                {
+                    isDuplicate = false;
+                }
+                else
+                {
+                    newRunningID += 1;
+                }
+            }
+
+            return newProjectCode.ToUpper();
         }
 
         private Project CreateBusinessEntity(ProjectDto projectDto, bool isNewEntity = false)
@@ -181,5 +214,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         bool IsDuplicateProjectCode(string projectCode);
 
         bool IsDuplicateProjectCode(string projectCode, int projectID);
+
+        string GenerateProjectCode(int accountID);
     }
 }

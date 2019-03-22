@@ -27,15 +27,20 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.SaveChanges();
         }
 
-        public bool Exists(string subPracticeName, int id)
+        public bool Exists(string subPracticeName, int id, int practiceID)
         {
             return Entities.Any(c => c.SubPracticeName.ToLower() == subPracticeName.ToLower() &&
-            c.SubPracticeID != id && c.IsDeleted == false);
+            c.SubPracticeID != id && c.PracticeID == practiceID && c.IsDeleted == false);
         }
 
         public bool Exists(string itemName)
         {
             return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower() && c.IsDeleted == false);
+        }
+
+        public bool Exists(string itemName, int practiceID)
+        {
+            return Entities.Any(c => c.SubPracticeName.ToLower() == itemName.ToLower() && c.PracticeID == practiceID && c.IsDeleted == false);
         }
 
         public bool Exists(int id)
@@ -118,6 +123,19 @@ namespace Agilisium.TalentManager.Repository.Repositories
                     }).FirstOrDefault();
         }
 
+        public SubPracticeDto GetByName(string name, int practiceID)
+        {
+            return (from c in Entities
+                    where c.PracticeID == practiceID && c.SubPracticeName.ToLower() == name.ToLower() && c.IsDeleted == false
+                    select new SubPracticeDto
+                    {
+                        PracticeID = c.PracticeID,
+                        SubPracticeID = c.SubPracticeID,
+                        SubPracticeName = c.SubPracticeName,
+                        ShortName = c.ShortName,
+                    }).FirstOrDefault();
+        }
+
         public void Update(SubPracticeDto entity)
         {
             SubPractice buzEntity = Entities.FirstOrDefault(s => s.SubPracticeID == entity.SubPracticeID);
@@ -184,7 +202,9 @@ namespace Agilisium.TalentManager.Repository.Repositories
     {
         IEnumerable<SubPracticeDto> GetAllByPracticeID(int practiceID, int pageSize = -1, int pageNo = -1);
 
-        bool Exists(string subPracticeName, int id);
+        bool Exists(string subPracticeName, int id, int practiceID);
+
+        bool Exists(string itemName, int practiceID);
 
         int TotalRecordsCountByPracticeID(int practiceID);
 

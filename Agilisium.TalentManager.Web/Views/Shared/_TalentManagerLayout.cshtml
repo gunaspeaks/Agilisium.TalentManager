@@ -22,7 +22,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
-<body style="background-color:cadetblue">
+<body style="background-color:Highlight">
     <div class="navbar navbar-fixed-top" style="background-color:black; height:50px">
         <div>
             <div class="navbar-header">
@@ -51,6 +51,15 @@
                         <li>@Html.ActionLink("Employees", "List", "Employee")</li>
                     }
 
+                    @if (Request.Url.ToString().ToLower().Contains("account"))
+                    {
+                        <li>@Html.ActionLink("Accounts", "List", "Accounts", new { @style = "color:GreenYellow" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Accounts", "List", "Accounts")</li>
+                    }
+
                     @if (Request.Url.ToString().ToLower().Contains("project"))
                     {
                         <li>@Html.ActionLink("Projects", "List", "Project", new { @style = "color:GreenYellow" })</li>
@@ -62,11 +71,11 @@
 
                     @if (Request.Url.ToString().ToLower().Contains("allocation"))
                     {
-                        <li>@Html.ActionLink("Project Allocations", "List", "Allocation", new { @style = "color:GreenYellow" })</li>
+                        <li>@Html.ActionLink("Allocations", "List", "Allocation", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Project Allocations", "List", "Allocation")</li>
+                        <li>@Html.ActionLink("Allocations", "List", "Allocation")</li>
                     }
 
                     @if (Request.Url.ToString().ToLower().Contains("category") && !Request.Url.ToString().ToLower().Contains("subcategory"))
@@ -89,20 +98,20 @@
 
                     @if (Request.Url.ToString().ToLower().Contains("practice") && !Request.Url.ToString().ToLower().Contains("subpractice"))
                     {
-                        <li>@Html.ActionLink("Practices", "List", "Practice", new { @style = "color:GreenYellow" })</li>
+                        <li>@Html.ActionLink("PODs", "List", "Practice", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Practices", "List", "Practice")</li>
+                        <li>@Html.ActionLink("PODs", "List", "Practice")</li>
                     }
 
-                    @if (Request.Url.ToString().ToLower().Contains("subpractice") && Request.Url.ToString().ToLower().Contains("practice"))
+                    @if (Request.Url.ToString().ToLower().Contains("subpractice"))
                     {
-                        <li>@Html.ActionLink("Sub Practices", "List", "SubPractice", new { @style = "color:GreenYellow" })</li>
+                        <li>@Html.ActionLink("Competencies", "List", "SubPractice", new { @style = "color:GreenYellow" })</li>
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Sub Practices", "List", "SubPractice")</li>
+                        <li>@Html.ActionLink("Competencies", "List", "SubPractice")</li>
                     }
 
                 </ul>

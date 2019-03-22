@@ -21,6 +21,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Agilisium.TalentManager.Rep
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "Agilisium.TalentManager.Database", "Agilisium.TalentManager.Database\Agilisium.TalentManager.Database.sqlproj", "{8B79995F-454D-40BF-A0C9-26825E82922D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{1A2FE580-1FDE-4976-83C8-A5B780054DEC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataUploader", "Tools\DataUploader\DataUploader.csproj", "{DC5D0926-32FF-4917-A32C-6A94A13A5DFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -65,9 +69,16 @@ Global
 		{8B79995F-454D-40BF-A0C9-26825E82922D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8B79995F-454D-40BF-A0C9-26825E82922D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8B79995F-454D-40BF-A0C9-26825E82922D}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{DC5D0926-32FF-4917-A32C-6A94A13A5DFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC5D0926-32FF-4917-A32C-6A94A13A5DFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC5D0926-32FF-4917-A32C-6A94A13A5DFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC5D0926-32FF-4917-A32C-6A94A13A5DFD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DC5D0926-32FF-4917-A32C-6A94A13A5DFD} = {1A2FE580-1FDE-4976-83C8-A5B780054DEC}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C01D1B30-C67A-4A23-8F8F-45123F930CBF}

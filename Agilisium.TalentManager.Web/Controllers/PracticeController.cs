@@ -44,7 +44,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                 }
                 else
                 {
-                    DisplayWarningMessage("There are no Practices to display");
+                    DisplayWarningMessage("There are no PODs to display");
                 }
             }
             catch (Exception exp)
@@ -82,12 +82,12 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (practiceService.Exists(practice.PracticeName))
                     {
-                        DisplayWarningMessage($"The Practice Name '{practice.PracticeName}' is duplicate");
+                        DisplayWarningMessage($"The POD Name '{practice.PracticeName}' is duplicate");
                         return View(practice);
                     }
                     PracticeDto practiceModel = Mapper.Map<PracticeModel, PracticeDto>(practice);
                     practiceService.CreatePractice(practiceModel);
-                    DisplaySuccessMessage($"New Practice '{practice.PracticeName}' has been stored successfully");
+                    DisplaySuccessMessage($"New POD '{practice.PracticeName}' has been stored successfully");
                     return RedirectToAction("List");
                 }
             }
@@ -115,7 +115,7 @@ namespace Agilisium.TalentManager.Web.Controllers
 
                 if (!practiceService.Exists(id.Value))
                 {
-                    DisplayWarningMessage($"Sorry, We couldn't find the Practice with ID: {id.Value}");
+                    DisplayWarningMessage($"Sorry, We couldn't find the POD with ID: {id.Value}");
                     return RedirectToAction("List");
                 }
 
@@ -142,13 +142,13 @@ namespace Agilisium.TalentManager.Web.Controllers
                 {
                     if (practiceService.Exists(practice.PracticeName, practice.PracticeID))
                     {
-                        DisplayWarningMessage($"Practice Name '{practice.PracticeName}' is duplicate");
+                        DisplayWarningMessage($"POD Name '{practice.PracticeName}' is duplicate");
                         return View(practice);
                     }
 
                     PracticeDto practiceModel = Mapper.Map<PracticeModel, PracticeDto>(practice);
                     practiceService.UpdatePractice(practiceModel);
-                    DisplaySuccessMessage($"Practice '{practice.PracticeName}' details have been modified successfully");
+                    DisplaySuccessMessage($"POD '{practice.PracticeName}' details have been modified successfully");
                     return RedirectToAction("List");
                 }
             }
@@ -173,18 +173,18 @@ namespace Agilisium.TalentManager.Web.Controllers
             {
                 if (practiceService.IsReservedEntry(id.Value))
                 {
-                    DisplayWarningMessage("Hey, why do you want to delete a Reserved Practice. Please check with the system administrator.");
+                    DisplayWarningMessage("Hey, why do you want to delete a Reserved POD. Please check with the system administrator.");
                     return RedirectToAction("List");
                 }
 
                 if (practiceService.CanBeDeleted(id.Value) == false)
                 {
-                    DisplayWarningMessage("There are some dependencies with this Practice. So, you can't delete this for now");
+                    DisplayWarningMessage("There are some dependencies with this POD. So, you can't delete this for now");
                     return RedirectToAction("List");
                 }
 
                 practiceService.DeletePractice(new PracticeDto { PracticeID = id.Value });
-                DisplaySuccessMessage("Practice has been deleted successfully");
+                DisplaySuccessMessage("POD has been deleted successfully");
             }
             catch (Exception exp)
             {

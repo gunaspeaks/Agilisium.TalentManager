@@ -45,6 +45,7 @@
     <Compile Include="Abstract\IContractorService.cs" />
     <Compile Include="Abstract\IDropDownCategoryService.cs" />
     <Compile Include="Abstract\IDropDownSubCategoryService.cs" />
+    <Compile Include="Abstract\IProjectAccountService.cs" />
     <Compile Include="Abstract\IServiceRequestService.cs" />
     <Compile Include="Abstract\ISystemSettingsService.cs" />
     <Compile Include="Abstract\IVendorService.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Concreate\DropDownSubCategoryService.cs" />
     <Compile Include="Concreate\EmployeeService.cs" />
     <Compile Include="Concreate\PracticeService.cs" />
+    <Compile Include="Concreate\ProjectAccountService.cs" />
     <Compile Include="Concreate\ProjectService.cs" />
     <Compile Include="Concreate\ServiceRequestService.cs" />
     <Compile Include="Concreate\SubPracticeService.cs" />

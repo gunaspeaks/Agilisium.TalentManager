@@ -80,5 +80,11 @@ namespace Agilisium.TalentManager.Web.Models
         //[DataType(DataType.Date)]
         public DateTime? SowEndDate { get; set; }
 
+        [DisplayName("Account")]
+        public int? ProjectAccountID { get; set; }
+
+        [DisplayName("Account")]
+        public string AccountName { get; set; }
+
     }
 }

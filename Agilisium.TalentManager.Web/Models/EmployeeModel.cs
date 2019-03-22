@@ -35,17 +35,17 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Business Unit")]
         public string BusinessUnitName { get; set; }
 
-        [DisplayName("Practice")]
+        [DisplayName("POD")]
         [Required(AllowEmptyStrings = false, ErrorMessage = "Please select a Practice")]
         public int PracticeID { get; set; }
 
-        [DisplayName("Practice")]
+        [DisplayName("POD")]
         public string PracticeName { get; set; }
 
-        [DisplayName("Sub Practice")]
+        [DisplayName("Competency")]
         public int? SubPracticeID { get; set; }
 
-        [DisplayName("Sub Practice")]
+        [DisplayName("Competency")]
         public string SubPracticeName { get; set; }
 
         [DisplayName("Date of Join")]

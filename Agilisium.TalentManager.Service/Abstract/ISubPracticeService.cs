@@ -9,11 +9,11 @@ namespace Agilisium.TalentManager.Service.Abstract
 {
     public interface ISubPracticeService
     {
-        bool Exists(string subPracticeName);
+        bool Exists(string subPracticeName, int practiceID);
 
         bool Exists(int id);
 
-        bool Exists(string subPracticeName, int id);
+        bool Exists(string subPracticeName, int id, int practiceID);
 
         IEnumerable<SubPracticeDto> GetSubPractices(int pageSize = -1, int pageNo = -1);
 

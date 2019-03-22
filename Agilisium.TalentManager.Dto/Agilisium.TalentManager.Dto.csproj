@@ -50,6 +50,7 @@
     <Compile Include="EmployeeWidgetDto.cs" />
     <Compile Include="PracticeDto.cs" />
     <Compile Include="PracticeHeadCountDto.cs" />
+    <Compile Include="ProjectAccountDto.cs" />
     <Compile Include="ProjectAllocationDto.cs" />
     <Compile Include="ProjectDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -29,6 +29,8 @@ namespace Agilisium.TalentManager.Service.Abstract
 
         List<EmployeeDto> GetAllManagers();
 
+        List<EmployeeDto> GetAllAccountManagers();
+
         int TotalRecordsCount(string searchText);
 
         IEnumerable<EmployeeDto> GetAllPastEmployees(int pageSize = -1, int pageNo = -1);

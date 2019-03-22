@@ -124,5 +124,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.GetEmployeesCountSummary();
         }
+
+        public List<EmployeeDto> GetAllAccountManagers()
+        {
+            return repository.GetAllAccountManagers().ToList();
+        }
     }
 }

@@ -111,7 +111,7 @@
 
                 </td>
                 <td>
-                    @Html.ActionLink("Create a New Vendor", "Create", null, new { @class = "btn btn-default" })
+                    @Html.ActionLink("Create a New Vendor", "Create", null, new { @class = "btn btn-primary" })
                     <div class="btn-group pull-right">
                         @Html.AddPagination(Model.PagingInfo, x => Url.Action("List", new { page = x }))
                     </div>

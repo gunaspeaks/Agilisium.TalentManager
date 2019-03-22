@@ -45,5 +45,9 @@ namespace Agilisium.TalentManager.Dto
         public DateTime? SowStartDate { get; set; }
 
         public DateTime? SowEndDate { get; set; }
+
+        public int? ProjectAccountID { get; set; }
+
+        public string AccountName { get; set; }
     }
 }

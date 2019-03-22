@@ -87,6 +87,22 @@ namespace Agilisium.TalentManager.Repository.Repositories
                     }).FirstOrDefault();
         }
 
+        public DropDownSubCategoryDto GetByName(string name, int categoryID)
+        {
+            return (from s in Entities
+                    where s.CategoryID== categoryID &&
+                    (s.SubCategoryName.ToLower() == name.ToLower() || s.ShortName.ToLower() == name.ToLower()) 
+                    && s.IsDeleted == false 
+                    select new DropDownSubCategoryDto
+                    {
+                        SubCategoryID = s.SubCategoryID,
+                        SubCategoryName = s.SubCategoryName,
+                        CategoryID = s.CategoryID,
+                        Description = s.Description,
+                        ShortName = s.ShortName,
+                    }).FirstOrDefault();
+        }
+
         public IEnumerable<DropDownSubCategoryDto> GetSubCategories(int categoryID, int pageSize = -1, int pageNo = -1)
         {
             return (from s in Entities
@@ -175,5 +191,7 @@ namespace Agilisium.TalentManager.Repository.Repositories
         bool IsReservedEntry(int subCategoryID);
 
         int TotalRecordsCountByCategoryID(int categoryID);
+
+        DropDownSubCategoryDto GetByName(string name, int categoryID);
     }
 }

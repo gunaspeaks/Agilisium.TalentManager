@@ -17,17 +17,20 @@ namespace Agilisium.TalentManager.Web.Controllers
         private readonly IPracticeService practiceService;
         private readonly ISubPracticeService subPracticeService;
         private readonly IProjectService projectService;
+        private readonly IProjectAccountService accountsService;
 
         public ProjectController(IEmployeeService empService,
             IDropDownSubCategoryService subCategoryService,
             IPracticeService practiceService,
-            ISubPracticeService subPracticeService, IProjectService projectService)
+            ISubPracticeService subPracticeService, IProjectService projectService,
+            IProjectAccountService accountsService)
         {
             this.empService = empService;
             this.subCategoryService = subCategoryService;
             this.practiceService = practiceService;
             this.subPracticeService = subPracticeService;
             this.projectService = projectService;
+            this.accountsService = accountsService;
         }
 
         // GET: Project
@@ -250,6 +253,14 @@ namespace Agilisium.TalentManager.Web.Controllers
             return res;
         }
 
+        [HttpPost]
+        public JsonResult GenerateProjectCode(int accountID)
+        {
+            string projectCode = projectService.GenerateProjectCode(accountID);
+            JsonResult res = Json(projectCode);
+            return res;
+        }
+
         private IEnumerable<ProjectModel> GetProjects(int pageNo)
         {
             IEnumerable<ProjectDto> projects = projectService.GetAll(RecordsPerPage, pageNo);
@@ -263,6 +274,7 @@ namespace Agilisium.TalentManager.Web.Controllers
             ViewData["IsNewProject"] = true;
             PrepareSubCategoriesDDItems();
             GetAllManagersList();
+            GetAllAccountsList();
             ViewBag.PracticeListItems = GetPracticeList();
             ViewBag.SubPracticeListItems = new List<SelectListItem>
             {
@@ -311,6 +323,20 @@ namespace Agilisium.TalentManager.Web.Controllers
                                               }).ToList();
 
             ViewBag.ProjectManagerListItems = empDDList;
+        }
+
+        private void GetAllAccountsList()
+        {
+            List<ProjectAccountDto> accounts = accountsService.GetAll();
+
+            List<SelectListItem> accDDList = (from e in accounts
+                                              select new SelectListItem
+                                              {
+                                                  Text = e.AccountName,
+                                                  Value = e.AccountID.ToString()
+                                              }).ToList();
+
+            ViewBag.AccountsListItems = accDDList;
         }
     }
 }

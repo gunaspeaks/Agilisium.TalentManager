@@ -9,6 +9,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
 {
     public class PracticeRepository : RepositoryBase<Practice>, IPracticeRepository
     {
+        private const string DEFAULT_PRACTICE_NAME = "Not Mapped";
+
         public void Add(PracticeDto entity)
         {
             Practice practice = CreateBusinessEntity(entity, true);
@@ -113,6 +115,34 @@ namespace Agilisium.TalentManager.Repository.Repositories
                         ManagerID = p.ManagerID,
                         ManagerName = string.IsNullOrEmpty(ed.FirstName) ? "" : ed.LastName + ", " + ed.FirstName
                     }).FirstOrDefault();
+        }
+
+        public PracticeDto GetByNameOrDefault(string name)
+        {
+            if (Entities.Any(p => p.PracticeName.ToLower() == name.ToLower() && p.IsDeleted == false))
+            {
+                return (from p in Entities
+                        where p.PracticeName.ToLower() == name.ToLower() && p.IsDeleted == false
+                        select new PracticeDto
+                        {
+                            BusinessUnitID = p.BusinessUnitID,
+                            PracticeID = p.PracticeID,
+                            PracticeName = p.PracticeName,
+                            ShortName = p.ShortName,
+                        }).FirstOrDefault();
+            }
+            else
+            {
+                return (from p in Entities
+                        where p.PracticeName == DEFAULT_PRACTICE_NAME && p.IsDeleted == false
+                        select new PracticeDto
+                        {
+                            BusinessUnitID = p.BusinessUnitID,
+                            PracticeID = p.PracticeID,
+                            PracticeName = p.PracticeName,
+                            ShortName = p.ShortName,
+                        }).FirstOrDefault();
+            }
         }
 
         public void Update(PracticeDto entity)
