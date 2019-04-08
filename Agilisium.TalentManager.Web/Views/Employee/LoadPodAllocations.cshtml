@@ -1,0 +1,35 @@
+﻿@model List<Agilisium.TalentManager.Web.Models.EmployeePodAllocationModel>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            POD Name
+        </th>
+        <th>
+            Percentage Of Allocation
+        </th>
+        <th>Action</th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.HiddenFor(modelItem => item.AllocationEntryID)
+            @Html.HiddenFor(modelItem => item.PodID)
+            @Html.HiddenFor(modelItem => item.EmployeeEntryID)
+            @Html.DropDownListFor(modelItem => item.PodID, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.PercentageOfAllocation)
+        </td>
+        <td>
+            <input class="btnAdd btn btn-default" type="button" name="btnAdd" value="Add" />
+            <input class="btnDel btn" type="button" name="btnDel" value="Del" />
+        </td>
+    </tr>
+}
+
+</table>

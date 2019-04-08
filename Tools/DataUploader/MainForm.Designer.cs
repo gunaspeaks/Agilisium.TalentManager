@@ -82,34 +82,34 @@
             this.projectsToolStripMenuItem,
             this.projectAllocationsToolStripMenuItem});
             this.uploadersToolStripMenuItem.Name = "uploadersToolStripMenuItem";
-            this.uploadersToolStripMenuItem.Size = new System.Drawing.Size(52, 20);
-            this.uploadersToolStripMenuItem.Text = "Forms";
+            this.uploadersToolStripMenuItem.Size = new System.Drawing.Size(72, 20);
+            this.uploadersToolStripMenuItem.Text = "Uploaders";
             this.uploadersToolStripMenuItem.Click += new System.EventHandler(this.uploadersToolStripMenuItem_Click);
             // 
             // employeeToolStripMenuItem
             // 
             this.employeeToolStripMenuItem.Name = "employeeToolStripMenuItem";
-            this.employeeToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.employeeToolStripMenuItem.Text = "Employees Uploader";
+            this.employeeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.employeeToolStripMenuItem.Text = "Employees";
             this.employeeToolStripMenuItem.Click += new System.EventHandler(this.EmployeeToolStripMenuItem_Click);
             // 
             // accountsToolStripMenuItem
             // 
             this.accountsToolStripMenuItem.Name = "accountsToolStripMenuItem";
-            this.accountsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.accountsToolStripMenuItem.Text = "Accounts Uploader";
+            this.accountsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.accountsToolStripMenuItem.Text = "Accounts";
             // 
             // projectsToolStripMenuItem
             // 
             this.projectsToolStripMenuItem.Name = "projectsToolStripMenuItem";
-            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.projectsToolStripMenuItem.Text = "Projects Uploader";
+            this.projectsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.projectsToolStripMenuItem.Text = "Projects";
             // 
             // projectAllocationsToolStripMenuItem
             // 
             this.projectAllocationsToolStripMenuItem.Name = "projectAllocationsToolStripMenuItem";
-            this.projectAllocationsToolStripMenuItem.Size = new System.Drawing.Size(224, 22);
-            this.projectAllocationsToolStripMenuItem.Text = "Project Allocations Uploader";
+            this.projectAllocationsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.projectAllocationsToolStripMenuItem.Text = "Project Allocations";
             // 
             // MainForm
             // 

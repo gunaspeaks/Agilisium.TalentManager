@@ -36,6 +36,8 @@ namespace Agilisium.TalentManager.Model
 
         public DbSet<ProjectAccount> ProjectAccounts { get; set; }
 
+        public DbSet<EmployeePodAllocation> EmployeePodAllocations { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Configurations.Add(new PracticeEntityConfiguration());
@@ -51,6 +53,9 @@ namespace Agilisium.TalentManager.Model
             modelBuilder.Configurations.Add(new ServiceRequestEntityConfiguration());
             modelBuilder.Configurations.Add(new SystemSettingTypeConfiguration());
             modelBuilder.Configurations.Add(new ProjectAccountEntityConfiguration());
+            modelBuilder.Configurations.Add(new EmployeePodAllocationEntityConfiguration());
+            modelBuilder.Entity<Employee>()
+                .HasMany(p=>p.PoDAllocations);
         }
     }
 }

@@ -13,8 +13,8 @@
         generateEmployeeIDForEmpPage();
         loadPracticeDropDownListForEmpPage();
         loadSubPracticeDropDownForEmpPage();
-        getPracticeManagerNameForEmployeePage();
-        getSubPracticeManagerNameForEmployeePage();
+        //getPracticeManagerNameForEmployeePage();
+        //getSubPracticeManagerNameForEmployeePage();
         $("#DateOfJoin").datepicker({
 
             dateFormat: "mm-dd-yy",
@@ -39,14 +39,14 @@
 
     $(function () {
         $("#PracticeID").change(function (evt) {
-            getPracticeManagerNameForEmployeePage();
+            //getPracticeManagerNameForEmployeePage();
             loadSubPracticeDropDownForEmpPage();
         });
     });
 
     $(function () {
         $("#SubPracticeID").change(function (evt) {
-            getSubPracticeManagerNameForEmployeePage();
+            //getSubPracticeManagerNameForEmployeePage();
         });
     });
 
@@ -162,23 +162,53 @@
                         </td>
                     </tr>
                     <tr>
-                        <td width="20%">
-                            <div class="form-group">
-                                <Label>POD Manager</Label><br />
-                                <text id="txtPracticeManager"></text>
+                        <td colspan="3">
+                            <div class="panel-body">
+                                @Html.AntiForgeryToken()
+                                <table class="table table-striped table-condensed table-bordered">
+                                    <tr>
+                                        <th class="text-center">
+                                            @Html.DisplayNameFor(model => model.PodAllocations.FirstOrDefault().PodName)
+                                        </th>
+                                        <th class="text-center">
+                                            @Html.DisplayNameFor(model => model.PodAllocations.FirstOrDefault().PercentageOfAllocation)
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.DropDownListFor(modelItem => Model.PodID1, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                                        </td>
+                                        <td>
+                                            @Html.EditorFor(modelItem => Model.PodAllocation1)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.DropDownListFor(modelItem => Model.PodID2, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                                        </td>
+                                        <td>
+                                            @Html.EditorFor(modelItem => Model.PodAllocation2)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.DropDownListFor(modelItem => Model.PodID3, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                                        </td>
+                                        <td>
+                                            @Html.EditorFor(modelItem => Model.PodAllocation3)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.DropDownListFor(modelItem => Model.PodID4, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                                        </td>
+                                        <td>
+                                            @Html.EditorFor(modelItem => Model.PodAllocation4)
+                                        </td>
+                                    </tr>
+                                </table>
                             </div>
                         </td>
-                        <td width="2%"></td>
-                        <td width="20%">
-                            <div class="form-group">
-                                <Label>Competency Manager</Label><br />
-                                <text id="txtSubPracticeManager"></text>
-                            </div>
-                        </td>
-                        <td width="2%"></td>
-                        <td></td>
-                        <td width="2%"></td>
-                        <td></td>
                     </tr>
                 </table>
             </div>

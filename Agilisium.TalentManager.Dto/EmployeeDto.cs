@@ -53,5 +53,7 @@ namespace Agilisium.TalentManager.Dto
         public int EmploymentTypeID { get; set; }
 
         public string EmploymentTypeName { get; set; }
+
+        public List<EmployeePodAllocationDto> PodAllocations { get; set; }
     }
 }

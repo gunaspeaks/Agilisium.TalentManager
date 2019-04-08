@@ -129,6 +129,8 @@ namespace Agilisium.TalentManager.Model
 
             return new List<DropDownSubCategory>
             {
+                #region Employment Type
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Yet to Join",
@@ -137,6 +139,11 @@ namespace Agilisium.TalentManager.Model
                     Description = "Yet to Join",
                     IsReserved = true
                 },
+ 
+                #endregion
+
+                #region Country
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "United States",
@@ -157,8 +164,7 @@ namespace Agilisium.TalentManager.Model
                     ShortName = "FR",
                     CategoryID = cnCID,
                     Description = "France",
-                }
-                ,
+                }          ,
                 new DropDownSubCategory
                 {
                     SubCategoryName = "India",
@@ -173,6 +179,8 @@ namespace Agilisium.TalentManager.Model
                     CategoryID = cnCID,
                     Description = "China",
                 }
+
+                #endregion
             };
         }
 
@@ -185,11 +193,11 @@ namespace Agilisium.TalentManager.Model
             int spCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Specialized Partner").CategoryID;
             int cpCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Contract Period").CategoryID;
             int srCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Service Request Status").CategoryID;
-            int cnCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Country").CategoryID;
 
             return new List<DropDownSubCategory>
             {
-                // Business Unit - Sub Categories
+                #region BU Sub Categories
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Business Development",
@@ -215,7 +223,10 @@ namespace Agilisium.TalentManager.Model
                     IsReserved = true
                 },
 
-                // Utilization Codes
+                #endregion
+
+                #region Utilization Codes
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Billable",
@@ -226,10 +237,10 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Shadow",
-                    ShortName = "SHD",
+                    SubCategoryName = "Management Overheads",
+                    ShortName = "MNO",
                     CategoryID = utCID,
-                    Description = "Shadow",
+                    Description = "Management Overheads",
                     IsReserved = true
                 },
                 new DropDownSubCategory
@@ -242,10 +253,10 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Internal",
-                    ShortName = "INT",
+                    SubCategoryName = "Committed buffer",
+                    ShortName = "CMB",
                     CategoryID = utCID,
-                    Description = "Internal",
+                    Description = "Committed buffer",
                     IsReserved = true
                 },
                 new DropDownSubCategory
@@ -258,14 +269,6 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Proposed/Awaiting Start",
-                    ShortName = "PAS",
-                    CategoryID = utCID,
-                    Description = "Proposed/Awaiting Start",
-                    IsReserved = true
-                },
-                new DropDownSubCategory
-                {
                     SubCategoryName = "Not In Payroll",
                     ShortName = "NIP",
                     CategoryID = utCID,
@@ -273,7 +276,10 @@ namespace Agilisium.TalentManager.Model
                     IsReserved = true
                 },
 
-                // Project Type
+                #endregion
+
+                #region Project Type
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Client Billable Project",
@@ -315,7 +321,10 @@ namespace Agilisium.TalentManager.Model
                     IsReserved = true
                 },
 
-                // Employment Type
+                #endregion
+
+                #region Employment Type
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Permanent",
@@ -340,8 +349,11 @@ namespace Agilisium.TalentManager.Model
                     Description = "Contract employee",
                     IsReserved = true
                 },
-    
-                // Specialized Partner
+
+                #endregion
+
+                #region Specialized Partner
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Microsoft",
@@ -390,8 +402,11 @@ namespace Agilisium.TalentManager.Model
                     Description = "Others",
                     IsReserved = true
                 },
-            
-                // Contract Period
+
+                #endregion
+
+                #region Contract Period
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "1 Month",
@@ -489,7 +504,10 @@ namespace Agilisium.TalentManager.Model
                     IsReserved = true
                 },
 
-                // Service Request Status - Sub Categories
+                #endregion
+
+                #region Service Request Status
+
                 new DropDownSubCategory
                 {
                     SubCategoryName = "Email to be Sent",
@@ -546,6 +564,8 @@ namespace Agilisium.TalentManager.Model
                     Description = "Fulfilled",
                     IsReserved = true
                 },
+
+                #endregion
             };
         }
 
@@ -758,7 +778,7 @@ namespace Agilisium.TalentManager.Model
             };
         }
 
-        private static List<SubPractice> GetSubPractices(TalentManagerDataContext  context)
+        private static List<SubPractice> GetSubPractices(TalentManagerDataContext context)
         {
             int awsPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS").PracticeID;
             int hrPID = context.Practices.FirstOrDefault(p => p.PracticeName == "HR").PracticeID;

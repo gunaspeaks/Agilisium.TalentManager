@@ -129,5 +129,10 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.GetAllAccountManagers().ToList();
         }
+
+        public List<EmployeePodAllocationDto> GetPodAllocations(int empID)
+        {
+            return repository.GetPodAllocations(empID).ToList();
+        }
     }
 }

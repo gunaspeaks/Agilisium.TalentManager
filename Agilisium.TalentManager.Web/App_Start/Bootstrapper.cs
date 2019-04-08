@@ -1,8 +1,10 @@
 ﻿using Agilisium.TalentManager.ReportingService;
 using Agilisium.TalentManager.Repository.Repositories;
 using Agilisium.TalentManager.Service.Concreate;
+using Agilisium.TalentManager.Web.Models;
 using Autofac;
 using Autofac.Integration.Mvc;
+using Microsoft.AspNet.Identity;
 using System.Linq;
 using System.Reflection;
 using System.Web.Mvc;
@@ -36,6 +38,10 @@ namespace Agilisium.TalentManager.Web.App_Start
             builder.RegisterAssemblyTypes(typeof(ContractorRequestProcessor).Assembly)
                 .Where(t => t.Name.EndsWith("Processor"))
                 .AsImplementedInterfaces().InstancePerRequest();
+
+            builder.RegisterType<ApplicationUserStore>().As<IUserStore<ApplicationUser>>().InstancePerRequest();
+            builder.RegisterType<ApplicationUserManager>().AsSelf().InstancePerRequest();
+            builder.RegisterType<ApplicationSignInManager>().AsSelf().InstancePerRequest();
 
             // Server Utilities
             //builder.RegisterAssemblyTypes(typeof(EmailHandler).Assembly)

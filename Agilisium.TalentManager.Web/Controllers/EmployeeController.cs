@@ -166,7 +166,14 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             EmployeeModel emp = new EmployeeModel()
             {
-                DateOfJoin = DateTime.Now
+                DateOfJoin = DateTime.Now,
+                PodAllocations = new List<EmployeePodAllocationModel>
+                {
+                    new EmployeePodAllocationModel(),
+                    new EmployeePodAllocationModel(),
+                    new EmployeePodAllocationModel(),
+                    new EmployeePodAllocationModel()
+                }
             };
 
             try
@@ -203,6 +210,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                         return View(employee);
                     }
 
+                    VerifyAndUpdatePodAllocationsInModel(employee);
                     EmployeeDto employeeDto = Mapper.Map<EmployeeModel, EmployeeDto>(employee);
                     empService.Create(employeeDto);
                     DisplaySuccessMessage("New Employee details have been stored successfully");
@@ -240,6 +248,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                 EmployeeDto emp = empService.GetEmployee(id.Value);
                 GetSubPracticeList(emp.PracticeID);
                 empModel = Mapper.Map<EmployeeDto, EmployeeModel>(emp);
+                List<EmployeePodAllocationDto> allocationsDto = empService.GetPodAllocations(id.Value);
+                List<EmployeePodAllocationModel> allocations = Mapper.Map<List<EmployeePodAllocationDto>, List<EmployeePodAllocationModel>>(allocationsDto);
+                ViewBag.PodAllocations = allocations;
             }
             catch (Exception exp)
             {
@@ -326,6 +337,34 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             EmployeeDto emp = empService.GetEmployee(id);
             return Json(emp);
+        }
+
+        public PartialViewResult LoadPodAllocations(int id = -1)
+        {
+            List<EmployeePodAllocationModel> allocations = null;
+
+            try
+            {
+                GetPracticeList();
+                if (id < 0)
+                {
+                    allocations = new List<EmployeePodAllocationModel>
+                    {
+                        new EmployeePodAllocationModel
+                        {
+                            AllocationEntryID=0
+                        }
+                    };
+                }
+
+                List<EmployeePodAllocationDto> allocationsDto = empService.GetPodAllocations(id);
+                allocations = Mapper.Map<List<EmployeePodAllocationDto>, List<EmployeePodAllocationModel>>(allocationsDto);
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+            return PartialView(allocations);
         }
 
         private IEnumerable<EmployeeModel> GetEmployees(string searchText, int pageNo = 1)
@@ -453,6 +492,45 @@ namespace Agilisium.TalentManager.Web.Controllers
             }
 
             ViewBag.ReportingManagerListItems = empDDList;
+        }
+
+        private void VerifyAndUpdatePodAllocationsInModel(EmployeeModel employee)
+        {
+            employee.PodAllocations = new List<EmployeePodAllocationModel>
+            {
+                new EmployeePodAllocationModel
+                {
+                    PercentageOfAllocation = employee.PodAllocation1,
+                    PodID = employee.PodID1
+                }
+            };
+
+            if (employee.PodID2.HasValue && employee.PodAllocation2.HasValue)
+            {
+                employee.PodAllocations.Add(new EmployeePodAllocationModel
+                {
+                    PercentageOfAllocation = employee.PodAllocation2.Value,
+                    PodID = employee.PodID2.Value
+                });
+            }
+
+            if (employee.PodID3.HasValue && employee.PodAllocation3.HasValue)
+            {
+                employee.PodAllocations.Add(new EmployeePodAllocationModel
+                {
+                    PercentageOfAllocation = employee.PodAllocation3.Value,
+                    PodID = employee.PodID3.Value
+                });
+            }
+
+            if (employee.PodID4.HasValue && employee.PodAllocation4.HasValue)
+            {
+                employee.PodAllocations.Add(new EmployeePodAllocationModel
+                {
+                    PercentageOfAllocation = employee.PodAllocation4.Value,
+                    PodID = employee.PodID4.Value
+                });
+            }
         }
     }
 }

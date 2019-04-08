@@ -10,7 +10,7 @@ namespace Agilisium.TalentManager.Model.Configuration
         {
             // Key
             HasKey(e => e.EmployeeEntryID);
-            
+
             Property(e => e.EmployeeEntryID).HasColumnName("EmployeeEntryID").HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(e => e.DateOfJoin).HasColumnName("DateOfJoin").IsRequired();
             Property(e => e.EmailID).HasColumnName("EmailID").HasMaxLength(100).IsOptional();

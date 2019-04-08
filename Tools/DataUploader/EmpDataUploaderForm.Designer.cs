@@ -37,15 +37,15 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.rawTab = new System.Windows.Forms.TabPage();
             this.rawDataGrid = new System.Windows.Forms.DataGridView();
-            this.uploadButton = new System.Windows.Forms.Button();
-            this.extractedDataGrid = new System.Windows.Forms.DataGridView();
             this.extractedTab = new System.Windows.Forms.TabPage();
+            this.extractedDataGrid = new System.Windows.Forms.DataGridView();
+            this.uploadButton = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.rawTab.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.rawDataGrid)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.extractedDataGrid)).BeginInit();
             this.extractedTab.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.extractedDataGrid)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -53,9 +53,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 24);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(103, 16);
+            this.label1.Size = new System.Drawing.Size(111, 16);
             this.label1.TabIndex = 0;
-            this.label1.Text = "CSV File Path";
+            this.label1.Text = "Excel File Path";
             // 
             // fileNameText
             // 
@@ -101,9 +101,10 @@
             // 
             this.msgStatusLabel.BackColor = System.Drawing.Color.SpringGreen;
             this.msgStatusLabel.Name = "msgStatusLabel";
-            this.msgStatusLabel.Size = new System.Drawing.Size(1052, 25);
+            this.msgStatusLabel.Size = new System.Drawing.Size(849, 25);
             this.msgStatusLabel.Spring = true;
             this.msgStatusLabel.Text = "Ready";
+            this.msgStatusLabel.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // tabControl1
             // 
@@ -142,16 +143,16 @@
             this.rawDataGrid.Size = new System.Drawing.Size(829, 340);
             this.rawDataGrid.TabIndex = 3;
             // 
-            // uploadButton
+            // extractedTab
             // 
-            this.uploadButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.uploadButton.Location = new System.Drawing.Point(747, 19);
-            this.uploadButton.Name = "uploadButton";
-            this.uploadButton.Size = new System.Drawing.Size(108, 23);
-            this.uploadButton.TabIndex = 8;
-            this.uploadButton.Text = "&Upload Data";
-            this.uploadButton.UseVisualStyleBackColor = true;
-            this.uploadButton.Click += new System.EventHandler(this.UploadButton_Click);
+            this.extractedTab.Controls.Add(this.extractedDataGrid);
+            this.extractedTab.Location = new System.Drawing.Point(4, 28);
+            this.extractedTab.Name = "extractedTab";
+            this.extractedTab.Padding = new System.Windows.Forms.Padding(3);
+            this.extractedTab.Size = new System.Drawing.Size(835, 346);
+            this.extractedTab.TabIndex = 1;
+            this.extractedTab.Text = "Extracted Data";
+            this.extractedTab.UseVisualStyleBackColor = true;
             // 
             // extractedDataGrid
             // 
@@ -165,16 +166,16 @@
             this.extractedDataGrid.Size = new System.Drawing.Size(829, 340);
             this.extractedDataGrid.TabIndex = 4;
             // 
-            // extractedTab
+            // uploadButton
             // 
-            this.extractedTab.Controls.Add(this.extractedDataGrid);
-            this.extractedTab.Location = new System.Drawing.Point(4, 28);
-            this.extractedTab.Name = "extractedTab";
-            this.extractedTab.Padding = new System.Windows.Forms.Padding(3);
-            this.extractedTab.Size = new System.Drawing.Size(835, 346);
-            this.extractedTab.TabIndex = 1;
-            this.extractedTab.Text = "Extracted Data";
-            this.extractedTab.UseVisualStyleBackColor = true;
+            this.uploadButton.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.uploadButton.Location = new System.Drawing.Point(747, 19);
+            this.uploadButton.Name = "uploadButton";
+            this.uploadButton.Size = new System.Drawing.Size(108, 23);
+            this.uploadButton.TabIndex = 8;
+            this.uploadButton.Text = "&Upload Data";
+            this.uploadButton.UseVisualStyleBackColor = true;
+            this.uploadButton.Click += new System.EventHandler(this.UploadButton_Click);
             // 
             // EmpDataUploaderForm
             // 
@@ -204,8 +205,8 @@
             this.tabControl1.ResumeLayout(false);
             this.rawTab.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.rawDataGrid)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.extractedDataGrid)).EndInit();
             this.extractedTab.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.extractedDataGrid)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 

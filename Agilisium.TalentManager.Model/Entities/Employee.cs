@@ -38,5 +38,7 @@ namespace Agilisium.TalentManager.Model.Entities
         public int? UtilizationTypeID { get; set; }
 
         public int EmploymentTypeID { get; set; }
+
+        public ICollection<EmployeePodAllocation> PoDAllocations { get; set; }
     }
 }

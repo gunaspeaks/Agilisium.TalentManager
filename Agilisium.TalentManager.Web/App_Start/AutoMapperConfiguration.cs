@@ -10,8 +10,8 @@ namespace Agilisium.TalentManager.Web.App_Start
         {
             Mapper.Initialize(x =>
             {
-                //x.AddProfile(new DomainToViewModelMappingProfile());
-                //x.AddProfile(new ViewModelToDomainMappingProfile());
+                x.AddProfile(new DomainToViewModelMappingProfile());
+                x.AddProfile(new ViewModelToDomainMappingProfile());
             });
         }
     }
@@ -29,6 +29,7 @@ namespace Agilisium.TalentManager.Web.App_Start
             CreateMap<SubPracticeDto, SubPracticeModel>();
             CreateMap<ProjectDto, ProjectModel>();
             CreateMap<ProjectAllocationDto, AllocationModel>();
+            CreateMap<EmployeePodAllocationDto, EmployeePodAllocationModel>();
         }
     }
 
@@ -45,6 +46,7 @@ namespace Agilisium.TalentManager.Web.App_Start
             CreateMap<SubPracticeModel, SubPracticeDto>();
             CreateMap<ProjectModel, ProjectDto>();
             CreateMap<AllocationModel, ProjectAllocationDto>();
+            CreateMap<EmployeePodAllocationModel, EmployeePodAllocationDto>();
         }
     }
 }
