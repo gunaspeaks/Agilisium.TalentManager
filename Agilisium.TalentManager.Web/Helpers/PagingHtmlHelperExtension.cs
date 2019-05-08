@@ -33,7 +33,7 @@ namespace Agilisium.TalentManager.Web.Helpers
 
         public static MvcHtmlString AddDropDownPagination(this HtmlHelper htmlHelper, PagingInfo pagingInfo, Func<int, string> url, bool isPagingEnabled = true)
         {
-            if (isPagingEnabled == false || pagingInfo == null)
+            if (isPagingEnabled == false || pagingInfo == null || pagingInfo.TotalPageCount <= 1)
             {
                 return MvcHtmlString.Create(string.Empty);
             }
@@ -48,6 +48,11 @@ namespace Agilisium.TalentManager.Web.Helpers
             }
             firstLink.InnerHtml = "First";
             firstLink.AddCssClass("btn btn-default");
+            if (pagingInfo.TotalPageCount <= 1 || pagingInfo.CurentPageNo == 1)
+            {
+                firstLink.MergeAttribute("disabled", "disabled");
+            }
+
             htmlStr.Append(firstLink.ToString());
 
             TagBuilder previousLink = new TagBuilder("a");
@@ -59,8 +64,14 @@ namespace Agilisium.TalentManager.Web.Helpers
             {
                 previousLink.MergeAttribute("href", url(pagingInfo.CurentPageNo - 1));
             }
+
             previousLink.InnerHtml = "Prev.";
             previousLink.AddCssClass("btn btn-default");
+            if (pagingInfo.TotalPageCount <= 1 || pagingInfo.CurentPageNo == 1)
+            {
+                previousLink.MergeAttribute("disabled", "disabled");
+            }
+
             htmlStr.Append(previousLink.ToString());
 
             TagBuilder currentLink = new TagBuilder("text");
@@ -82,6 +93,11 @@ namespace Agilisium.TalentManager.Web.Helpers
             }
             nextLink.InnerHtml = "Next";
             nextLink.AddCssClass("btn btn-default");
+            if (pagingInfo.TotalPageCount <= 1 || pagingInfo.CurentPageNo == pagingInfo.TotalPageCount)
+            {
+                nextLink.MergeAttribute("disabled", "disabled");
+            }
+
             htmlStr.Append(nextLink.ToString());
 
             TagBuilder lastLink = new TagBuilder("a");
@@ -93,6 +109,11 @@ namespace Agilisium.TalentManager.Web.Helpers
             }
             lastLink.InnerHtml = "Last";
             lastLink.AddCssClass("btn btn-default");
+            if (pagingInfo.TotalPageCount <= 1 || pagingInfo.CurentPageNo == pagingInfo.TotalPageCount)
+            {
+                lastLink.MergeAttribute("disabled", "disabled");
+            }
+
             htmlStr.Append(lastLink.ToString());
 
             return MvcHtmlString.Create(htmlStr.ToString());

@@ -32,5 +32,27 @@ namespace Agilisium.TalentManager.Service.Abstract
         int TotalRecordsCount();
 
         IEnumerable<CustomAllocationDto> GetAllocatedProjectsByEmployeeID(int employeeID);
+
+        int GetTotalRecordsCountForAllocationHistory();
+
+        List<ProjectAllocationDto> GetAllocationHistory(int pageSize = -1, int pageNo = -1);
+
+        int TotalRecordsCount(string filterType, int filterValueID);
+
+        List<ProjectAllocationDto> GetAll(string filterType, int filterValueID, int pageSize = -1, int pageNo = -1);
+
+        bool AnyActiveBillableAllocations(int employeeID, int allocationID);
+
+        bool AnyActiveAllocationInBenchProject(int employeeID);
+
+        void EndAllocation(int allocationID);
+
+        List<ManagerWiseAllocationDto> GetManagerWiseAllocationSummary();
+
+        List<ProjectAllocationDto> GetAllAllocationsByProjectID(int projectID);
+
+        List<BillabilityWiseAllocationSummaryDto> GetBillabilityWiseAllocationSummary();
+
+        List<BillabilityWiseAllocationDetailDto> GetBillabilityWiseAllocationDetail(int allocationTypeID);
     }
 }

@@ -47,24 +47,32 @@ namespace Agilisium.TalentManager.Web.Models
         public DateTime StartDate { get; set; }
 
         [DisplayName("End Date")]
+        [Required(ErrorMessage = "Project End Date is required")]
         //[DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", ApplyFormatInEditMode = true)]
         //[DataType(DataType.Date)]
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         [DataType(DataType.MultilineText)]
         public string Remarks { get; set; }
 
-        [DisplayName("Practice")]
-        [Required(ErrorMessage = "Please select a Practice")]
+        [DisplayName("POD")]
+        [Required(ErrorMessage = "Please select a POD")]
         public int PracticeID { get; set; }
 
-        [DisplayName("Practice")]
+        [DisplayName("POD")]
         public string PracticeName { get; set; }
 
-        [DisplayName("Sub Practice")]
+        [DisplayName("Business Unit")]
+        [Required(ErrorMessage = "Please select a Business Unit")]
+        public int BusinessUnitID { get; set; }
+
+        [DisplayName("Business Unit")]
+        public string BusinessUnitName { get; set; }
+
+        [DisplayName("Competence")]
         public int? SubPracticeID { get; set; }
 
-        [DisplayName("Sub Practice")]
+        [DisplayName("Competence")]
         public string SubPracticeName { get; set; }
 
         [DisplayName("Is SoW Available")]
@@ -81,10 +89,12 @@ namespace Agilisium.TalentManager.Web.Models
         public DateTime? SowEndDate { get; set; }
 
         [DisplayName("Account")]
-        public int? ProjectAccountID { get; set; }
+        [Required(ErrorMessage = "Please select an Account")]
+        public int ProjectAccountID { get; set; }
 
         [DisplayName("Account")]
         public string AccountName { get; set; }
 
+        public bool IsReserved { get; set; }
     }
 }

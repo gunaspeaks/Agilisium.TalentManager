@@ -61,5 +61,8 @@
   <ItemGroup>
     <Build Include="dbo.GetSubPracticeWiseHeadCount.sql" />
     <Build Include="GetVendorsCountBasedOnSpcializedPartner.sql" />
+    <Build Include="GetManagerWiseProjectsSummary.sql" />
+    <Build Include="GetBillabilityWiseSummary.sql" />
+    <Build Include="GetBillabilityWiseDetails.sql" />
   </ItemGroup>
 </Project>

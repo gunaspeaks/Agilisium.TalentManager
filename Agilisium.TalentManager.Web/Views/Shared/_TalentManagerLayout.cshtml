@@ -51,7 +51,7 @@
                         <li>@Html.ActionLink("Employees", "List", "Employee")</li>
                     }
 
-                    @if (Request.Url.ToString().ToLower().Contains("account"))
+                    @if (Request.Url.ToString().ToLower().Contains("accounts"))
                     {
                         <li>@Html.ActionLink("Accounts", "List", "Accounts", new { @style = "color:GreenYellow" })</li>
                     }
@@ -60,7 +60,7 @@
                         <li>@Html.ActionLink("Accounts", "List", "Accounts")</li>
                     }
 
-                    @if (Request.Url.ToString().ToLower().Contains("project"))
+                    @if (Request.Url.ToString().ToLower().Contains("project") && Request.Url.ToString().ToLower().Contains("managerwiseprojects") == false)
                     {
                         <li>@Html.ActionLink("Projects", "List", "Project", new { @style = "color:GreenYellow" })</li>
                     }
@@ -69,7 +69,9 @@
                         <li>@Html.ActionLink("Projects", "List", "Project")</li>
                     }
 
-                    @if (Request.Url.ToString().ToLower().Contains("allocation"))
+                    @if (Request.Url.ToString().ToLower().Contains("allocation") && Request.Url.ToString().ToLower().Contains("managerwiseallocations") == false
+                        && Request.Url.ToString().ToLower().Contains("billabilitywiseallocationdetail") == false
+                        && Request.Url.ToString().ToLower().Contains("billabilitywiseallocationsummary") == false)
                     {
                         <li>@Html.ActionLink("Allocations", "List", "Allocation", new { @style = "color:GreenYellow" })</li>
                     }
@@ -77,7 +79,7 @@
                     {
                         <li>@Html.ActionLink("Allocations", "List", "Allocation")</li>
                     }
-
+                    //
                     @if (Request.Url.ToString().ToLower().Contains("category") && !Request.Url.ToString().ToLower().Contains("subcategory"))
                     {
                         <li>@Html.ActionLink("Categories", "List", "Category", new { @style = "color:GreenYellow" })</li>
@@ -114,8 +116,26 @@
                         <li>@Html.ActionLink("Competencies", "List", "SubPractice")</li>
                     }
 
+                    @*<li class="dropdown">
+                <a href="#" data-toggle="dropdown" style="font-size:small;" class="dropdown-toggle">Reports <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                    <li>@Html.ActionLink("Manager-Wise Allocation Report", "ManagerWiseAllocations", "Reports")</li>
+                    <li>@Html.ActionLink("Billability-Wise Allocation Report", "Index", "Reports")</li>
+                    @*<li>@Html.ActionLink("Practices", "Index", "Practice")</li>
+                    <li>@Html.ActionLink("Sub Practices", "Index", "SubPractice")</li>
+        </ul>
+        </li>*@
+                    @if (Request.Url.ToString().ToLower().Contains("reports"))
+                    {
+                        <li>@Html.ActionLink("Reports", "Index", "Reports", new { @style = "color:GreenYellow" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Reports", "Index", "Reports")</li>
+                    }
+
                 </ul>
-                @Html.Partial("_LoginPartial")
+                @*@Html.Partial("_LoginPartial")*@
             </div>
         </div>
     </div>

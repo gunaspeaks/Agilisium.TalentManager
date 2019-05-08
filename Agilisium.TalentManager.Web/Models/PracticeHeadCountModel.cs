@@ -10,6 +10,7 @@ namespace Agilisium.TalentManager.Web.Models
     {
         public int PracticeID { get; set; }
 
+        [DisplayName("POD")]
         public string Practice { get; set; }
 
         [DisplayName("Head Count")]

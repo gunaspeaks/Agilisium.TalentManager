@@ -23,7 +23,7 @@ namespace Agilisium.TalentManager.Model.Entities
 
         public int PracticeID { get; set; }
 
-        public int? SubPracticeID { get; set; }
+        public int SubPracticeID { get; set; }
 
         public DateTime DateOfJoin { get; set; }
 
@@ -38,7 +38,5 @@ namespace Agilisium.TalentManager.Model.Entities
         public int? UtilizationTypeID { get; set; }
 
         public int EmploymentTypeID { get; set; }
-
-        public ICollection<EmployeePodAllocation> PoDAllocations { get; set; }
     }
 }

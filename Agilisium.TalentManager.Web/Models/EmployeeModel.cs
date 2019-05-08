@@ -7,11 +7,6 @@ namespace Agilisium.TalentManager.Web.Models
 {
     public class EmployeeModel : ViewModelBase
     {
-        public EmployeeModel()
-        {
-            PodAllocations = new List<EmployeePodAllocationModel>();
-        }
-
         public int EmployeeEntryID { get; set; }
 
         [DisplayName("Employee ID")]
@@ -49,14 +44,15 @@ namespace Agilisium.TalentManager.Web.Models
         public string PracticeName { get; set; }
 
         [DisplayName("Competency")]
-        public int? SubPracticeID { get; set; }
+        [Required(ErrorMessage = "Please select a Competency")]
+        public int SubPracticeID { get; set; }
 
         [DisplayName("Competency")]
         public string SubPracticeName { get; set; }
 
         [DisplayName("Date of Join")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Date of Join is required")]
-        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}", NullDisplayText = "")]
+        [Required(ErrorMessage = "Date of Join is required")]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yyyy}")]
         //[DataType(DataType.Date)]
         public DateTime DateOfJoin { get; set; }
 
@@ -66,7 +62,7 @@ namespace Agilisium.TalentManager.Web.Models
         public DateTime? LastWorkingDay { get; set; }
 
         [DisplayName("Primary Skills")]
-        [Required(AllowEmptyStrings = false, ErrorMessage = "Primary Skills is required")]
+        [Required(ErrorMessage = "Primary Skills is required")]
         [MaxLength(100, ErrorMessage = "Primary Skills should not exceed 100 characters")]
         public string PrimarySkills { get; set; }
 
@@ -98,35 +94,5 @@ namespace Agilisium.TalentManager.Web.Models
 
         [DisplayName("Employment Type")]
         public string EmploymentTypeName { get; set; }
-
-        public List<EmployeePodAllocationModel> PodAllocations { get; set; }
-
-        #region POD Allocations
-
-        [DisplayName("POD Name")]
-        public int PodID1 { get; set; }
-
-        [DisplayName("Allocation %")]
-        public int PodAllocation1 { get; set; }
-
-        [DisplayName("POD Name")]
-        public int? PodID2 { get; set; }
-
-        [DisplayName("Allocation %")]
-        public int? PodAllocation2 { get; set; }
-
-        [DisplayName("POD Name")]
-        public int? PodID3 { get; set; }
-
-        [DisplayName("Allocation %")]
-        public int? PodAllocation3 { get; set; }
-
-        [DisplayName("POD Name")]
-        public int? PodID4 { get; set; }
-
-        [DisplayName("Allocation %")]
-        public int? PodAllocation4 { get; set; }
-
-        #endregion
     }
 }

@@ -2,6 +2,7 @@
 using Agilisium.TalentManager.Dto;
 using Agilisium.TalentManager.Service.Abstract;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Agilisium.TalentManager.Service.Concreate
 {
@@ -72,6 +73,61 @@ namespace Agilisium.TalentManager.Service.Concreate
         public IEnumerable<CustomAllocationDto> GetAllocatedProjectsByEmployeeID(int employeeID)
         {
             return repository.GetAllocatedProjectsByEmployeeID(employeeID);
+        }
+
+        public List<ProjectAllocationDto> GetAllocationHistory(int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetAllocationHistory(pageSize, pageNo).ToList();
+        }
+
+        public int GetTotalRecordsCountForAllocationHistory()
+        {
+            return repository.GetTotalRecordsCountForAllocationHistory();
+        }
+
+        public List<ProjectAllocationDto> GetAll(string filterType, int filterValueID, int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetAll(filterType, filterValueID, pageSize, pageNo).ToList();
+        }
+
+        public int TotalRecordsCount(string filterType, int filterValueID)
+        {
+            return repository.TotalRecordsCount(filterType, filterValueID);
+        }
+
+        public bool AnyActiveBillableAllocations(int employeeID, int allocationID)
+        {
+            return repository.AnyActiveBillableAllocations(employeeID, allocationID);
+        }
+
+        public bool AnyActiveAllocationInBenchProject(int employeeID)
+        {
+            return repository.AnyActiveAllocationInBenchProject(employeeID);
+        }
+
+        public void EndAllocation(int allocationID)
+        {
+            repository.EndAllocation(allocationID);
+        }
+
+        public List<ManagerWiseAllocationDto> GetManagerWiseAllocationSummary()
+        {
+            return repository.GetManagerWiseAllocationSummary().ToList();
+        }
+
+        public List<ProjectAllocationDto> GetAllAllocationsByProjectID(int projectID)
+        {
+            return repository.GetAllAllocationsByProjectID(projectID).ToList();
+        }
+
+        public List<BillabilityWiseAllocationSummaryDto> GetBillabilityWiseAllocationSummary()
+        {
+            return repository.GetBillabilityWiseAllocationSummary().ToList();
+        }
+
+        public List<BillabilityWiseAllocationDetailDto> GetBillabilityWiseAllocationDetail(int allocationTypeID)
+        {
+            return repository.GetBillabilityWiseAllocationDetail(allocationTypeID).ToList();
         }
     }
 }

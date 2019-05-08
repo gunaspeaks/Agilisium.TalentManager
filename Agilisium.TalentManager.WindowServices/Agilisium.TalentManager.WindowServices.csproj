@@ -61,6 +61,12 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TalentManagerUpdater.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="TalentManagerUpdater.Designer.cs">
+      <DependentUpon>TalentManagerUpdater.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -68,6 +74,12 @@
   <ItemGroup>
     <EmbeddedResource Include="ProjectInstaller.resx">
       <DependentUpon>ProjectInstaller.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TalentManagerEmailService.resx">
+      <DependentUpon>TalentManagerEmailService.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TalentManagerUpdater.resx">
+      <DependentUpon>TalentManagerUpdater.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

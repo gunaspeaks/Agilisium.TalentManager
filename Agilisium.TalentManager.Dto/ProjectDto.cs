@@ -28,11 +28,15 @@ namespace Agilisium.TalentManager.Dto
 
         public DateTime StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public string Remarks { get; set; }
 
-        public int? PracticeID { get; set; }
+        public int BusinessUnitID { get; set; }
+
+        public string BusinessUnitName { get; set; }
+
+        public int PracticeID { get; set; }
 
         public string PracticeName { get; set; }
 
@@ -46,8 +50,10 @@ namespace Agilisium.TalentManager.Dto
 
         public DateTime? SowEndDate { get; set; }
 
-        public int? ProjectAccountID { get; set; }
+        public int ProjectAccountID { get; set; }
 
         public string AccountName { get; set; }
+
+        public bool IsReserved { get; set; }
     }
 }

@@ -41,14 +41,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BillabilityWiseAllocationDetailDto.cs" />
+    <Compile Include="BillabilityWiseAllocationSummaryDto.cs" />
     <Compile Include="ContractorDto.cs" />
     <Compile Include="CustomAllocationDto.cs" />
     <Compile Include="DropDownCategoryDto.cs" />
     <Compile Include="DropDownSubCategoryDto.cs" />
     <Compile Include="DtoBase.cs" />
     <Compile Include="EmployeeDto.cs" />
-    <Compile Include="EmployeePodAllocationDto.cs" />
     <Compile Include="EmployeeWidgetDto.cs" />
+    <Compile Include="ManagerWiseAllocationDto.cs" />
     <Compile Include="PracticeDto.cs" />
     <Compile Include="PracticeHeadCountDto.cs" />
     <Compile Include="ProjectAccountDto.cs" />

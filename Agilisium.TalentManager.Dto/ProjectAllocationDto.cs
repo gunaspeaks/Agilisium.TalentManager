@@ -14,9 +14,9 @@ namespace Agilisium.TalentManager.Dto
 
         public string EmployeeName { get; set; }
 
-        public DateTime? AllocationStartDate { get; set; }
+        public DateTime AllocationStartDate { get; set; }
 
-        public DateTime? AllocationEndDate { get; set; }
+        public DateTime AllocationEndDate { get; set; }
 
         public int AllocationTypeID { get; set; }
 
@@ -29,5 +29,9 @@ namespace Agilisium.TalentManager.Dto
         public string Remarks { get; set; }
 
         public int PercentageOfAllocation { get; set; }
+
+        public string AccountName { get; set; }
+
+        public bool IsActive { get; set; }
     }
 }

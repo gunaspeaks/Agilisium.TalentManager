@@ -34,22 +34,29 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Project
-        public ActionResult List(int page = 1)
+        public ActionResult List(string filterType, string filterValue, int page = 1)
         {
-            ProjectViewModel viewModel = new ProjectViewModel();
+            ProjectViewModel viewModel = new ProjectViewModel()
+            {
+                FilterType = filterType,
+                FilterValue = filterValue
+            };
 
             try
             {
+                InitializeListPage(viewModel);
+
+                int.TryParse(filterValue, out int filterValueID);
                 viewModel.PagingInfo = new PagingInfo
                 {
-                    TotalRecordsCount = projectService.TotalRecordsCount(),
+                    TotalRecordsCount = projectService.TotalRecordsCount(filterType, filterValueID),
                     RecordsPerPage = RecordsPerPage,
                     CurentPageNo = page
                 };
 
                 if (viewModel.PagingInfo.TotalRecordsCount > 0)
                 {
-                    viewModel.Projects = GetProjects(page);
+                    viewModel.Projects = GetProjects(filterType, filterValueID, page);
                 }
                 else
                 {
@@ -69,7 +76,8 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             ProjectModel project = new ProjectModel()
             {
-                StartDate = DateTime.Now
+                StartDate = DateTime.Now,
+                EndDate = DateTime.Now.AddDays(15)
             };
 
             try
@@ -136,13 +144,13 @@ namespace Agilisium.TalentManager.Web.Controllers
                 if (!id.HasValue)
                 {
                     DisplayWarningMessage("Looks like, the ID is missing in your request");
-                    RedirectToAction("List");
+                    return RedirectToAction("List");
                 }
 
                 if (!projectService.Exists(id.Value))
                 {
                     DisplayWarningMessage("Sorry, we couldn't find the Project details");
-                    RedirectToAction("List");
+                    return RedirectToAction("List");
                 }
 
                 ProjectDto emp = projectService.GetByID(id.Value);
@@ -203,11 +211,16 @@ namespace Agilisium.TalentManager.Web.Controllers
             if (!id.HasValue)
             {
                 DisplayWarningMessage("Looks like, the Project ID is missing in your request");
-                RedirectToAction("List");
+                return RedirectToAction("List");
             }
 
             try
             {
+                if(projectService.IsReservedEntry(id.Value))
+                {
+                    DisplayWarningMessage("Hey, why do you want to delete a system or reserved project. Please check with the system administrator for your needs.");
+                    return RedirectToAction("List");
+                }
                 projectService.Delete(new ProjectDto { ProjectID = id.Value });
                 DisplaySuccessMessage("Project details have been deleted successfully");
             }
@@ -261,9 +274,39 @@ namespace Agilisium.TalentManager.Web.Controllers
             return res;
         }
 
-        private IEnumerable<ProjectModel> GetProjects(int pageNo)
+        [HttpPost]
+        public JsonResult LoadFilterValueListItems(string filterType)
         {
-            IEnumerable<ProjectDto> projects = projectService.GetAll(RecordsPerPage, pageNo);
+            List<SelectListItem> filterValues = new List<SelectListItem>();
+            switch (filterType)
+            {
+                case "Business Unit":
+                    filterValues = GetBuList();
+                    break;
+                case "Account":
+                    filterValues = GetAllAccountsList();
+                    break;
+                case "Project Type":
+                    filterValues = GetProjectTypeList();
+                    break;
+                case "POD":
+                    filterValues = GetPracticeList();
+                    break;
+            }
+
+
+            filterValues.Insert(0, new SelectListItem
+            {
+                Text = "Please Select",
+                Value = "0",
+            });
+            Session["FilterValueListItems"] = filterValues;
+            return Json(filterValues);
+        }
+
+        private IEnumerable<ProjectModel> GetProjects(string filterType, int filterValue, int pageNo)
+        {
+            IEnumerable<ProjectDto> projects = projectService.GetAll(filterType, filterValue, RecordsPerPage, pageNo);
             IEnumerable<ProjectModel> projectModels = Mapper.Map<IEnumerable<ProjectDto>, IEnumerable<ProjectModel>>(projects);
 
             return projectModels;
@@ -272,20 +315,53 @@ namespace Agilisium.TalentManager.Web.Controllers
         private void InitializePageData()
         {
             ViewData["IsNewProject"] = true;
-            PrepareSubCategoriesDDItems();
-            GetAllManagersList();
-            GetAllAccountsList();
+            ViewBag.BuListItems = GetBuList();
+            ViewBag.ProjectTypeListItems = GetProjectTypeList();
+
             ViewBag.PracticeListItems = GetPracticeList();
+            GetAllManagersList();
+            ViewBag.AccountsListItems = GetAllAccountsList();
             ViewBag.SubPracticeListItems = new List<SelectListItem>
             {
                 new SelectListItem{Text="Please Select", Value="0"}
             };
         }
 
-        private void PrepareSubCategoriesDDItems()
+        private void InitializeListPage(ProjectViewModel viewModel)
+        {
+            viewModel.FilterTypeDropDownItems = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "POD",
+                    Value = "POD"
+                },
+                new SelectListItem
+                {
+                    Text = "Account",
+                    Value = "Account"
+                },
+                new SelectListItem
+                {
+                    Text = "Business Unit",
+                    Value = "Business Unit"
+                },
+                new SelectListItem
+                {
+                    Text = "Project Type",
+                    Value = "Project Type"
+                }
+            };
+
+            if (string.IsNullOrEmpty(viewModel.FilterType) == false && Session["FilterValueListItems"] != null)
+            {
+                viewModel.FilterValueDropDownItems = (List<SelectListItem>)Session["FilterValueListItems"];
+            }
+        }
+
+        private List<SelectListItem> GetProjectTypeList()
         {
             IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetAll();
-
             List<SelectListItem> projectTypeItems = (from c in buList
                                                      orderby c.SubCategoryName
                                                      where c.CategoryID == (int)CategoryType.ProjectType
@@ -295,10 +371,25 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                          Value = c.SubCategoryID.ToString()
                                                      }).ToList();
 
-            ViewBag.ProjectTypeListItems = projectTypeItems;
+            return projectTypeItems;
         }
 
-        private List<SelectListItem> GetPracticeList()
+        private List<SelectListItem> GetBuList()
+        {
+            IEnumerable<DropDownSubCategoryDto> buList = subCategoryService.GetAll();
+            List<SelectListItem> buListItems = (from c in buList
+                                                orderby c.SubCategoryName
+                                                where c.CategoryID == (int)CategoryType.BusinessUnit
+                                                select new SelectListItem
+                                                {
+                                                    Text = c.SubCategoryName,
+                                                    Value = c.SubCategoryID.ToString()
+                                                }).ToList();
+
+            return buListItems;
+        }
+
+        public List<SelectListItem> GetPracticeList()
         {
             List<PracticeDto> practices = practiceService.GetPractices().ToList();
             List<SelectListItem> practiceItems = (from p in practices
@@ -318,14 +409,14 @@ namespace Agilisium.TalentManager.Web.Controllers
             List<SelectListItem> empDDList = (from e in employees
                                               select new SelectListItem
                                               {
-                                                  Text = $"{e.LastName}, {e.FirstName}",
+                                                  Text = $"{e.FirstName} {e.LastName}",
                                                   Value = e.EmployeeEntryID.ToString()
-                                              }).ToList();
+                                              }).OrderBy(i => i.Text).ToList();
 
             ViewBag.ProjectManagerListItems = empDDList;
         }
 
-        private void GetAllAccountsList()
+        private List<SelectListItem> GetAllAccountsList()
         {
             List<ProjectAccountDto> accounts = accountsService.GetAll();
 
@@ -336,7 +427,7 @@ namespace Agilisium.TalentManager.Web.Controllers
                                                   Value = e.AccountID.ToString()
                                               }).ToList();
 
-            ViewBag.AccountsListItems = accDDList;
+            return accDDList;
         }
     }
 }

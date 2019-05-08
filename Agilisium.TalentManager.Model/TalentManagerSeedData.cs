@@ -1,4 +1,5 @@
 ﻿using Agilisium.TalentManager.Model.Entities;
+using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
@@ -25,7 +26,6 @@ namespace Agilisium.TalentManager.Model
 
             GetSubPractices(context).ForEach(e => context.SubPractices.Add(e));
             context.SaveChanges();
-
         }
 
         private static List<SystemSetting> GetSystemSettings()
@@ -124,21 +124,21 @@ namespace Agilisium.TalentManager.Model
 
         private static List<DropDownSubCategory> GetSubCategories_New01(TalentManagerDataContext context)
         {
-            int etCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Employment Type").CategoryID;
+            //int etCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Employment Type").CategoryID;
             int cnCID = context.DropDownCategories.FirstOrDefault(c => c.CategoryName == "Country").CategoryID;
 
             return new List<DropDownSubCategory>
             {
                 #region Employment Type
 
-                new DropDownSubCategory
-                {
-                    SubCategoryName = "Yet to Join",
-                    ShortName = "YTJ",
-                    CategoryID = etCID,
-                    Description = "Yet to Join",
-                    IsReserved = true
-                },
+                //new DropDownSubCategory
+                //{
+                //    SubCategoryName = "Yet to Join",
+                //    ShortName = "YTJ",
+                //    CategoryID = etCID,
+                //    Description = "Yet to Join",
+                //    IsReserved = true
+                //},
  
                 #endregion
 
@@ -241,11 +241,12 @@ namespace Agilisium.TalentManager.Model
                     ShortName = "MNO",
                     CategoryID = utCID,
                     Description = "Management Overheads",
-                    IsReserved = true
+                    IsReserved = true,
+                    IsDeleted = true
                 },
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Bench",
+                    SubCategoryName = "Non-Committed Buffer",
                     ShortName = "BCH",
                     CategoryID = utCID,
                     Description = "Bench",
@@ -253,26 +254,10 @@ namespace Agilisium.TalentManager.Model
                 },
                 new DropDownSubCategory
                 {
-                    SubCategoryName = "Committed buffer",
+                    SubCategoryName = "Committed Buffer",
                     ShortName = "CMB",
                     CategoryID = utCID,
                     Description = "Committed buffer",
-                    IsReserved = true
-                },
-                new DropDownSubCategory
-                {
-                    SubCategoryName = "Lab",
-                    ShortName = "LAB",
-                    CategoryID = utCID,
-                    Description = "Lab",
-                    IsReserved = true
-                },
-                new DropDownSubCategory
-                {
-                    SubCategoryName = "Not In Payroll",
-                    ShortName = "NIP",
-                    CategoryID = utCID,
-                    Description = "Not In Payroll",
                     IsReserved = true
                 },
 
@@ -302,22 +287,6 @@ namespace Agilisium.TalentManager.Model
                     ShortName = "Lab",
                     CategoryID = ptCID,
                     Description = "Lab",
-                    IsReserved = true
-                },
-                new DropDownSubCategory
-                {
-                    SubCategoryName = "Proposed",
-                    ShortName = "PSD",
-                    CategoryID = ptCID,
-                    Description = "Proposed",
-                    IsReserved = true
-                },
-                new DropDownSubCategory
-                {
-                    SubCategoryName = "Long Leave",
-                    ShortName = "LNL",
-                    CategoryID = ptCID,
-                    Description = "Long Leave",
                     IsReserved = true
                 },
 
@@ -593,20 +562,6 @@ namespace Agilisium.TalentManager.Model
                     BusinessUnitID = bdID,
                     IsReserved = true
                 },
-                new Practice
-                {
-                    PracticeName = "Pre-Sales",
-                    ShortName = "PRS",
-                    BusinessUnitID = bdID,
-                    IsReserved = true
-                },
-                new Practice
-                {
-                    PracticeName = "AWS",
-                    ShortName = "AWS",
-                    BusinessUnitID = bdID,
-                    IsReserved = true
-                },
 
                 #endregion
 
@@ -614,22 +569,8 @@ namespace Agilisium.TalentManager.Model
 
                 new Practice
                 {
-                    PracticeName = "CEO",
-                    ShortName = "CEO",
-                    BusinessUnitID = boID,
-                    IsReserved = true
-                },
-                new Practice
-                {
-                    PracticeName = "Operations",
-                    ShortName = "OPT",
-                    BusinessUnitID = boID,
-                    IsReserved = true
-                },
-                new Practice
-                {
-                    PracticeName = "Ops-PMO",
-                    ShortName = "OPP",
+                    PracticeName = "Senior Leadership",
+                    ShortName = "SNL",
                     BusinessUnitID = boID,
                     IsReserved = true
                 },
@@ -649,22 +590,8 @@ namespace Agilisium.TalentManager.Model
                 },
                 new Practice
                 {
-                    PracticeName = "HR",
-                    ShortName = "HR",
-                    BusinessUnitID = boID,
-                    IsReserved = true
-                },
-                new Practice
-                {
                     PracticeName = "People Practice",
-                    ShortName = "PPL",
-                    BusinessUnitID = boID,
-                    IsReserved = true
-                },
-                new Practice
-                {
-                    PracticeName = "IT",
-                    ShortName = "IT",
+                    ShortName = "PPR",
                     BusinessUnitID = boID,
                     IsReserved = true
                 },
@@ -675,17 +602,11 @@ namespace Agilisium.TalentManager.Model
                     BusinessUnitID = boID,
                     IsReserved = true
                 },
+
                 #endregion
 
                 #region Delivery - Practices
 
-                new Practice
-                {
-                    PracticeName = "Amgen",
-                    ShortName = "AMGN",
-                    BusinessUnitID = dlID,
-                    IsReserved = true
-                },
                 new Practice
                 {
                     PracticeName = "AWS DI",
@@ -723,18 +644,19 @@ namespace Agilisium.TalentManager.Model
                 },
                 new Practice
                 {
-                    PracticeName = "Non Core",
+                    PracticeName = "Non-Core",
                     ShortName = "NONC",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
                 new Practice
                 {
-                    PracticeName = "Not Mapped",
-                    ShortName = "NOTM",
+                    PracticeName = "Non-Tech",
+                    ShortName = "NONT",
                     BusinessUnitID = dlID,
                     IsReserved = true
                 },
+
                 #endregion
             };
         }
@@ -747,7 +669,7 @@ namespace Agilisium.TalentManager.Model
             int? contracEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Contract")?.SubCategoryID;
             int? permanentEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Permanent")?.SubCategoryID;
             int? internshipEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Internship")?.SubCategoryID;
-            int? ytjEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Yet to Join")?.SubCategoryID;
+            //int? ytjEmpTypeID = empTypes.FirstOrDefault(c => c.SubCategoryName == "Yet to Join")?.SubCategoryID;
 
             return new List<EmployeeIDTracker>
             {
@@ -769,63 +691,26 @@ namespace Agilisium.TalentManager.Model
                     IDPrefix = "CE",
                     RunningID = 1
                 },
-                new EmployeeIDTracker
-                {
-                    EmploymentTypeID = ytjEmpTypeID.Value,
-                    IDPrefix = "YTJ",
-                    RunningID = 1
-                }
+                //new EmployeeIDTracker
+                //{
+                //    EmploymentTypeID = ytjEmpTypeID.Value,
+                //    IDPrefix = "YTJ",
+                //    RunningID = 1
+                //}
             };
         }
 
         private static List<SubPractice> GetSubPractices(TalentManagerDataContext context)
         {
-            int awsPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS").PracticeID;
-            int hrPID = context.Practices.FirstOrDefault(p => p.PracticeName == "HR").PracticeID;
-            int amgenPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Amgen").PracticeID;
             int awsDAPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS DA").PracticeID;
             int awsDIPID = context.Practices.FirstOrDefault(p => p.PracticeName == "AWS DI").PracticeID;
             int cdiPID = context.Practices.FirstOrDefault(p => p.PracticeName == "CDI").PracticeID;
             int gglPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Google").PracticeID;
-            int nonPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Non Core").PracticeID;
+            int nonPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Non-Core").PracticeID;
             int prdPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Product").PracticeID;
-            int nopPID = context.Practices.FirstOrDefault(p => p.PracticeName == "Not Mapped").PracticeID;
 
             return new List<SubPractice>
             {
-                #region AWS - Sup Practices
-
-                new SubPractice
-                {
-                    PracticeID = awsPID,
-                    SubPracticeName = "Presales",
-                    ShortName = "PRES",
-                },
-
-                #endregion
-
-                #region HR - Sup Practices
-
-                new SubPractice
-                {
-                    PracticeID = hrPID,
-                    SubPracticeName = "People Practices",
-                    ShortName = "PPL",
-                },
-
-                #endregion
-
-                #region Amgen - Sup Practices
-
-                new SubPractice
-                {
-                    PracticeID = amgenPID,
-                    SubPracticeName = "Business Analyst",
-                    ShortName = "BA",
-                },
-
-                #endregion
-
                 #region AWS DA - Sup Practices
 
                 new SubPractice
@@ -1155,24 +1040,29 @@ namespace Agilisium.TalentManager.Model
                 },
 
                 #endregion
-
-                #region Not Mapped - Sup Practices
-
-                new SubPractice
-                {
-                    PracticeID = nopPID,
-                    SubPracticeName = "Informatica",
-                    ShortName = "INF",
-                },
-                new SubPractice
-                {
-                    PracticeID = nopPID,
-                    SubPracticeName = "Developer",
-                    ShortName = "DEV",
-                },
-
-                #endregion
             };
         }
+
+        //private static List<Project> GetReservedProjects(List<Practice> practices, TalentManagerDataContext context)
+        //{
+        //    List<Project> projects = null;
+
+        //    foreach (Practice practice in practices)
+        //    {
+        //        projects = new List<Project>
+        //        {
+        //            new Project
+        //            {
+        //                ProjectName = "Lab " + practice.PracticeName.Replace(" ",""),
+        //                BusinessUnitID = practice.BusinessUnitID,
+        //                EndDate = new DateTime(DateTime.Now.Year, 12, 31),
+        //                StartDate = new DateTime(DateTime.Now.Year, 1, 1),
+        //                PracticeID = practice.PracticeID
+        //            }
+        //        };
+        //    }
+
+        //    return projects;
+        //}
     }
 }

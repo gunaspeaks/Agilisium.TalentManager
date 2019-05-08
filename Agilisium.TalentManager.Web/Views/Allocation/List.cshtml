@@ -6,72 +6,135 @@
     ViewBag.Title = "Project Allocations";
 }
 
+<script>
+    $(document).ready(function () {
+        //if ($("#FilterType").text() != "Please Select" ) {
+        //    loadFilterDropDown();
+        //}
+    });
+
+    $(function () {
+        $("#FilterType").change(function (evt) {
+            loadFilterDropDown();
+        });
+    });
+
+    loadFilterDropDown = function () {
+        if ($("#FilterType").text() != "Filter By") {
+            $.ajax({
+                url: "/Allocation/LoadFilterValueListItems",
+                type: 'POST',
+                data: { filterType: $("#FilterType").val() },
+                success: function (data) {
+                    $('#FilterValue').empty();
+                    $.each(data, function () {
+                        $("#FilterValue").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
+                    });
+                },
+                error: function (xhr) { alert('Error while loading the Sub Practice list'); }
+            });
+        }
+    }
+
+</script>
+
 <div class="panel panel-default">
     <div class="panel-heading">
-        <h3>Project Allocations</h3>
+        <h3>Project Allocations</h3>(@Html.ActionLink("Click here for Allocations History", "AllocationHistory", "Allocation"))
     </div>
     <div class="panel-body">
-        <table class="table table-striped table-condensed table-bordered">
-            <tr>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().EmployeeName)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().ProjectName)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationStartDate)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationEndDate)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationTypeName)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().PercentageOfAllocation)
-                </th>
-                <th class="text-center">
-                    @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().Remarks)
-                </th>
-                <th class="text-center">Actions</th>
-            </tr>
-
-            @foreach (var item in Model.Allocations)
-            {
+        @using (Html.BeginForm("List", "Allocation", new { filterType = Model.FilterType, filterValue = Model.FilterValue }))
+        {
+            <table style=" align-self:center; ">
                 <tr>
+                    <td width="40%">
+                        @Html.DropDownListFor(model => model.FilterType, Model.FilterTypeDropDownItems, "Filter By", new { @class = "form-control" })
+                    </td>
+                    <td width="5px"></td>
+                    <td width="50%">
+                        @Html.DropDownListFor(model => model.FilterValue, Model.FilterValueDropDownItems, "Please Select", new { @class = "form-control" })
+                    </td>
+                    <td width="5px"></td>
                     <td>
-                        @Html.ActionLink(item.EmployeeName, "Edit", new { id = item.AllocationEntryID })
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.ProjectName)
-                    </td>
-                    <td class="text-right">
-                        <text>@item.AllocationStartDate.ToString("dd/MMM/yyy")</text>
-                    </td>
-                    <td class="text-right">
-                        <text>@item.AllocationEndDate.ToString("dd/MMM/yyy")</text>
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.AllocationTypeName)
-                    </td>
-                    <td class="text-right">
-                        @Html.DisplayFor(modelItem => item.PercentageOfAllocation)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Remarks)
-                    </td>
-                    <td class="text-center">
-                        @using (Html.BeginForm("Delete", "Allocation"))
-                        {
-                            @Html.Hidden("id", item.AllocationEntryID)
-                            <input type="submit" onclick="return confirm('Are you sure you about deleting this Project Allocation?');" class="btn btn-default btn-xs" value="Delete" />
-                        }
+                        <input type="submit" class="btn btn-primary" value="Show" />
                     </td>
                 </tr>
-            }
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+            </table>
+        }
+        <div>
+            <table class="table table-striped table-condensed table-bordered">
+                <tr>
+                    <th class="text-left">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().EmployeeName)
+                    </th>
+                    <th class="text-left">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().ProjectName)
+                    </th>
+                    <th class="text-left">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AccountName)
+                    </th>
+                    <th class="text-left">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationTypeName)
+                    </th>
+                    <th class="text-right">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().PercentageOfAllocation)
+                    </th>
+                    <th class="text-right">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationStartDate)
+                    </th>
+                    <th class="text-right">
+                        @Html.DisplayNameFor(model => model.Allocations.FirstOrDefault().AllocationEndDate)
+                    </th>
+                    <th class="text-center">De-Allocate</th>
+                    <th class="text-center">Actions</th>
+                </tr>
 
-        </table>
+                @foreach (var item in Model.Allocations)
+                {
+                    <tr>
+                        <td>
+                            @Html.ActionLink(item.EmployeeName, "Edit", new { id = item.AllocationEntryID })
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ProjectName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AccountName)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.AllocationTypeName)
+                        </td>
+                        <td class="text-right">
+                            @Html.DisplayFor(modelItem => item.PercentageOfAllocation)
+                        </td>
+                        <td class="text-right">
+                            <text>@item.AllocationStartDate.ToString("dd/MMM/yyy")</text>
+                        </td>
+                        <td class="text-right">
+                            <text>@item.AllocationEndDate.ToString("dd/MMM/yyy")</text>
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("DeAllocate", "Allocation"))
+                            {
+                                @Html.Hidden("id", item.AllocationEntryID)
+                                <input type="submit" onclick="return confirm('Are you sure you about de-allocating this employee?');" class="btn btn-default btn-xs" value="De-Allocate" />
+                            }
+                        </td>
+                        <td class="text-center">
+                            @using (Html.BeginForm("Delete", "Allocation"))
+                            {
+                                @Html.Hidden("id", item.AllocationEntryID)
+                                <input type="submit" onclick="return confirm('Are you sure you about deleting this Project Allocation?');" class="btn btn-default btn-xs" value="Delete" />
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </table>
+        </div>
     </div>
     <div class="panel-footer">
         @Html.ActionLink("Create a New Project Allocation", "Create", null, new { @class = "btn btn-primary" })

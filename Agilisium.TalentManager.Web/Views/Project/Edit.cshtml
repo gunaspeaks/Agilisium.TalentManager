@@ -8,6 +8,40 @@
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 
 <script type="text/javascript">
+
+    $(document).ready(function () {
+        //loadPracticeDropDownListForProjectPage();
+        $("#StartDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+        $("#EndDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+        $("#SowStartDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+
+        $("#SowEndDate").datepicker({
+
+            dateFormat: "mm-dd-yy",
+            changeMonth: true,
+            changeYear: true,
+            showAnim: "fadeIn",
+        });
+    })
+
     $(function () {
         $("#PracticeID").change(function (evt) {
 
@@ -28,6 +62,20 @@
             }
         });
     });
+
+    $(function () {
+        $("#BusinessUnitID").change(function (event) {
+            if ($("#BusinessUnitID").val() != 3) {
+                $("#ProjectTypeID").val(9);
+                $("#ProjectTypeID").attr('disabled', 'disabled');
+            }
+            else {
+                $("#ProjectTypeID").removeAttr("disabled");
+            }
+            loadPracticeDropDownListForProjectPage();
+        });
+    });
+
 </script>
 
 <div class="panel panel-default">
@@ -45,23 +93,45 @@
                     <tr>
                         <td width="25%">
                             <div class="form-group">
-                                @Html.HiddenFor(model => model.ProjectID)
-                                @Html.LabelFor(model => model.ProjectCode)
-                                @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
-                            </div>
-                        </td>
-                        <td width="5%"></td>
-                        <td width="25%">
-                            <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectName)
                                 @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
                         <td width="5%"></td>
+                        <td width="25%">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectAccountID)
+                                @Html.DropDownListFor(model => model.ProjectAccountID, (IEnumerable<SelectListItem>)ViewBag.AccountsListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectManagerID)
-                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
+                                @Html.HiddenFor(model => model.ProjectID)
+                                @Html.LabelFor(model => model.ProjectCode)
+                                @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BusinessUnitID)
+                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewBag.BuListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.PracticeID)
+                                @Html.DropDownListFor(model => model.PracticeID, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTypeID)
+                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -75,8 +145,8 @@
                         <td width="5%"></td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTypeID)
-                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
+                                @Html.LabelFor(model => model.DeliveryManagerID)
+                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="5%"></td>
@@ -107,8 +177,8 @@
                     <tr>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.IsSowAvailable)
                                 @Html.CheckBoxFor(model => model.IsSowAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.LabelFor(model => model.IsSowAvailable)
                             </div>
                         </td>
                         <td width="5%"></td>

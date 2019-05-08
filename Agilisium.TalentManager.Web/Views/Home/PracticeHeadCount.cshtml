@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<Agilisium.TalentManager.Web.Models.PracticeHeadCountModel>
 
 <div class="dashboardItem">
-    <div class="dashboardItemHeader">Practice-wise Head Count</div>
+    <div class="dashboardItemHeader">POD-wise Head Count</div>
     <div class="dashboardItemBody">
         <table class="tbl">
             <tr>
-                <th class="text-center">Practice</th>
-                <th class="text-center">Head Count</th>
+                <th class="text-left">POD</th>
+                <th class="text-right">Head Count</th>
             </tr>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Practice</td>
+                    <td class="text-left">@item.Practice</td>
                     <td class="text-right">@item.HeadCount</td>
                 </tr>
             }

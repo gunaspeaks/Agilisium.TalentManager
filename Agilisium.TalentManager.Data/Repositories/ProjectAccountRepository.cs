@@ -42,8 +42,10 @@ namespace Agilisium.TalentManager.Repository.Repositories
             IQueryable<ProjectAccountDto> accounts = from v in Entities
                                                      join e in DataContext.Employees on v.OffshoreManagerID equals e.EmployeeEntryID into ee
                                                      from ed in ee.DefaultIfEmpty()
+                                                     join c in DataContext.DropDownSubCategories on v.CountryID equals c.SubCategoryID into ce
+                                                     from cd in ce.DefaultIfEmpty()
                                                      where v.IsDeleted == false
-                                                     orderby v.AccountID
+                                                     orderby v.AccountName
                                                      select new ProjectAccountDto
                                                      {
                                                          AccountID = v.AccountID,
@@ -53,7 +55,8 @@ namespace Agilisium.TalentManager.Repository.Repositories
                                                          OnshoreManager = v.OnshoreManager,
                                                          PartnerManager = v.PartnerManager,
                                                          ShortName = v.ShortName,
-                                                         OffshoreManager = ed.LastName + ", " + ed.FirstName
+                                                         OffshoreManager = ed.LastName + ", " + ed.FirstName,
+                                                         Country = cd.SubCategoryName
                                                      };
 
             if (pageSize <= 0 || pageNo < 1)
@@ -117,12 +120,12 @@ namespace Agilisium.TalentManager.Repository.Repositories
             ProjectAccount account = new ProjectAccount
             {
                 AccountID = accDto.AccountID,
-                AccountName = accDto.AccountName,
+                AccountName = accDto.AccountName.Trim(),
                 CountryID = accDto.CountryID,
                 OffshoreManagerID = accDto.OffshoreManagerID,
                 OnshoreManager = accDto.OnshoreManager,
                 PartnerManager = accDto.PartnerManager,
-                ShortName = accDto.ShortName
+                ShortName = accDto.ShortName.Trim()
             };
 
             account.UpdateTimeStamp(accDto.LoggedInUserName, true);

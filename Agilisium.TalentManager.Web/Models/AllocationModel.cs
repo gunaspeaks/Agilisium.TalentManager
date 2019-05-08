@@ -15,6 +15,7 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Employee Name")]
         public int EmployeeID { get; set; }
 
+        [DisplayName("Employee Name")]
         public string EmployeeName { get; set; }
 
         [Required(ErrorMessage = "Allocation Start Date is required")]
@@ -43,10 +44,16 @@ namespace Agilisium.TalentManager.Web.Models
         [DisplayName("Project Name")]
         public string ProjectName { get; set; }
 
+        [DisplayName("Account Name")]
+        public string AccountName { get; set; }
+
         [DisplayName("Allocation %")]
         public int PercentageOfAllocation { get; set; }
 
         [DataType(DataType.MultilineText)]
+        [DisplayName("Remarks/Reasons")]
         public string Remarks { get; set; }
+
+        public bool? IsActive { get; set; }
     }
 }

@@ -12,6 +12,9 @@ namespace Agilisium.TalentManager.Web
     {
         protected void Application_Start()
         {
+            log4net.Config.XmlConfigurator.Configure();
+
+            //// Un-Comment below line to insert the default data
             System.Data.Entity.Database.SetInitializer(new TalentManagerSeedData());
 
             AreaRegistration.RegisterAllAreas();

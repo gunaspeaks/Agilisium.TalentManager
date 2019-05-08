@@ -10,7 +10,7 @@ namespace Agilisium.TalentManager.Model.Configuration
         {
             HasKey(p => p.ProjectID);
 
-            Property(e => e.EndDate).IsOptional();
+            Property(e => e.EndDate).IsRequired();
             Property(e => e.ProjectCode).HasMaxLength(25).IsRequired();
             Property(e => e.ProjectID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(e => e.ProjectName).IsRequired().HasMaxLength(100);
@@ -20,8 +20,8 @@ namespace Agilisium.TalentManager.Model.Configuration
             Property(e => e.DeliveryManagerID).IsOptional();
             Property(e => e.ProjectManagerID).IsRequired();
             Property(e => e.SubPracticeID).IsOptional();
-            Property(e => e.PracticeID).IsOptional();
-            Property(e => e.ProjectAccountID).IsOptional();
+            Property(e => e.PracticeID).IsRequired();
+            Property(e => e.IsReserved).IsRequired();
 
             ToTable("Project");
         }

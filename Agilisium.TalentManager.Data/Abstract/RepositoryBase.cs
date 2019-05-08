@@ -22,7 +22,7 @@ namespace Agilisium.TalentManager.Repository.Abstract
             }
         }
 
-        public int TotalRecordsCount()
+        public virtual int TotalRecordsCount()
         {
             return Entities.Count(e => e.IsDeleted == false);
         }

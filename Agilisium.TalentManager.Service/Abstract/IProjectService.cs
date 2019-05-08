@@ -28,5 +28,13 @@ namespace Agilisium.TalentManager.Service.Abstract
         int TotalRecordsCount();
 
         string GenerateProjectCode(int accountID);
+
+        List<ProjectDto> GetAll(string filterType, int filterValue, int pageSize = -1, int pageNo = -1);
+
+        int TotalRecordsCount(string filterType, int filterValue);
+
+        bool IsReservedEntry(int projectID);
+
+        List<ProjectDto> GetAllByManagerID(int managerID);
     }
 }

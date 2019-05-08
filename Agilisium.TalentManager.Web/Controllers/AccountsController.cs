@@ -217,9 +217,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                 empDDList = (from e in managers
                              select new SelectListItem
                              {
-                                 Text = $"{e.LastName}, {e.FirstName}",
+                                 Text = $"{e.FirstName} {e.LastName}",
                                  Value = e.EmployeeEntryID.ToString()
-                             }).ToList();
+                             }).OrderBy(i => i.Text).ToList();
             }
 
             ViewBag.ManagerListItems = empDDList;

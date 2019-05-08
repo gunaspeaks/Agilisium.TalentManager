@@ -237,6 +237,27 @@ function loadPracticeDropDownListForEmpPage() {
     });
 }
 
+function loadPracticeDropDownListForProjectPage() {
+    if ($("#BusinessUnitID").val().length == 0) return;
+    $("#PracticeID").empty();
+    $("#PracticeID").append($("<option></option>").val(0).text("Please Select"));
+
+    $.ajax({
+        url: "/Practice/GetPracticesByBuID",
+        type: "POST",
+        data: { buID: $("#BusinessUnitID").val() },
+        success: function (data) {
+
+            $.each(data, function () {
+                $("#PracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
+            });
+        },
+        error: function () {
+            alert("Error has occured while loading the Practices for the selected Business Unit");
+        }
+    });
+}
+
 //$(document).ajaxStart(function () {
 //    $("#loading").show();
 //});

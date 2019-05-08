@@ -1,4 +1,5 @@
-﻿using System;
+﻿using log4net;
+using System;
 using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Helpers
@@ -10,9 +11,12 @@ namespace Agilisium.TalentManager.Web.Helpers
         private const string deleteErrorMessage = "Oops! an error has occured while deleting the details";
         private const string loadErrorMessage = "Oops! an error has occured while loading the page";
 
+        private readonly ILog logger;
+
         public BaseController()
         {
             CacheHelper.SetContext(HttpContext);
+            logger = log4net.LogManager.GetLogger(typeof(BaseController));
         }
 
         public virtual void DisplayWarningMessage(string message)
@@ -29,40 +33,35 @@ namespace Agilisium.TalentManager.Web.Helpers
         {
             TempData["ErrorMessage"] = message;
 
-            // TODO
-            // Error logging
+            logger.Error(message, exp);
         }
 
         public virtual void DisplayReadErrorMessage(Exception exp)
         {
             DisplayErrorMessage(readErrorMessage);
 
-            // TODO
-            // Error logging
+            logger.Error(exp);
         }
 
         public virtual void DisplayUpdateErrorMessage(Exception exp)
         {
             DisplayErrorMessage(updateErrorMessage);
 
-            // TODO
-            // Error logging
+            logger.Error(exp);
         }
 
         public virtual void DisplayDeleteErrorMessage(Exception exp)
         {
             DisplayErrorMessage(deleteErrorMessage);
 
-            // TODO
-            // Error logging
+            logger.Error(exp);
         }
 
         public virtual void DisplayLoadErrorMessage(Exception exp)
         {
             DisplayErrorMessage(loadErrorMessage);
 
-            // TODO
-            // Error logging
+            logger.Error(exp);
         }
 
         public bool IsPaginationEnabled

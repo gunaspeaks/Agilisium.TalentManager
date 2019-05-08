@@ -34,51 +34,39 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         public EmployeeDto GetByID(int id)
         {
-            EmployeeDto empEnt = (from emp in Entities
-                               join bc in DataContext.DropDownSubCategories on emp.BusinessUnitID equals bc.SubCategoryID into bue
-                               from bcd in bue.DefaultIfEmpty()
-                               join pc in DataContext.Practices on emp.PracticeID equals pc.PracticeID into pce
-                               from pcd in pce.DefaultIfEmpty()
-                               join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
-                               from utd in ute.DefaultIfEmpty()
-                               join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
-                               from etd in ete.DefaultIfEmpty()
-                               join pm in DataContext.Employees on emp.EmployeeEntryID equals pm.EmployeeEntryID into pme
-                               from pmd in pme.DefaultIfEmpty()
-                               where emp.EmployeeEntryID == id
-                               select new EmployeeDto
-                               {
-                                   BusinessUnitID = emp.BusinessUnitID,
-                                   DateOfJoin = emp.DateOfJoin,
-                                   EmployeeEntryID = emp.EmployeeEntryID,
-                                   EmailID = emp.EmailID,
-                                   EmployeeID = emp.EmployeeID,
-                                   FirstName = emp.FirstName,
-                                   LastName = emp.LastName,
-                                   LastWorkingDay = emp.LastWorkingDay,
-                                   PracticeID = emp.PracticeID,
-                                   PrimarySkills = emp.PrimarySkills,
-                                   ProjectManagerID = pmd.EmployeeEntryID,
-                                   ProjectManagerName = pmd.LastName + ", " + pmd.FirstName,
-                                   ReportingManagerID = emp.ReportingManagerID,
-                                   SecondarySkills = emp.SecondarySkills,
-                                   SubPracticeID = emp.SubPracticeID,
-                                   UtilizationTypeID = emp.UtilizationTypeID,
-                                   EmploymentTypeID = emp.EmploymentTypeID,
-                                   EmploymentTypeName = etd.SubCategoryName
-                               }).FirstOrDefault();
-
-            empEnt.PodAllocations = (from ea in DataContext.EmployeePodAllocations
-                                     where ea.EmployeeEntryID == empEnt.EmployeeEntryID
-                                     select new EmployeePodAllocationDto
-                                     {
-                                         AllocationEntryID = ea.EmployeeEntryID,
-                                         EmployeeEntryID = ea.EmployeeEntryID,
-                                         PercentageOfAllocation = ea.PercentageOfAllocation,
-                                         PodID = ea.PodID
-                                     }).ToList();
-
-            return empEnt;
+            return (from emp in Entities
+                    join bc in DataContext.DropDownSubCategories on emp.BusinessUnitID equals bc.SubCategoryID into bue
+                    from bcd in bue.DefaultIfEmpty()
+                    join pc in DataContext.Practices on emp.PracticeID equals pc.PracticeID into pce
+                    from pcd in pce.DefaultIfEmpty()
+                    join ut in DataContext.DropDownSubCategories on emp.UtilizationTypeID equals ut.SubCategoryID into ute
+                    from utd in ute.DefaultIfEmpty()
+                    join et in DataContext.DropDownSubCategories on emp.EmploymentTypeID equals et.SubCategoryID into ete
+                    from etd in ete.DefaultIfEmpty()
+                    join pm in DataContext.Employees on emp.EmployeeEntryID equals pm.EmployeeEntryID into pme
+                    from pmd in pme.DefaultIfEmpty()
+                    where emp.EmployeeEntryID == id
+                    select new EmployeeDto
+                    {
+                        BusinessUnitID = emp.BusinessUnitID,
+                        DateOfJoin = emp.DateOfJoin,
+                        EmployeeEntryID = emp.EmployeeEntryID,
+                        EmailID = emp.EmailID,
+                        EmployeeID = emp.EmployeeID,
+                        FirstName = emp.FirstName,
+                        LastName = emp.LastName,
+                        LastWorkingDay = emp.LastWorkingDay,
+                        PracticeID = emp.PracticeID,
+                        PrimarySkills = emp.PrimarySkills,
+                        ProjectManagerID = pmd.EmployeeEntryID,
+                        ProjectManagerName = pmd.LastName + ", " + pmd.FirstName,
+                        ReportingManagerID = emp.ReportingManagerID,
+                        SecondarySkills = emp.SecondarySkills,
+                        SubPracticeID = emp.SubPracticeID,
+                        UtilizationTypeID = emp.UtilizationTypeID,
+                        EmploymentTypeID = emp.EmploymentTypeID,
+                        EmploymentTypeName = etd.SubCategoryName
+                    }).FirstOrDefault();
         }
 
         public IEnumerable<EmployeeDto> GetAll(string searchText, int pageSize = -1, int pageNo = -1)
@@ -175,24 +163,6 @@ namespace Agilisium.TalentManager.Repository.Repositories
             DataContext.SaveChanges();
 
             UpdateEmployeeIDTracker(entity.EmploymentTypeID, entity.EmployeeID);
-            AddAllocations(entity, employee.EmployeeEntryID);
-        }
-
-        private void AddAllocations(EmployeeDto employee, int employeeID)
-        {
-            foreach (EmployeePodAllocationDto emp in employee.PodAllocations)
-            {
-                EmployeePodAllocation podAllocation = new EmployeePodAllocation
-                {
-                    EmployeeEntryID = employeeID,
-                    PercentageOfAllocation = emp.PercentageOfAllocation,
-                    PodID = emp.PodID
-                };
-                podAllocation.UpdateTimeStamp(employee.LoggedInUserName, true);
-                DataContext.EmployeePodAllocations.Add(podAllocation);
-                DataContext.Entry(podAllocation).State = EntityState.Added;
-                DataContext.SaveChanges();
-            }
         }
 
         public void Update(EmployeeDto entity)
@@ -375,27 +345,6 @@ namespace Agilisium.TalentManager.Repository.Repositories
 
         #endregion
 
-        #region Public Methods - POD Allocations
-
-        public IEnumerable<EmployeePodAllocationDto> GetPodAllocations(int empID)
-        {
-            return from a in DataContext.EmployeePodAllocations
-                   join p in DataContext.Practices on a.PodID equals p.PracticeID into po
-                   from pd in po.DefaultIfEmpty()
-                   where a.EmployeeEntryID == empID && a.IsDeleted == false
-                   orderby a.AllocationEntryID
-                   select new EmployeePodAllocationDto
-                   {
-                       AllocationEntryID = a.AllocationEntryID,
-                       EmployeeEntryID = a.EmployeeEntryID,
-                       PercentageOfAllocation = a.PercentageOfAllocation,
-                       PodID = a.PodID,
-                       PodName = pd.PracticeName,
-                   };
-        }
-
-        #endregion
-
         #region Private Methods
 
         private void UpdateEmployeeIDTracker(int trackerID, int runningID)
@@ -558,7 +507,5 @@ namespace Agilisium.TalentManager.Repository.Repositories
         EmployeeWidgetDto GetEmployeesCountSummary();
 
         IEnumerable<EmployeeDto> GetAllAccountManagers();
-
-        IEnumerable<EmployeePodAllocationDto> GetPodAllocations(int empID);
     }
 }

@@ -60,6 +60,9 @@
     <Reference Include="Kingdom.Web.Mvc.Core, Version=1.1.0.26575, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Kingdom.AspNet.Mvc.Core.1.1.0\lib\net45\Kingdom.Web.Mvc.Core.dll</HintPath>
     </Reference>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.8\lib\net45-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="MeasureIt.Core, Version=1.16.0.37684, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MeasureIt.Core.1.16.0\lib\net45\MeasureIt.Core.dll</HintPath>
     </Reference>
@@ -229,6 +232,7 @@
     <Compile Include="Controllers\ContractorController.cs" />
     <Compile Include="Controllers\DefaultController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\ServiceRequestController.cs" />
     <Compile Include="Controllers\VendorController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
@@ -252,8 +256,10 @@
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AllocationViewModel.cs" />
+    <Compile Include="Models\BillabilityWiseAllocationDetailModel.cs" />
+    <Compile Include="Models\BillabilityWiseAllocationSummaryModel.cs" />
     <Compile Include="Models\ContractorViewModel.cs" />
-    <Compile Include="Models\EmployeePodAllocationModel.cs" />
+    <Compile Include="Models\ManagerWiseAllocationModel.cs" />
     <Compile Include="Models\ProjectAccountViewModel.cs" />
     <Compile Include="Models\ProjectAccountModel.cs" />
     <Compile Include="Models\VendorSpecializedPartnerModel.cs" />
@@ -361,6 +367,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="libman.json" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -374,7 +381,9 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>
@@ -464,7 +473,13 @@
     <Content Include="Views\Accounts\Create.cshtml" />
     <Content Include="Views\Accounts\Edit.cshtml" />
     <Content Include="Views\Accounts\List.cshtml" />
-    <Content Include="Views\Employee\LoadPodAllocations.cshtml" />
+    <Content Include="Views\Allocation\AllocationHistory.cshtml" />
+    <Content Include="Views\Reports\Index.cshtml" />
+    <Content Include="Views\Reports\ManagerWiseAllocations.cshtml" />
+    <Content Include="Views\Reports\ManagerWiseProjects.cshtml" />
+    <Content Include="Views\Allocation\AllAllocations.cshtml" />
+    <Content Include="Views\Reports\BillabilityWiseAllocationSummary.cshtml" />
+    <Content Include="Views\Reports\BillabilityWiseAllocationDetail.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

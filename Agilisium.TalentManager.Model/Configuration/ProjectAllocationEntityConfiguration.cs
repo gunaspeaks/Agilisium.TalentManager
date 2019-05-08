@@ -15,12 +15,13 @@ namespace Agilisium.TalentManager.Model.Configuration
         {
             HasKey(p => p.AllocationEntryID);
 
-            Property(p => p.AllocationEndDate).IsOptional();
+            Property(p => p.AllocationEndDate).IsRequired();
             Property(p => p.AllocationEntryID).HasColumnName("AllocationEntryID").HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(p => p.AllocationStartDate).IsRequired();
             Property(p => p.AllocationTypeID).HasColumnName("AllocationTypeID");
             Property(p => p.EmployeeID).IsRequired().HasColumnName("EmployeeID");
             Property(p => p.ProjectID).IsRequired().HasColumnName("ProjectID");
+            Property(p => p.IsActive).IsRequired().HasColumnName("IsActive");
             Property(p => p.Remarks).IsOptional().HasMaxLength(250);
 
             ToTable("ProjectAllocation");

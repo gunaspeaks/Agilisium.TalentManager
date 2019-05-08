@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Web;
 
 namespace Agilisium.TalentManager.Web.Models
 {
@@ -16,6 +12,7 @@ namespace Agilisium.TalentManager.Web.Models
         public string AccountName { get; set; }
 
         [Required(ErrorMessage = "Account Short Name is required")]
+        [MaxLength(5, ErrorMessage = "Short Name can contain only 5 characters")]
         [DisplayName("Short Name")]
         public string ShortName { get; set; }
 

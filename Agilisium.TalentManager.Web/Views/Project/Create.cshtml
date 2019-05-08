@@ -10,6 +10,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        var clientProjectID = 9;
+        var deliveryBUID = 3;
+
+        loadPracticeDropDownListForProjectPage();
         $("#StartDate").datepicker({
 
             dateFormat: "mm-dd-yy",
@@ -54,9 +58,24 @@
                         $('#ProjectCode').val(data);
                     },
                     error: function (xhr) { alert('Error while generating the project code'); }
-                });            }
+                });
+            }
         });
     }
+
+
+    $(function () {
+        $("#BusinessUnitID").change(function (event) {
+            if ($("#BusinessUnitID").val() != 3) {
+                $("#ProjectTypeID").val(9);
+                $("#ProjectTypeID").attr('disabled', 'disabled');
+            }
+            else {
+                $("#ProjectTypeID").removeAttr("disabled");
+            }
+            loadPracticeDropDownListForProjectPage();
+        });
+    });
 
     $(function () {
         $("#PracticeID").change(function (evt) {
@@ -72,7 +91,7 @@
                         $.each(data, function () {
                             $("#SubPracticeID").append($("<option></option>").val(parseInt(this['Value'])).text(this['Text']));
                         });
-                        ddlSubPractice.prop('disabled', false);
+                        //$("#SubPracticeID").attr('disabled', 'disabled');
                     },
                     error: function (xhr) { alert('Error while loading the Sub Practice list'); }
                 });
@@ -94,6 +113,19 @@
             <div>
                 <table style="width:80%">
                     <tr>
+                        <td colspan="5"><span style="color:red; font-size:14px;"><b>Note:</b> Please be aware that, Project that is created with the key words (Lab/Bench/Management) will be considered as Non-Billable projects.  </span></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5">&nbsp;</td>
+                    </tr>
+                    <tr>
+                        <td width="25%">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectName)
+                                @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
                         <td width="25%">
                             <div class="form-group">
                                 @Html.LabelFor(model => model.ProjectAccountID)
@@ -101,18 +133,33 @@
                             </div>
                         </td>
                         <td width="5%"></td>
-                        <td width="25%">
+                        <td>
                             <div class="form-group">
                                 @Html.HiddenFor(model => model.ProjectID)
                                 @Html.LabelFor(model => model.ProjectCode)
                                 @Html.EditorFor(model => model.ProjectCode, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.BusinessUnitID)
+                                @Html.DropDownListFor(model => model.BusinessUnitID, (IEnumerable<SelectListItem>)ViewBag.BuListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
                         <td width="5%"></td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectName)
-                                @Html.EditorFor(model => model.ProjectName, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.LabelFor(model => model.PracticeID)
+                                @Html.DropDownListFor(model => model.PracticeID, (IEnumerable<SelectListItem>)ViewBag.PracticeListItems, "Please Select", new { @class = "form-control" })
+                            </div>
+                        </td>
+                        <td width="5%"></td>
+                        <td>
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.ProjectTypeID)
+                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                     </tr>
@@ -126,8 +173,8 @@
                         <td width="5%"></td>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.ProjectTypeID)
-                                @Html.DropDownListFor(model => model.ProjectTypeID, (IEnumerable<SelectListItem>)ViewBag.ProjectTypeListItems, "Please Select", new { @class = "form-control" })
+                                @Html.LabelFor(model => model.DeliveryManagerID)
+                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
                             </div>
                         </td>
                         <td width="5%"></td>
@@ -158,8 +205,8 @@
                     <tr>
                         <td>
                             <div class="form-group">
-                                @Html.LabelFor(model => model.IsSowAvailable)
                                 @Html.CheckBoxFor(model => model.IsSowAvailable, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.LabelFor(model => model.IsSowAvailable)
                             </div>
                         </td>
                         <td width="5%"></td>
@@ -176,18 +223,6 @@
                                 @Html.EditorFor(model => model.SowEndDate, new { htmlAttributes = new { @class = "form-control" } })
                             </div>
                         </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="form-group">
-                                @Html.LabelFor(model => model.DeliveryManagerID)
-                                @Html.DropDownListFor(model => model.DeliveryManagerID, (IEnumerable<SelectListItem>)ViewBag.ProjectManagerListItems, "Please Select", new { @class = "form-control" })
-                            </div>
-                        </td>
-                        <td width="5%"></td>
-                        <td></td>
-                        <td width="5%"></td>
-                        <td></td>
                     </tr>
                 </table>
             </div>

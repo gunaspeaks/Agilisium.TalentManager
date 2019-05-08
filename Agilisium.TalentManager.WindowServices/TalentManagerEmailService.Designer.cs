@@ -28,8 +28,11 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            // 
+            // TalentManagerEmailService
+            // 
+            this.ServiceName = "Agilisium - Talent Manager Email Service";
+
         }
 
         #endregion

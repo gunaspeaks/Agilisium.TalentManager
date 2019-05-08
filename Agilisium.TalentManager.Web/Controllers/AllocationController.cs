@@ -28,25 +28,77 @@ namespace Agilisium.TalentManager.Web.Controllers
         }
 
         // GET: Project
-        public ActionResult List(int page = 1)
+        public ActionResult List(string filterType, string filterValue, int page = 1)
         {
-            AllocationViewModel viewModel = new AllocationViewModel();
+            AllocationViewModel viewModel = new AllocationViewModel()
+            {
+                FilterType = filterType,
+                FilterValue = filterValue
+            };
+
             try
             {
+                InitializeListPage(viewModel);
+                int.TryParse(filterValue, out int filterValueID);
                 viewModel.PagingInfo = new PagingInfo
                 {
-                    TotalRecordsCount = allocationService.TotalRecordsCount(),
+                    TotalRecordsCount = allocationService.TotalRecordsCount(filterType, filterValueID),
                     RecordsPerPage = RecordsPerPage,
                     CurentPageNo = page
                 };
 
                 if (viewModel.PagingInfo.TotalRecordsCount > 0)
                 {
-                    viewModel.Allocations = GetAllocations(page);
+                    viewModel.Allocations = GetAllocations(filterType, filterValueID, page);
                 }
                 else
                 {
                     DisplayWarningMessage("There are no Project Allocations to display");
+                }
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(viewModel);
+        }
+
+        public ActionResult AllAllocations(int id)
+        {
+            List<AllocationModel> allocations = null;
+            try
+            {
+                List<ProjectAllocationDto> modelsDto = allocationService.GetAllAllocationsByProjectID(id);
+                allocations = Mapper.Map<List<ProjectAllocationDto>, List<AllocationModel>>(modelsDto);
+            }
+            catch (Exception exp)
+            {
+                DisplayLoadErrorMessage(exp);
+            }
+
+            return View(allocations);
+        }
+
+        public ActionResult AllocationHistory(int page = 1)
+        {
+            AllocationViewModel viewModel = new AllocationViewModel();
+            try
+            {
+                viewModel.PagingInfo = new PagingInfo
+                {
+                    TotalRecordsCount = allocationService.GetTotalRecordsCountForAllocationHistory(),
+                    RecordsPerPage = RecordsPerPage,
+                    CurentPageNo = page
+                };
+
+                if (viewModel.PagingInfo.TotalRecordsCount > 0)
+                {
+                    viewModel.Allocations = GetAllocationsHistory(page);
+                }
+                else
+                {
+                    DisplayWarningMessage("There are no Project Allocations History to display");
                 }
             }
             catch (Exception exp)
@@ -63,7 +115,8 @@ namespace Agilisium.TalentManager.Web.Controllers
             AllocationModel project = new AllocationModel
             {
                 AllocationStartDate = DateTime.Now,
-                AllocationEndDate = DateTime.Now
+                AllocationEndDate = DateTime.Now,
+                PercentageOfAllocation = 100
             };
 
             try
@@ -99,9 +152,9 @@ namespace Agilisium.TalentManager.Web.Controllers
                         return View(allocation);
                     }
 
-                    if (allocationService.Exists(allocation.EmployeeID, allocation.ProjectID) > 0)
+                    if (allocationService.AnyActiveAllocationInBenchProject(allocation.EmployeeID))
                     {
-                        DisplayWarningMessage($"Looks like the selected project is already allocated to the selected employee");
+                        DisplayWarningMessage("There is an active allocation in Bench project for this employee. Please end the allocation for that project.");
                         return View(allocation);
                     }
 
@@ -171,12 +224,6 @@ namespace Agilisium.TalentManager.Web.Controllers
                         return View(allocation);
                     }
 
-                    if (allocationService.Exists(allocation.AllocationEntryID, allocation.EmployeeID, allocation.ProjectID) > 1)
-                    {
-                        DisplayWarningMessage($"Looks like the selected project is already allocated to the selected employee");
-                        return View(allocation);
-                    }
-
                     ProjectAllocationDto projectDto = Mapper.Map<AllocationModel, ProjectAllocationDto>(allocation);
                     allocationService.Update(projectDto);
                     DisplaySuccessMessage($"Project allocation details have been updated for {allocation.EmployeeName}");
@@ -213,6 +260,29 @@ namespace Agilisium.TalentManager.Web.Controllers
             return RedirectToAction("List");
         }
 
+        // GET: Project/Delete/5
+        public ActionResult DeAllocate(int? id)
+        {
+            if (!id.HasValue)
+            {
+                DisplayWarningMessage("Looks like, the Allocation ID is missing from your request");
+                return RedirectToAction("List");
+            }
+
+            try
+            {
+                allocationService.EndAllocation(id.Value);
+                DisplaySuccessMessage("The selected allocation has been closed successfully");
+                return RedirectToAction("List");
+            }
+            catch (Exception exp)
+            {
+                DisplayDeleteErrorMessage(exp);
+            }
+
+            return RedirectToAction("List");
+        }
+
         [HttpPost]
         public JsonResult GetProjectDetails(int projectID)
         {
@@ -237,9 +307,40 @@ namespace Agilisium.TalentManager.Web.Controllers
             return PartialView("EmployeeAllocations", projectModels);
         }
 
-        private IEnumerable<AllocationModel> GetAllocations(int pageNo)
+        [HttpPost]
+        public JsonResult LoadFilterValueListItems(string filterType)
         {
-            IEnumerable<ProjectAllocationDto> allocations = allocationService.GetAll(RecordsPerPage, pageNo);
+            List<SelectListItem> filterValues = new List<SelectListItem>();
+            switch (filterType)
+            {
+                case "Employee":
+                    filterValues = GetEmployeesList();
+                    break;
+                case "Project":
+                    filterValues = GetProjectsList();
+                    break;
+            }
+
+
+            filterValues.Insert(0, new SelectListItem
+            {
+                Text = "Please Select",
+                Value = "0",
+            });
+            Session["FilterValueListItemsAllocation"] = filterValues;
+            return Json(filterValues);
+        }
+
+        private IEnumerable<AllocationModel> GetAllocations(string filterType, int filterValueID, int pageNo)
+        {
+            IEnumerable<ProjectAllocationDto> allocations = allocationService.GetAll(filterType, filterValueID, RecordsPerPage, pageNo);
+            IEnumerable<AllocationModel> projectModels = Mapper.Map<IEnumerable<ProjectAllocationDto>, IEnumerable<AllocationModel>>(allocations);
+            return projectModels;
+        }
+
+        private IEnumerable<AllocationModel> GetAllocationsHistory(int pageNo)
+        {
+            IEnumerable<ProjectAllocationDto> allocations = allocationService.GetAllocationHistory(RecordsPerPage, pageNo);
             IEnumerable<AllocationModel> projectModels = Mapper.Map<IEnumerable<ProjectAllocationDto>, IEnumerable<AllocationModel>>(allocations);
             return projectModels;
         }
@@ -248,8 +349,8 @@ namespace Agilisium.TalentManager.Web.Controllers
         {
             ViewData["IsNewProject"] = true;
             GetOtherDropDownItems();
-            GetEmployeesList();
-            GetProjectsList();
+            ViewBag.EmployeeListItems = GetEmployeesList();
+            ViewBag.ProjectListItems = GetProjectsList();
         }
 
         private void GetOtherDropDownItems()
@@ -268,32 +369,33 @@ namespace Agilisium.TalentManager.Web.Controllers
             ViewBag.ProjectTypeListItems = projectTypeItems;
         }
 
-        private void GetEmployeesList()
+        private List<SelectListItem> GetEmployeesList()
         {
             List<EmployeeDto> employees = empService.GetAllEmployees("");
 
             List<SelectListItem> pmList = (from e in employees
                                            select new SelectListItem
                                            {
-                                               Text = $"{e.LastName}, {e.FirstName}",
+                                               Text = $"{e.FirstName} {e.LastName}",
                                                Value = e.EmployeeEntryID.ToString()
-                                           }).ToList();
+                                           }).OrderBy(i => i.Text).ToList();
 
-            ViewBag.EmployeeListItems = pmList;
+            return pmList;
         }
 
-        private void GetProjectsList()
+        private List<SelectListItem> GetProjectsList()
         {
             IEnumerable<ProjectDto> projects = projectService.GetAll();
 
             List<SelectListItem> projectList = (from p in projects
+                                                orderby p.ProjectCode
                                                 select new SelectListItem
                                                 {
-                                                    Text = p.ProjectName,
+                                                    Text = $"{p.ProjectCode}-{p.ProjectName}",
                                                     Value = p.ProjectID.ToString()
-                                                }).ToList();
+                                                }).OrderBy(i => i.Text).ToList();
 
-            ViewBag.ProjectListItems = projectList;
+            return projectList;
         }
 
         private bool IsValidAllocation(AllocationModel allocation)
@@ -320,11 +422,33 @@ namespace Agilisium.TalentManager.Web.Controllers
             EmployeeDto emp = empService.GetEmployee(allocation.EmployeeID);
             if (allocation.AllocationStartDate < emp.DateOfJoin)
             {
-                DisplayWarningMessage($"Selected Employee's DoJ is {emp.DateOfJoin.ToString("mm/dd/yyyy")}. Allocation Start Date should be above that");
+                DisplayWarningMessage($"Selected Employee's DoJ is {emp.DateOfJoin.ToString("MM/dd/yyyy")}. Allocation Start Date should be above that");
                 return false;
             }
 
             return true;
+        }
+
+        private void InitializeListPage(AllocationViewModel viewModel)
+        {
+            viewModel.FilterTypeDropDownItems = new List<SelectListItem>
+            {
+                new SelectListItem
+                {
+                    Text = "Employee",
+                    Value = "Employee"
+                },
+                new SelectListItem
+                {
+                    Text = "Project",
+                    Value = "Project"
+                },
+            };
+
+            if (string.IsNullOrEmpty(viewModel.FilterType) == false && Session["FilterValueListItemsAllocation"] != null)
+            {
+                viewModel.FilterValueDropDownItems = (List<SelectListItem>)Session["FilterValueListItemsAllocation"];
+            }
         }
     }
 }

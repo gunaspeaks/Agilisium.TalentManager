@@ -74,5 +74,25 @@ namespace Agilisium.TalentManager.Service.Concreate
         {
             return repository.GenerateProjectCode(accountID);
         }
+
+        public List<ProjectDto> GetAll(string filterType, int filterValue, int pageSize = -1, int pageNo = -1)
+        {
+            return repository.GetAll(filterType, filterValue, pageSize, pageNo).ToList();
+        }
+
+        public int TotalRecordsCount(string filterType, int filterValue)
+        {
+            return repository.TotalRecordsCount(filterType, filterValue);
+        }
+
+        public bool IsReservedEntry(int projectID)
+        {
+            return repository.IsReservedEntry(projectID);
+        }
+
+        public List<ProjectDto> GetAllByManagerID(int managerID)
+        {
+            return repository.GetAllByManagerID(managerID).ToList();
+        }
     }
 }

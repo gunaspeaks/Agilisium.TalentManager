@@ -34,7 +34,7 @@ namespace Agilisium.TalentManager.Web.App_Start
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces().InstancePerRequest();
 
-            // Reporting Services
+            // Windows Services
             builder.RegisterAssemblyTypes(typeof(ContractorRequestProcessor).Assembly)
                 .Where(t => t.Name.EndsWith("Processor"))
                 .AsImplementedInterfaces().InstancePerRequest();

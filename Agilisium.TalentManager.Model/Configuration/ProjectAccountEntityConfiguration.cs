@@ -17,7 +17,7 @@ namespace Agilisium.TalentManager.Model.Configuration
 
             Property(p => p.AccountID).HasDatabaseGeneratedOption(DatabaseGeneratedOption.Identity);
             Property(p => p.AccountName).HasMaxLength(100).IsRequired();
-            Property(p => p.ShortName).HasMaxLength(3);
+            Property(p => p.ShortName).HasMaxLength(5);
             Property(p => p.OffshoreManagerID).IsRequired();
             Property(p => p.OnshoreManager).HasMaxLength(100).IsRequired();
             Property(p => p.PartnerManager).HasMaxLength(100);

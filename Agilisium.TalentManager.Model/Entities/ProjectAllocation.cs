@@ -14,9 +14,9 @@ namespace Agilisium.TalentManager.Model.Entities
 
         public int EmployeeID { get; set; }
 
-        public DateTime? AllocationStartDate { get; set; }
+        public DateTime AllocationStartDate { get; set; }
 
-        public DateTime? AllocationEndDate { get; set; }
+        public DateTime AllocationEndDate { get; set; }
 
         public int AllocationTypeID { get; set; }
 
@@ -26,5 +26,8 @@ namespace Agilisium.TalentManager.Model.Entities
 
         [DefaultValue(0)]
         public int PercentageOfAllocation { get; set; }
+
+        [DefaultValue(true)]
+        public bool IsActive { get; set; }
     }
 }

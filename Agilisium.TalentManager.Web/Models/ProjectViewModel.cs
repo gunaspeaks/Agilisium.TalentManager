@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Collections.Generic;
+using System.Web.Mvc;
 
 namespace Agilisium.TalentManager.Web.Models
 {
@@ -14,6 +12,16 @@ namespace Agilisium.TalentManager.Web.Models
         public ProjectViewModel()
         {
             Projects = new List<ProjectModel>();
+            FilterTypeDropDownItems = new List<SelectListItem>();
+            FilterValueDropDownItems = new List<SelectListItem>();
         }
+
+        public string FilterType { get; set; }
+
+        public string FilterValue { get; set; }
+
+        public IEnumerable<SelectListItem> FilterTypeDropDownItems { get; set; }
+
+        public IEnumerable<SelectListItem> FilterValueDropDownItems { get; set; }
     }
 }

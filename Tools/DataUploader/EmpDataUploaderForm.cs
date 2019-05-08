@@ -478,7 +478,7 @@ namespace DataUploader
                             PracticeID = practiceDto.PracticeID,
                             PrimarySkills = row["PrimarySkills"].ToString(),
                             SecondarySkills = row["SecondarySkills"].ToString(),
-                            SubPracticeID = subPracticeDto?.SubPracticeID,
+                            SubPracticeID = subPracticeDto.SubPracticeID,
                         };
 
                         if (string.IsNullOrWhiteSpace(row["LWD"].ToString()) == false)

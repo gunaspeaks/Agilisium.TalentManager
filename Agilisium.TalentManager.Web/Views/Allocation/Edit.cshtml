@@ -25,6 +25,7 @@
         });
 
         updateEmployeeAndProjectDetails();
+        //updateFieldsBasedOnProjectType();
     });
 
     updateEmployeeAndProjectDetails = function () {
@@ -42,6 +43,7 @@
     $(function () {
         $("#ProjectID").change(function (evt) {
             updateEmployeeAndProjectDetails();
+            updateFieldsBasedOnProjectType();
         });
     });
 
@@ -50,6 +52,23 @@
             updateEmployeeAndProjectDetails();
         });
     });
+
+    updateFieldsBasedOnProjectType = function () {
+
+        //$("#AllocationTypeID").removeAttr('disabled');
+        var pname = $("#ProjectID").text().toLowerCase();
+
+        if (($("#ProjectID").val() < 0) || $("#ProjectID").val().length == 0)
+            return;
+
+        if (pname.indexOf("lab") >= 0 || pname.indexOf("management") >= 0) {
+            $("#AllocationTypeID").val(7);
+            //$("#AllocationTypeID").attr('disabled', 'disabled');
+        } else if (pname.indexOf("bench") >= 0) {
+            $("#AllocationTypeID").val(6);
+            //$("#AllocationTypeID").attr('disabled', 'disabled');
+        }
+    }
 
 </script>
 
